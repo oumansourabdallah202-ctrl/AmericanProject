@@ -24,21 +24,6 @@ export default function Gallery() {
     { src: "/gallery_13.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
     { src: "/gallery_14.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
     { src: "/gallery_15.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_16.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_17.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_18.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_19.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_20.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_21.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_22.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_23.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_24.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_25.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_26.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_27.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_28.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_29.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_30.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
   ];
 
   return (

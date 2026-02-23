@@ -988,6 +988,11 @@ export default function Admin() {
     );
   }, [sortedBookings]);
 
+  /** All pending (request/pending status) bookings for the Richieste tab. */
+  const pendingRequestsBookings = useMemo(() => {
+    return sortedBookings.filter((b) => b.status === "request" || b.status === "pending");
+  }, [sortedBookings]);
+
   if (verified === null) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
@@ -1114,10 +1119,15 @@ export default function Admin() {
               <span className="hidden sm:inline">{t("admin.calendar")}</span>
               <span className="sm:hidden">Cal</span>
             </TabsTrigger>
-            <TabsTrigger value="special" className="text-xs sm:text-sm">
+            <TabsTrigger value="requests" className="text-xs sm:text-sm">
               <UserCheck className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("admin.specialRequests")}</span>
-              <span className="sm:hidden">Special</span>
+              <span className="hidden sm:inline">{t("admin.requests")}</span>
+              <span className="sm:hidden">{t("admin.requests")}</span>
+              {pendingRequestsBookings.length > 0 && (
+                <span className="ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
+                  {pendingRequestsBookings.length}
+                </span>
+              )}
             </TabsTrigger>
             <TabsTrigger value="clients" className="text-xs sm:text-sm">
               <Users className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
@@ -1686,14 +1696,14 @@ export default function Admin() {
               </CardContent>
             </Card>
           </TabsContent>
-          <TabsContent value="special" className="mt-6">
+          <TabsContent value="requests" className="mt-6">
             <Card>
               <CardContent className="p-6">
                 <p className="text-sm text-muted-foreground mb-4">
-                  {t("admin.specialIntro")}
+                  {t("admin.requestsIntro")}
                 </p>
-                {specialRequestsBookings.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-8">{t("admin.emptySpecial")}</div>
+                {pendingRequestsBookings.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-8">{t("admin.emptyRequests")}</div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -1709,7 +1719,7 @@ export default function Admin() {
                         </tr>
                       </thead>
                       <tbody>
-                        {specialRequestsBookings.map((b) => (
+                        {pendingRequestsBookings.map((b) => (
                           <tr key={b.id} className="border-b">
                             <td className="p-3">{b.date}</td>
                             <td className="p-3">{b.time}</td>
@@ -1728,17 +1738,15 @@ export default function Admin() {
                                 <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")}>
                                   <Eye className="w-4 h-4" />
                                 </Button>
-                                {(b.status === "pending" || b.status === "request") && (
-                                  <Button
-                                    size="sm"
-                                    variant="default"
-                                    disabled={acceptingId !== null}
-                                    onClick={() => handleAccept(b.id)}
-                                  >
-                                    {acceptingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 mr-1" />}
-                                    {t("admin.accept")}
-                                  </Button>
-                                )}
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  disabled={acceptingId !== null}
+                                  onClick={() => handleAccept(b.id)}
+                                >
+                                  {acceptingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 mr-1" />}
+                                  {t("admin.accept")}
+                                </Button>
                               </div>
                             </td>
                           </tr>
