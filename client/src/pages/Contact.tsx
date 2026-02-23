@@ -104,6 +104,9 @@ export default function Contact() {
                         {t("contact.specialtyBar")}
                       </span>
                     </div>
+                    <Link href="/careers" className="inline-block mt-3 text-sm font-medium text-[oklch(0.62_0.15_85)] hover:underline">
+                      {t("contact.workWithUsCta")}
+                    </Link>
                   </CardContent>
                 </Card>
 

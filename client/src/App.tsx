@@ -17,6 +17,7 @@ const About = lazy(() => import("./pages/About"));
 const Events = lazy(() => import("./pages/Events"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Careers = lazy(() => import("./pages/Careers"));
 const Takeaway = lazy(() => import("./pages/Takeaway"));
 import Booking from "./pages/Booking";
 import Admin from "./pages/Admin";
@@ -53,6 +54,7 @@ function Router() {
           <Route path="/events" component={Events} />
           <Route path="/faq" component={FAQ} />
           <Route path="/contact" component={Contact} />
+          <Route path="/careers" component={Careers} />
           <Route path="/booking" component={RedirectToReservations} />
           <Route path="/reservations" component={Booking} />
           <Route path="/takeaway" component={Takeaway} />

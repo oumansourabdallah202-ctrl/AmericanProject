@@ -183,6 +183,7 @@ export const translations = {
       findUs: "Find Us",
       workWithUs: "Work With Us",
       workWithUsIntro: "Join our team. We're always looking for passionate people in the following areas:",
+      workWithUsCta: "Learn more & apply →",
       specialtyKitchen: "Kitchen",
       specialtyBar: "Bar",
       specialtyService: "Service",
@@ -191,6 +192,13 @@ export const translations = {
       readyToVisitDesc: "Book your table now and experience authentic Sicilian cusine in the heart of Geneva.",
       publicTransport: "Public Transport",
       parking: "Parking"
+    },
+    careers: {
+      title: "Work at Spinella",
+      subtitle: "Join our team",
+      intro: "We're always looking for passionate people in the kitchen, bar, and service. Send us your application and we'll get back to you.",
+      apply: "Apply",
+      applyNote: "Send your CV and a short message to info@spinella.ch with subject \"Spinella Application\"."
     },
     booking: {
       title: "Reserve Your Table",
@@ -339,7 +347,8 @@ export const translations = {
       stayConnected: "Stay Connected",
       followUs: "Follow us for exclusive offers, events, and special dishes!",
       openingHours: "Opening Hours",
-      allRightsReserved: "All rights reserved"
+      allRightsReserved: "All rights reserved",
+      careers: "Careers"
     },
     reviews: {
       review1: "From the moment we walked in, we felt like old friends returning home. The three brothers greeted us with such warmth, such genuine joy, that we forgot we were in a restaurant. We were in their home, sharing their table, becoming part of their story.",
@@ -557,6 +566,7 @@ export const translations = {
       findUs: "Trouvez-Nous",
       workWithUs: "Travailler avec nous",
       workWithUsIntro: "Rejoignez notre équipe. Nous recherchons des personnes passionnées dans les domaines suivants :",
+      workWithUsCta: "En savoir plus et postuler →",
       specialtyKitchen: "Cuisine",
       specialtyBar: "Bar",
       specialtyService: "Service",
@@ -565,6 +575,13 @@ export const translations = {
       readyToVisitDesc: "Réservez votre table maintenant et découvrez la cuisine italienne authentique au cœur de Genève.",
       publicTransport: "Transport Public",
       parking: "Parking"
+    },
+    careers: {
+      title: "Travailler chez Spinella",
+      subtitle: "Rejoignez notre équipe",
+      intro: "Nous recherchons des personnes passionnées en cuisine, bar et service. Envoyez-nous votre candidature.",
+      apply: "Postuler",
+      applyNote: "Envoyez CV et un court message à info@spinella.ch avec l'objet « Candidature Spinella »."
     },
     booking: {
       title: "Réservez Votre Table",
@@ -713,7 +730,8 @@ export const translations = {
       stayConnected: "Restez connectés",
       followUs: "Suivez-nous pour des offres exclusives, événements et plats spéciaux!",
       openingHours: "Horaires d'ouverture",
-      allRightsReserved: "Tous droits réservés"
+      allRightsReserved: "Tous droits réservés",
+      careers: "Carrières"
     },
     reviews: {
       review1: "Dès notre arrivée, nous nous sommes sentis comme de vieux amis de retour à la maison. Les trois frères nous ont accueillis avec une telle chaleur, une telle joie sincère, que nous avons oublié être dans un restaurant. Nous étions chez eux, à leur table, nous devenions partie de leur histoire.",
@@ -931,6 +949,7 @@ export const translations = {
       findUs: "Dove Siamo",
       workWithUs: "Lavora con noi",
       workWithUsIntro: "Unisciti al nostro team. Cerchiamo sempre persone appassionate nelle seguenti aree:",
+      workWithUsCta: "Scopri di più e candidati →",
       specialtyKitchen: "Cucina",
       specialtyBar: "Bar",
       specialtyService: "Servizio",
@@ -939,6 +958,13 @@ export const translations = {
       readyToVisitDesc: "Prenota il tuo tavolo e scopri la cucina siciliana autentica nel cuore di Ginevra.",
       publicTransport: "Trasporti Pubblici",
       parking: "Parcheggio"
+    },
+    careers: {
+      title: "Lavora da Spinella",
+      subtitle: "Unisciti al nostro team",
+      intro: "Cerchiamo sempre persone appassionate in cucina, bar e servizio. Inviaci la tua candidatura.",
+      apply: "Candidati",
+      applyNote: "Invia CV e un breve messaggio a info@spinella.ch con oggetto \"Candidatura Spinella\"."
     },
     booking: {
       title: "Prenota il Tuo Tavolo",
@@ -1087,7 +1113,8 @@ export const translations = {
       stayConnected: "Restate connessi",
       followUs: "Seguici per offerte esclusive, eventi e piatti speciali!",
       openingHours: "Orari di Apertura",
-      allRightsReserved: "Tutti i diritti riservati"
+      allRightsReserved: "Tutti i diritti riservati",
+      careers: "Lavora con noi"
     },
     reviews: {
       review1: "Dal momento in cui siamo entrati, ci siamo sentiti come vecchi amici di ritorno a casa. I tre fratelli ci hanno accolto con tale calore, tale gioia sincera, che abbiamo dimenticato di essere in un ristorante. Eravamo a casa loro, alla loro tavola, parte della loro storia.",
@@ -1285,6 +1312,7 @@ export const translations = {
       findUs: "So finden Sie uns",
       workWithUs: "Arbeiten Sie mit uns",
       workWithUsIntro: "Werden Sie Teil unseres Teams. Wir suchen leidenschaftliche Menschen in folgenden Bereichen:",
+      workWithUsCta: "Mehr erfahren & bewerben →",
       specialtyKitchen: "Küche",
       specialtyBar: "Bar",
       specialtyService: "Service",
@@ -1293,6 +1321,13 @@ export const translations = {
       readyToVisitDesc: "Reservieren Sie jetzt und erleben Sie authentische sizilianische Küche im Herzen Genfs.",
       publicTransport: "Öffentliche Verkehrsmittel",
       parking: "Parken"
+    },
+    careers: {
+      title: "Arbeiten bei Spinella",
+      subtitle: "Werden Sie Teil unseres Teams",
+      intro: "Wir suchen leidenschaftliche Menschen in Küche, Bar und Service. Senden Sie uns Ihre Bewerbung.",
+      apply: "Bewerben",
+      applyNote: "Senden Sie Lebenslauf und eine kurze Nachricht an info@spinella.ch mit Betreff „Bewerbung Spinella“."
     },
     booking: {
       title: "Tisch reservieren",
@@ -1342,7 +1377,7 @@ export const translations = {
       timePast: "Diese Uhrzeit liegt bereits in der Vergangenheit. Bitte wählen Sie eine spätere Uhrzeit.",
       validation: { nameMin: "Name mindestens 2 Zeichen", emailInvalid: "Ungültige E-Mail", phoneMin: "Telefon mindestens 10 Zeichen", dateRequired: "Bitte Datum wählen", timeRequired: "Bitte Uhrzeit wählen", partySizeRequired: "Bitte Gästezahl wählen" }
     },
-    footer: { stayConnected: "Bleiben Sie verbunden", followUs: "Folgen Sie uns für Angebote, Events und besondere Gerichte!", openingHours: "Öffnungszeiten", allRightsReserved: "Alle Rechte vorbehalten" },
+    footer: { stayConnected: "Bleiben Sie verbunden", followUs: "Folgen Sie uns für Angebote, Events und besondere Gerichte!", openingHours: "Öffnungszeiten", allRightsReserved: "Alle Rechte vorbehalten", careers: "Karriere" },
     reviews: {
       review1: "Von dem Moment an, als wir eintraten, fühlten wir uns wie alte Freunde. Die drei Brüder empfingen uns mit solcher Wärme und Freude, dass wir vergaßen, in einem Restaurant zu sein. Wir waren bei ihnen zu Hause.",
       review2: "Ich habe in Michelin-Restaurants weltweit gegessen. Spinella hat keine Sterne, aber etwas Wertvolleres: Seele. Man schmeckt die Leidenschaft in jedem Bissen.",
@@ -1539,6 +1574,7 @@ export const translations = {
       findUs: "Cómo llegar",
       workWithUs: "Trabaje con nosotros",
       workWithUsIntro: "Únase a nuestro equipo. Buscamos personas apasionadas en:",
+      workWithUsCta: "Saber más y enviar candidatura →",
       specialtyKitchen: "Cocina",
       specialtyBar: "Bar",
       specialtyService: "Servicio",
@@ -1547,6 +1583,13 @@ export const translations = {
       readyToVisitDesc: "Reserve ahora y descubra la cocina siciliana auténtica en el corazón de Ginebra.",
       publicTransport: "Transporte público",
       parking: "Parking"
+    },
+    careers: {
+      title: "Trabajar en Spinella",
+      subtitle: "Únase a nuestro equipo",
+      intro: "Buscamos personas apasionadas en cocina, bar y servicio. Envíenos su candidatura.",
+      apply: "Enviar candidatura",
+      applyNote: "Envíe su CV y un breve mensaje a info@spinella.ch con asunto « Candidatura Spinella »."
     },
     booking: {
       title: "Reservar mesa",
@@ -1596,7 +1639,7 @@ export const translations = {
       timePast: "Esta hora ya ha pasado. Elija una hora posterior.",
       validation: { nameMin: "Nombre al menos 2 caracteres", emailInvalid: "Correo no válido", phoneMin: "Teléfono al menos 10 caracteres", dateRequired: "Elija una fecha", timeRequired: "Elija una hora", partySizeRequired: "Elija el número de personas" }
     },
-    footer: { stayConnected: "Manténgase conectado", followUs: "Síganos para ofertas, eventos y platos especiales.", openingHours: "Horario", allRightsReserved: "Todos los derechos reservados" },
+    footer: { stayConnected: "Manténgase conectado", followUs: "Síganos para ofertas, eventos y platos especiales.", openingHours: "Horario", allRightsReserved: "Todos los derechos reservados", careers: "Trabajo" },
     reviews: {
       review1: "Desde que entramos nos sentimos como viejos amigos. Los tres hermanos nos recibieron con una calidez y una alegría tan genuinas que olvidamos estar en un restaurante. Estábamos en su casa.",
       review2: "He comido en restaurantes con estrella Michelin en todo el mundo. Spinella no tiene estrellas, pero tiene algo más valioso: alma. Se nota la pasión en cada bocado.",

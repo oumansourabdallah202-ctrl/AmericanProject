@@ -186,4 +186,49 @@ To improve PageSpeed (mobile was ~55, desktop ~69–81; FCP/LCP/CLS/TBT in focus
 
 ---
 
+## 8. Plan d’action – Réservations, Wix, Carrières, Commande, Carte cadeau
+
+*Priorités et tâches pour aligner la nouvelle interface sur Wix, corriger les réservations, et livrer commande à emporter / livraison + carte cadeau.*
+
+### 8.1 Réservations – Bugs et alignement avec Wix
+
+| Priorité | Tâche | Détail |
+|----------|--------|--------|
+| **P0** | Corriger tous les bugs liés aux réservations | Auditer le flux complet : formulaire public → API → Supabase → emails ; admin (liste, calendrier, accept/decline, édition) ; cas limites (dates bloquées, créneaux passés, grandes tables). Corriger chaque bug identifié. |
+| **P0** | Garantir qu’aucune résa ne reste uniquement sur Wix | Vérifier que **toutes** les réservations passent par la nouvelle interface (spinella.ch) ou sont importées/synchronisées. Identifier les canaux restants (formulaire Wix encore actif ? résas par téléphone/email ?) et soit les couper, soit les faire remonter dans Supabase (import manuel ou script). **Source de vérité unique** = Supabase `bookings`. |
+| **P1** | Aligner l’interface sur Wix (look & comportement) | Comparer l’admin et le parcours client avec Wix (écrans, libellés, étapes, emails). Adapter la nouvelle interface pour qu’elle **ressemble et fonctionne comme Wix** (workflow acceptation, messages, vue liste/calendrier, etc.) tout en gardant la stack actuelle. |
+
+### 8.2 Page Carrières / Candidatures
+
+| Priorité | Tâche | Détail |
+|----------|--------|--------|
+| **P1** | Page ou lien “Travailler chez Spinella” | **Fait** : page `/careers` (intro, Cuisine/Bar/Service, CTA mailto). Lien footer + Contact « En savoir plus et postuler ». Traductions EN/FR/IT/DE/ES. |
+
+### 8.3 Système de commande (livraison et/ou à emporter)
+
+| Priorité | Tâche | Détail |
+|----------|--------|--------|
+| **P1** | Créer le système | Page commande (à emporter et/ou livraison) : choix des articles, panier, option livraison/emporter, paiement (Stripe déjà en place pour takeaway). Back-office minimal pour voir les commandes. |
+| **P2** | Tester de bout en bout | Tests : création commande, paiement, emails, affichage admin ; cas erreur et annulation. |
+| **P2** | Faire valider par les jumeaux | Démo / environnement de test pour validation avant toute mise en production. |
+| **P0** | Pas de publication tant que c’est pas bulletproof | Ne pas activer en production avant : flux stable, paiements et emails fiables, aucun bug bloquant. Option : lien caché ou sous-domaine de test jusqu’à feu vert. |
+
+### 8.4 Carte cadeau
+
+| Priorité | Tâche | Détail |
+|----------|--------|--------|
+| **P1** | Mettre en place un système de carte cadeau | Achat en ligne (montant ou forfait) → paiement (Stripe) → code unique + email de confirmation. Utilisation : saisie du code au moment de la réservation ou du paiement (à définir avec le restaurant). Stockage des codes (Supabase ou autre) et règles d’utilisation (validité, montant min/max). |
+
+---
+
+### Ordre suggéré
+
+1. **Réservations (P0)** : bugs + source de vérité unique (plus de résas “seulement sur Wix”).
+2. **Alignement interface / Wix (P1)** : après stabilisation des résas.
+3. **Carrières (P1)** : page ou lien rapide à ajouter.
+4. **Commande à emporter / livraison (P1→P2)** : construire → tester → faire approuver → ne publier que lorsque bulletproof.
+5. **Carte cadeau (P1)** : après ou en parallèle de la commande, selon les priorités métier.
+
+---
+
 *Document generated for Spinella Restaurant & Bar. Update this file as features are shipped or scope changes.*

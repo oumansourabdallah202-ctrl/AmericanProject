@@ -27,6 +27,7 @@ function TikTokIcon({ size = 20 }: { size?: number }) {
   );
 }
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Link } from "wouter";
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -54,6 +55,11 @@ export default function Footer() {
                 <a href="mailto:info@spinella.ch?subject=Contact%20Spinella%20-%20Website" className="hover:text-[oklch(0.62_0.15_85)] transition-colors">
                   info@spinella.ch
                 </a>
+              </div>
+              <div className="pt-2">
+                <Link href="/careers" className="text-sm hover:text-[oklch(0.62_0.15_85)] transition-colors font-medium">
+                  {t("footer.careers")}
+                </Link>
               </div>
             </div>
           </div>
