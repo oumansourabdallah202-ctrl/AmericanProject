@@ -9,12 +9,15 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-/** Language from subdomain: it.spinella.ch → it, en.spinella.ch → en; otherwise use saved or default. */
+/** Language from subdomain: fr/en/it/de/es.spinella.ch → corresponding language; otherwise use saved or default. */
 function getInitialLanguage(): Language {
   if (typeof window === "undefined") return "fr";
   const host = window.location.hostname.toLowerCase();
-  if (host === "it.spinella.ch") return "it";
+  if (host === "fr.spinella.ch") return "fr";
   if (host === "en.spinella.ch") return "en";
+  if (host === "it.spinella.ch") return "it";
+  if (host === "de.spinella.ch") return "de";
+  if (host === "es.spinella.ch") return "es";
   const saved = localStorage.getItem("language");
   return (saved as Language) || "fr";
 }
