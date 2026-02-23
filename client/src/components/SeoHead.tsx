@@ -13,12 +13,25 @@ export default function SeoHead() {
   const canonicalUrl = `${SEO_BASE_URL}${normalizedPath === "/" ? "" : normalizedPath}`;
 
   useEffect(() => {
-    const title = meta?.title ?? "Spinella Restaurant & Bar Geneva";
+    const is404 = normalizedPath === "/404";
+    const title = is404 ? "404 – Spinella" : (meta?.title ?? "Spinella Restaurant & Bar Geneva");
     const description =
       meta?.description ??
       "Spinella – Restaurant & Bar sicilien à Genève. Cuisine authentique, cocktails et accueil familial. Réservez votre table.";
 
     document.title = title;
+
+    let metaRobots = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    if (is404) {
+      if (!metaRobots) {
+        metaRobots = document.createElement("meta");
+        metaRobots.name = "robots";
+        document.head.appendChild(metaRobots);
+      }
+      metaRobots.content = "noindex, follow";
+    } else if (metaRobots && metaRobots.content === "noindex, follow") {
+      metaRobots.remove();
+    }
 
     let linkCanonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!linkCanonical) {
