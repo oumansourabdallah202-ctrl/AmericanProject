@@ -988,11 +988,6 @@ export default function Admin() {
     );
   }, [sortedBookings]);
 
-  /** All pending (request/pending status) bookings for the Richieste tab. */
-  const pendingRequestsBookings = useMemo(() => {
-    return sortedBookings.filter((b) => b.status === "request" || b.status === "pending");
-  }, [sortedBookings]);
-
   if (verified === null) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
@@ -1103,7 +1098,7 @@ export default function Admin() {
         </p>
 
         <Tabs defaultValue="all">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto">
             <TabsTrigger value="all" className="text-xs sm:text-sm">
               <List className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
               <span className="hidden sm:inline">Toutes les réservations</span>
@@ -1118,16 +1113,6 @@ export default function Admin() {
               <CalendarIcon className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
               <span className="hidden sm:inline">{t("admin.calendar")}</span>
               <span className="sm:hidden">Cal</span>
-            </TabsTrigger>
-            <TabsTrigger value="requests" className="text-xs sm:text-sm">
-              <UserCheck className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("admin.requests")}</span>
-              <span className="sm:hidden">{t("admin.requests")}</span>
-              {pendingRequestsBookings.length > 0 && (
-                <span className="ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
-                  {pendingRequestsBookings.length}
-                </span>
-              )}
             </TabsTrigger>
             <TabsTrigger value="clients" className="text-xs sm:text-sm">
               <Users className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
@@ -1484,7 +1469,7 @@ export default function Admin() {
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    Prenotazioni
+                    {t("admin.reservations")}
                   </button>
                   <button
                     onClick={() => setCalendarView("requests")}
@@ -1494,7 +1479,7 @@ export default function Admin() {
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    Richieste
+                    {t("admin.requests")}
                     {pendingCountForSelectedDate > 0 && (
                       <span className="bg-primary text-primary-foreground text-xs rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
                         {pendingCountForSelectedDate}
@@ -1693,68 +1678,6 @@ export default function Admin() {
                     );
                   })()}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="requests" className="mt-6">
-            <Card>
-              <CardContent className="p-6">
-                <p className="text-sm text-muted-foreground mb-4">
-                  {t("admin.requestsIntro")}
-                </p>
-                {pendingRequestsBookings.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-8">{t("admin.emptyRequests")}</div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b bg-muted/50">
-                          <th className="text-left p-3">{t("admin.date")}</th>
-                          <th className="text-left p-3">{t("admin.time")}</th>
-                          <th className="text-left p-3">{t("admin.name")}</th>
-                          <th className="text-left p-3">{t("admin.guests")}</th>
-                          <th className="text-left p-3">{t("admin.status")}</th>
-                          <th className="text-left p-3">{t("admin.specialRequests")}</th>
-                          <th className="text-left p-3 w-24">{t("admin.action")}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {pendingRequestsBookings.map((b) => (
-                          <tr key={b.id} className="border-b">
-                            <td className="p-3">{b.date}</td>
-                            <td className="p-3">{b.time}</td>
-                            <td className="p-3">{b.name}</td>
-                            <td className="p-3">{b.partySize}</td>
-                            <td className="p-3">
-                              <span className={b.status === "confirmed" ? "text-green-600" : b.status === "request" ? "text-amber-600" : "text-muted-foreground"}>
-                                {b.status === "request" ? t("admin.statusRequest") : b.status === "pending" ? t("admin.statusPending") : b.status === "cancelled" ? t("admin.statusCancelled") : t("admin.statusConfirmed")}
-                              </span>
-                            </td>
-                            <td className="p-3 max-w-[200px] truncate" title={b.specialRequests ?? ""}>
-                              {b.specialRequests?.trim() || "—"}
-                            </td>
-                            <td className="p-3">
-                              <div className="flex items-center gap-1">
-                                <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")}>
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="default"
-                                  disabled={acceptingId !== null}
-                                  onClick={() => handleAccept(b.id)}
-                                >
-                                  {acceptingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 mr-1" />}
-                                  {t("admin.accept")}
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </TabsContent>
