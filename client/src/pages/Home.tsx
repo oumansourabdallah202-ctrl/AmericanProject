@@ -5,24 +5,28 @@ import { Calendar, Users, Utensils, Wine } from "lucide-react";
 import Reviews from "@/components/Reviews";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const HERO_IMAGE = "/hero.jpg";
+const HERO_VIDEO = "/hero.mp4";
 
 export default function Home() {
   const { t } = useLanguage();
 
   return (
     <div className="min-h-screen pt-20 md:pt-20">
-      {/* Hero: static photo (no video) for faster load and simpler UX */}
+      {/* Hero: video only (mobile + desktop), no static photo */}
       <section
         className="relative flex items-center justify-center overflow-hidden min-h-[100dvh] md:min-h-[min(100dvh,calc(100vh-5rem))] aspect-auto md:aspect-[16/10]"
         style={{ minHeight: "min(100dvh, calc(100vh - 5rem))" }}
       >
-        <div
-          className="hero-home-bg absolute inset-0 w-full h-full"
-          style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+        <video
+          className="absolute inset-0 w-full h-full object-cover z-[1]"
+          src={HERO_VIDEO}
+          autoPlay
+          muted
+          loop
+          playsInline
           aria-hidden
         />
-        <div className="hero-overlay absolute inset-0" />
+        <div className="hero-overlay absolute inset-0 z-[2]" />
         
         <div className="relative z-10 container text-center text-foreground">
           <div className="max-w-4xl mx-auto">

@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Download, Eye, List, Loader2, LogOut, Pencil, Plus, Trash2, Upload, UserCheck, Users, X } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Download, Eye, List, Loader2, LogOut, Pencil, Plus, Search, Trash2, Upload, UserCheck, Users, X } from "lucide-react";
 import { supabase, isSupabaseAuthConfigured } from "@/lib/supabaseClient";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTimeSlotsForDate } from "@/lib/blockedSlots";
@@ -107,6 +107,10 @@ export default function Admin() {
   const [bookingSort, setBookingSort] = useState<"created" | "date" | "name">("date");
   const [allReservationsSort, setAllReservationsSort] = useState<"date" | "name" | "created">("created");
   const [allReservationsSortOrder, setAllReservationsSortOrder] = useState<"asc" | "desc">("desc");
+  const [requestSearch, setRequestSearch] = useState("");
+  const [requestDateFilter, setRequestDateFilter] = useState<string>("");
+  const [requestSort, setRequestSort] = useState<"date" | "time" | "name" | "guests">("date");
+  const [requestSortOrder, setRequestSortOrder] = useState<"asc" | "desc">("asc");
   const [addClientOpen, setAddClientOpen] = useState(false);
   const [addClientName, setAddClientName] = useState("");
   const [addClientEmail, setAddClientEmail] = useState("");
@@ -988,6 +992,37 @@ export default function Admin() {
     );
   }, [sortedBookings]);
 
+  /** All pending (request/pending status) for Richieste view in Calendar. */
+  const pendingRequestsBookings = useMemo(() => {
+    return sortedBookings.filter((b) => b.status === "request" || b.status === "pending");
+  }, [sortedBookings]);
+
+  /** Filtered and sorted list for Richieste (search, date filter, sort). */
+  const filteredPendingRequests = useMemo(() => {
+    let list = [...pendingRequestsBookings];
+    const q = requestSearch.trim().toLowerCase();
+    if (q) {
+      list = list.filter(
+        (b) =>
+          b.name.toLowerCase().includes(q) ||
+          (b.email && b.email.toLowerCase().includes(q)) ||
+          (b.phone && b.phone.includes(q))
+      );
+    }
+    if (requestDateFilter) {
+      list = list.filter((b) => b.date === requestDateFilter);
+    }
+    list.sort((a, b) => {
+      let cmp = 0;
+      if (requestSort === "date") cmp = a.date.localeCompare(b.date);
+      else if (requestSort === "time") cmp = (a.time || "").localeCompare(b.time || "");
+      else if (requestSort === "name") cmp = a.name.localeCompare(b.name);
+      else if (requestSort === "guests") cmp = a.partySize - b.partySize;
+      return requestSortOrder === "asc" ? cmp : -cmp;
+    });
+    return list;
+  }, [pendingRequestsBookings, requestSearch, requestDateFilter, requestSort, requestSortOrder]);
+
   if (verified === null) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
@@ -1480,14 +1515,137 @@ export default function Admin() {
                     }`}
                   >
                     {t("admin.requests")}
-                    {pendingCountForSelectedDate > 0 && (
+                    {pendingRequestsBookings.length > 0 && (
                       <span className="bg-primary text-primary-foreground text-xs rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
-                        {pendingCountForSelectedDate}
+                        {pendingRequestsBookings.length}
                       </span>
                     )}
                   </button>
                 </div>
 
+                {calendarView === "requests" ? (
+                  /* Richieste: all pending requests with filters */
+                  <div className="p-4">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {t("admin.requestsIntro")}
+                    </p>
+                    {pendingRequestsBookings.length === 0 ? (
+                      <div className="text-center text-muted-foreground py-8">{t("admin.emptyRequests")}</div>
+                    ) : (
+                      <>
+                        <div className="flex flex-wrap items-center gap-3 mb-4 p-3 rounded-lg bg-muted/40 border border-border">
+                          <div className="relative flex-1 min-w-[180px]">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Input
+                              placeholder={t("admin.filterSearchPlaceholder")}
+                              value={requestSearch}
+                              onChange={(e) => setRequestSearch(e.target.value)}
+                              className="pl-8 h-9"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="request-date-filter" className="text-xs text-muted-foreground whitespace-nowrap">
+                              {t("admin.date")}:
+                            </Label>
+                            <input
+                              id="request-date-filter"
+                              type="date"
+                              value={requestDateFilter}
+                              onChange={(e) => setRequestDateFilter(e.target.value)}
+                              className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                            />
+                            {requestDateFilter && (
+                              <Button type="button" variant="ghost" size="sm" className="h-9 text-xs" onClick={() => setRequestDateFilter("")}>
+                                {t("admin.filterDateAll")}
+                              </Button>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Label className="text-xs text-muted-foreground whitespace-nowrap">{t("admin.sortBy")}:</Label>
+                            <Select value={requestSort} onValueChange={(v: "date" | "time" | "name" | "guests") => setRequestSort(v)}>
+                              <SelectTrigger className="w-[140px] h-9">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="date">{t("admin.sortByRequestedDate")}</SelectItem>
+                                <SelectItem value="time">{t("admin.sortByTime")}</SelectItem>
+                                <SelectItem value="name">{t("admin.name")}</SelectItem>
+                                <SelectItem value="guests">{t("admin.sortByGuests")}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="h-9 px-2"
+                              onClick={() => setRequestSortOrder((o) => (o === "asc" ? "desc" : "asc"))}
+                              title={requestSortOrder === "asc" ? "Ascending" : "Descending"}
+                            >
+                              {requestSortOrder === "asc" ? "↑" : "↓"}
+                            </Button>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {filteredPendingRequests.length} / {pendingRequestsBookings.length}
+                          </span>
+                        </div>
+                        {filteredPendingRequests.length === 0 ? (
+                          <div className="text-center text-muted-foreground py-8">{t("admin.noResultsForFilters")}</div>
+                        ) : (
+                          <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
+                            <table className="w-full text-sm">
+                              <thead className="sticky top-0 bg-muted/80 z-10">
+                                <tr className="border-b bg-muted/50">
+                                  <th className="text-left p-3">{t("admin.date")}</th>
+                                  <th className="text-left p-3">{t("admin.time")}</th>
+                                  <th className="text-left p-3">{t("admin.name")}</th>
+                                  <th className="text-left p-3">{t("admin.guests")}</th>
+                                  <th className="text-left p-3">{t("admin.status")}</th>
+                                  <th className="text-left p-3">{t("admin.specialRequests")}</th>
+                                  <th className="text-left p-3 w-24">{t("admin.action")}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {filteredPendingRequests.map((b) => (
+                                  <tr key={b.id} className="border-b">
+                                    <td className="p-3">{b.date}</td>
+                                    <td className="p-3">{b.time}</td>
+                                    <td className="p-3">{b.name}</td>
+                                    <td className="p-3">{b.partySize}</td>
+                                    <td className="p-3">
+                                      <span className={b.status === "request" ? "text-amber-600" : "text-muted-foreground"}>
+                                        {b.status === "request" ? t("admin.statusRequest") : t("admin.statusPending")}
+                                      </span>
+                                    </td>
+                                    <td className="p-3 max-w-[200px] truncate" title={b.specialRequests ?? ""}>
+                                      {b.specialRequests?.trim() || "—"}
+                                    </td>
+                                    <td className="p-3">
+                                      <div className="flex items-center gap-1">
+                                        <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")}>
+                                          <Eye className="w-4 h-4" />
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="default"
+                                          disabled={acceptingId !== null}
+                                          onClick={() => handleAccept(b.id)}
+                                        >
+                                          {acceptingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 mr-1" />}
+                                          {t("admin.accept")}
+                                        </Button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <>
                 {/* Calendar: single-date view with date picker and month strip */}
                 <div className="border-b p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -1678,6 +1836,8 @@ export default function Admin() {
                     );
                   })()}
                 </div>
+                  </>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
