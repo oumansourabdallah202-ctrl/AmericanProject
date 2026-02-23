@@ -157,16 +157,6 @@ export default function Admin() {
     }
   }, [selectedCalendarDate, calendarMonth]);
 
-  // Scroll the selected date row into view when calendar month or selected date changes (e.g. after switching to March/April)
-  useEffect(() => {
-    const id = `date-${selectedCalendarDate}`;
-    const t = setTimeout(() => {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 150);
-    return () => clearTimeout(t);
-  }, [selectedCalendarDate, calendarMonth]);
-
   useEffect(() => {
     if (!supabase) return;
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -1503,40 +1493,56 @@ export default function Admin() {
                   </button>
                 </div>
 
-                {/* Horizontal Date Strip */}
+                {/* Calendar: single-date view with date picker and month strip */}
                 <div className="border-b p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        const newMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1);
-                        setCalendarMonth(newMonth);
-                        // Update selected date to first day of new month
-                        const newDate = `${newMonth.getFullYear()}-${String(newMonth.getMonth() + 1).padStart(2, "0")}-01`;
-                        setSelectedCalendarDate(newDate);
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const newMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1);
+                          setCalendarMonth(newMonth);
+                          const newDate = `${newMonth.getFullYear()}-${String(newMonth.getMonth() + 1).padStart(2, "0")}-01`;
+                          setSelectedCalendarDate(newDate);
+                        }}
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </Button>
+                      <span className="text-sm font-medium capitalize min-w-[140px] text-center">
+                        {calendarMonth.toLocaleDateString(undefined, { month: "long", year: "numeric" })}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const newMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1);
+                          setCalendarMonth(newMonth);
+                          const newDate = `${newMonth.getFullYear()}-${String(newMonth.getMonth() + 1).padStart(2, "0")}-01`;
+                          setSelectedCalendarDate(newDate);
+                        }}
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <Label htmlFor="admin-calendar-date" className="text-xs text-muted-foreground sr-only sm:not-sr-only sm:mr-2">
+                      Aller au
+                    </Label>
+                    <Input
+                      id="admin-calendar-date"
+                      type="date"
+                      value={selectedCalendarDate}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (!v) return;
+                        setSelectedCalendarDate(v);
+                        const d = parseLocalDate(v);
+                        setCalendarMonth(new Date(d.getFullYear(), d.getMonth(), 1));
                       }}
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </Button>
-                    <span className="text-sm font-medium capitalize">
-                      {calendarMonth.toLocaleDateString(undefined, { month: "long", year: "numeric" })}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        const newMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1);
-                        setCalendarMonth(newMonth);
-                        // Update selected date to first day of new month
-                        const newDate = `${newMonth.getFullYear()}-${String(newMonth.getMonth() + 1).padStart(2, "0")}-01`;
-                        setSelectedCalendarDate(newDate);
-                      }}
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
+                      className="w-[140px] h-8 text-sm"
+                    />
                   </div>
-                  
+
                   {/* Date Strip - 7 days centered around selected date */}
                   <div className="flex gap-2 overflow-x-auto pb-2">
                     {(() => {
@@ -1557,16 +1563,7 @@ export default function Admin() {
                         return (
                           <button
                             key={dateStr}
-                            onClick={() => {
-                              setSelectedCalendarDate(dateStr);
-                              // Scroll to date in the list
-                              setTimeout(() => {
-                                const element = document.getElementById(`date-${dateStr}`);
-                                if (element) {
-                                  element.scrollIntoView({ behavior: "smooth", block: "start" });
-                                }
-                              }, 100);
-                            }}
+                            onClick={() => setSelectedCalendarDate(dateStr)}
                             className={`flex flex-col items-center justify-center min-w-[60px] py-2 px-3 rounded-lg transition-colors ${
                               isSelected 
                                 ? "bg-primary text-primary-foreground" 
@@ -1587,58 +1584,20 @@ export default function Admin() {
                   </div>
                 </div>
 
-                {/* Scrollable Booking List - All Dates in current month; always include selected date so its row is visible */}
+                {/* List: only the selected date (single-day view) */}
                 <div className="max-h-[600px] overflow-y-auto">
                   {(() => {
-                    const year = calendarMonth.getFullYear();
-                    const month = calendarMonth.getMonth();
-                    const monthStart = new Date(year, month, 1);
-                    const monthEnd = new Date(year, month + 1, 0);
-                    const monthStartStr = `${year}-${String(month + 1).padStart(2, "0")}-01`;
-                    const monthEndStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(monthEnd.getDate()).padStart(2, "0")}`;
+                    const dateStr = selectedCalendarDate;
+                    const dayBookings = calendarView === "all"
+                      ? (byDate[dateStr] ?? [])
+                      : (byDate[dateStr] ?? []).filter((b) => b.status === "request" || b.status === "pending");
+                    const totalGuests = dayBookings.reduce((sum, b) => sum + b.partySize, 0);
+                    const date = parseLocalDate(dateStr);
 
-                    // Dates in this month that have bookings (for current view: all or requests only)
-                    const allDates = Object.keys(byDate).sort();
-                    const datesWithBookings = allDates.filter((dateStr) => {
-                      if (dateStr < monthStartStr || dateStr > monthEndStr) return false;
-                      const dayBookings = calendarView === "all"
-                        ? (byDate[dateStr] ?? [])
-                        : (byDate[dateStr] ?? []).filter((b) => b.status === "request" || b.status === "pending");
-                      return dayBookings.length > 0;
-                    });
-
-                    // Always include selected date if it's in the current month, so the selected day has a visible row
-                    let filteredDates = datesWithBookings;
-                    if (
-                      selectedCalendarDate >= monthStartStr &&
-                      selectedCalendarDate <= monthEndStr &&
-                      !datesWithBookings.includes(selectedCalendarDate)
-                    ) {
-                      filteredDates = [...datesWithBookings, selectedCalendarDate].sort();
-                    }
-
-                    if (filteredDates.length === 0) {
-                      return (
-                        <div className="text-center text-sm text-muted-foreground py-12">
-                          <span>{calendarView === "all" ? t("admin.emptyList") : t("admin.emptySpecial")}</span>
-                        </div>
-                      );
-                    }
-
-                    return filteredDates.map((dateStr, idx) => {
-                      const dayBookings = calendarView === "all"
-                        ? (byDate[dateStr] ?? [])
-                        : (byDate[dateStr] ?? []).filter(b => b.status === "request" || b.status === "pending");
-                      const totalGuests = dayBookings.reduce((sum, b) => sum + b.partySize, 0);
-                      const date = parseLocalDate(dateStr);
-                      const isSelected = selectedCalendarDate === dateStr;
-
-                      return (
-                        <div key={dateStr} id={`date-${dateStr}`} className={idx > 0 ? "border-t" : ""}>
-                          {/* Date Header */}
-                          <div className={`sticky top-0 z-10 flex items-center justify-between px-4 py-3 ${
-                            isSelected ? "bg-primary/10" : "bg-muted/50"
-                          }`}>
+                    return (
+                      <div key={dateStr} id={`date-${dateStr}`}>
+                        {/* Date Header */}
+                        <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-primary/10">
                             <span className="text-sm font-medium">
                               {date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
                             </span>
@@ -1654,7 +1613,12 @@ export default function Admin() {
                             </div>
                           </div>
 
-                          {/* Bookings for this date */}
+                        {/* Bookings for this date only */}
+                        {dayBookings.length === 0 ? (
+                          <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+                            <span>{calendarView === "all" ? t("admin.emptyList") : t("admin.emptySpecial")}</span>
+                          </div>
+                        ) : (
                           <div className="divide-y">
                             {dayBookings.map((b) => (
                               <div
@@ -1668,18 +1632,17 @@ export default function Admin() {
                                     <Users className="w-3 h-3" />
                                     {b.partySize}
                                   </span>
-                                  {/* STATUS BADGE */}
                                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${
-                                    b.status === "confirmed" 
-                                      ? "bg-blue-600/20 text-blue-600" 
+                                    b.status === "confirmed"
+                                      ? "bg-blue-600/20 text-blue-600"
                                       : b.status === "request" || b.status === "pending"
                                         ? "bg-amber-600/20 text-amber-600"
                                         : b.status === "cancelled"
                                           ? "bg-red-600/20 text-red-600"
                                           : "bg-muted text-muted-foreground"
                                   }`}>
-                                    {b.status === "confirmed" 
-                                      ? "Prenotato" 
+                                    {b.status === "confirmed"
+                                      ? "Prenotato"
                                       : b.status === "request" || b.status === "pending"
                                         ? "In attesa"
                                         : b.status === "cancelled"
@@ -1715,9 +1678,9 @@ export default function Admin() {
                               </div>
                             ))}
                           </div>
-                        </div>
-                      );
-                    });
+                        )}
+                      </div>
+                    );
                   })()}
                 </div>
               </CardContent>
