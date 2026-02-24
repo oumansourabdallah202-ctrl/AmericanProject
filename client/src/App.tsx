@@ -8,6 +8,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
 import SeoHead from "./components/SeoHead";
+import { ConsentNewsletterPopups } from "./components/ConsentNewsletterPopups";
 import Home from "./pages/Home";
 
 // Lazy-load non-home routes; Booking loaded eagerly to avoid chunk load failures on slow networks
@@ -84,6 +85,7 @@ function App() {
         <LanguageProvider>
           <TooltipProvider>
             <Toaster />
+            <ConsentNewsletterPopups />
             <Router />
           </TooltipProvider>
         </LanguageProvider>

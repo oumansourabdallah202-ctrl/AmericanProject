@@ -417,6 +417,21 @@ export const translations = {
       contactPrompt: "We're here to help! Get in touch with us or book your table now.",
       contactUs: "Contact Us",
       bookTable: "Book a Table"
+    },
+    consent: {
+      title: "Privacy policy",
+      message: "To use this website, you must accept our privacy policy.",
+      accept: "Accept",
+      decline: "Decline"
+    },
+    newsletter: {
+      title: "Our newsletter",
+      message: "Stay updated with our news, events and special offers. Leave your email below.",
+      emailPlaceholder: "Your email",
+      subscribe: "Subscribe",
+      skip: "Maybe later",
+      success: "Thank you! You are subscribed.",
+      error: "Something went wrong. Please try again."
     }
   },
   fr: {
@@ -834,6 +849,21 @@ export const translations = {
       contactPrompt: "Nous sommes là pour vous aider! Contactez-nous ou réservez votre table maintenant.",
       contactUs: "Contactez-Nous",
       bookTable: "Réserver une Table"
+    },
+    consent: {
+      title: "Politique de confidentialité",
+      message: "Pour utiliser ce site, vous devez accepter notre politique de confidentialité.",
+      accept: "Accepter",
+      decline: "Refuser"
+    },
+    newsletter: {
+      title: "Notre newsletter",
+      message: "Restez informé de nos actualités, événements et offres. Laissez votre e-mail ci-dessous.",
+      emailPlaceholder: "Votre e-mail",
+      subscribe: "S'inscrire",
+      skip: "Plus tard",
+      success: "Merci ! Vous êtes inscrit.",
+      error: "Une erreur s'est produite. Veuillez réessayer."
     }
   },
   it: {
@@ -1251,6 +1281,21 @@ export const translations = {
       contactPrompt: "Siamo qui per aiutarti! Mettiti in contatto con noi o prenota il tuo tavolo ora.",
       contactUs: "Contattaci",
       bookTable: "Prenota un Tavolo"
+    },
+    consent: {
+      title: "Informativa sulla privacy",
+      message: "Per utilizzare questo sito è necessario accettare la nostra informativa sulla privacy.",
+      accept: "Accetta",
+      decline: "Rifiuta"
+    },
+    newsletter: {
+      title: "La nostra newsletter",
+      message: "Resta aggiornato su novità, eventi e offerte. Lascia la tua email qui sotto.",
+      emailPlaceholder: "La tua email",
+      subscribe: "Iscriviti",
+      skip: "Più tardi",
+      success: "Grazie! Sei iscritto.",
+      error: "Qualcosa è andato storto. Riprova."
     }
   },
   de: {
@@ -1517,6 +1562,21 @@ export const translations = {
       contactPrompt: "Wir helfen gern! Nehmen Sie Kontakt auf oder reservieren Sie jetzt.",
       contactUs: "Kontakt",
       bookTable: "Tisch reservieren"
+    },
+    consent: {
+      title: "Datenschutz",
+      message: "Um diese Website zu nutzen, müssen Sie unsere Datenschutzrichtlinie akzeptieren.",
+      accept: "Akzeptieren",
+      decline: "Ablehnen"
+    },
+    newsletter: {
+      title: "Unser Newsletter",
+      message: "Bleiben Sie informiert über Neuigkeiten, Events und Aktionen. Hier Ihre E-Mail eintragen.",
+      emailPlaceholder: "Ihre E-Mail",
+      subscribe: "Anmelden",
+      skip: "Später",
+      success: "Danke! Sie sind angemeldet.",
+      error: "Etwas ist schiefgelaufen. Bitte erneut versuchen."
     }
   },
   es: {
@@ -1783,6 +1843,21 @@ export const translations = {
       contactPrompt: "Estamos para ayudar. Contáctenos o reserve ahora.",
       contactUs: "Contacto",
       bookTable: "Reservar mesa"
+    },
+    consent: {
+      title: "Política de privacidad",
+      message: "Para usar este sitio debe aceptar nuestra política de privacidad.",
+      accept: "Aceptar",
+      decline: "Rechazar"
+    },
+    newsletter: {
+      title: "Nuestra newsletter",
+      message: "Manténgase al día con noticias, eventos y ofertas. Deje su correo abajo.",
+      emailPlaceholder: "Su correo",
+      subscribe: "Suscribirse",
+      skip: "Más tarde",
+      success: "¡Gracias! Está suscrito.",
+      error: "Algo salió mal. Inténtelo de nuevo."
     }
   }
 };
