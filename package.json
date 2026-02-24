@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
-    "generate-images": "node scripts/generate-images.mjs"
+    "generate-images": "node scripts/generate-images.mjs",
+    "seed:brigitte": "node scripts/seed-brigitte-moser.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
