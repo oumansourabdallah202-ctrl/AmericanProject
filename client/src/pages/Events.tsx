@@ -8,26 +8,10 @@ export default function Events() {
   const { t } = useLanguage();
 
   const eventTypes = [
-    {
-      icon: PartyPopper,
-      titleKey: "events.birthdays",
-      description: t("events.description"),
-    },
-    {
-      icon: Briefcase,
-      titleKey: "events.corporate",
-      description: t("events.description"),
-    },
-    {
-      icon: Users,
-      titleKey: "events.reunions",
-      description: t("events.description"),
-    },
-    {
-      icon: Wine,
-      titleKey: "events.cocktails",
-      description: t("events.description"),
-    },
+    { icon: PartyPopper, titleKey: "events.birthdays", descriptionKey: "events.birthdaysDesc" },
+    { icon: Briefcase, titleKey: "events.corporate", descriptionKey: "events.corporateDesc" },
+    { icon: Users, titleKey: "events.reunions", descriptionKey: "events.reunionsDesc" },
+    { icon: Wine, titleKey: "events.cocktails", descriptionKey: "events.cocktailsDesc" },
   ];
 
   const features = [
@@ -93,7 +77,7 @@ export default function Events() {
                     <type.icon className="w-8 h-8 text-black" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 gold-text">{t(type.titleKey)}</h3>
-                  <p className="text-gray-600">{type.description}</p>
+                  <p className="text-gray-600">{t(type.descriptionKey)}</p>
                 </CardContent>
               </Card>
             ))}

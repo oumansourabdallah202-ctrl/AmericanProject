@@ -1,0 +1,14 @@
+{
+  "bookings": [
+    {
+      "name": "Brigitte Moser",
+      "email": "brigitte.moser@bluewin.ch",
+      "phone": "+41 78 880 90 91",
+      "date": "2026-02-24",
+      "time": "19:00",
+      "partySize": 4,
+      "specialRequests": null,
+      "status": "confirmed"
+    }
+  ]
+}

@@ -96,6 +96,7 @@ export default function Admin() {
   const [fetchError, setFetchError] = useState("");
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
+  const [syncFromWixLoading, setSyncFromWixLoading] = useState(false);
   const [valentinesSending, setValentinesSending] = useState(false);
   const [valentinesMessage, setValentinesMessage] = useState<string | null>(null);
   const [clients, setClients] = useState<ClientRecord[]>([]);
@@ -732,6 +733,29 @@ export default function Admin() {
     e.target.value = "";
   };
 
+  const handleSyncFromWix = async () => {
+    if (!token) return;
+    setSyncFromWixLoading(true);
+    try {
+      const res = await fetch("/api/bookings/sync-from-wix", {
+        method: "POST",
+        headers: getAuthHeaders(token),
+      });
+      const result = await res.json().catch(() => ({}));
+      if (res.ok) {
+        await fetchBookings(token);
+        const added = result.added ?? 0;
+        toast.success(added > 0 ? t("admin.syncFromWixSuccess").replace("{count}", String(added)) : (result.message || t("admin.syncFromWixSuccessNone")));
+      } else {
+        toast.error(result.error ?? result.details ?? t("admin.syncFromWixError"));
+      }
+    } catch (err) {
+      toast.error(t("admin.syncFromWixError"));
+    } finally {
+      setSyncFromWixLoading(false);
+    }
+  };
+
   const handleAccept = async (id: string) => {
     if (!token) return;
     setAcceptingId(id);
@@ -1110,6 +1134,10 @@ export default function Admin() {
                 </span>
               </Button>
             </label>
+            <Button type="button" variant="outline" size="sm" onClick={handleSyncFromWix} disabled={syncFromWixLoading} className="flex-1 sm:flex-initial">
+              {syncFromWixLoading ? <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" /> : null}
+              <span className="hidden sm:inline">{t("admin.syncFromWix")}</span>
+            </Button>
             <Button variant="outline" size="sm" onClick={handleSendValentines} disabled={valentinesSending} className="hidden sm:flex">
               {valentinesSending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
               <span>{valentinesSending ? t("admin.valentinesSending") : t("admin.valentinesSend")}</span>

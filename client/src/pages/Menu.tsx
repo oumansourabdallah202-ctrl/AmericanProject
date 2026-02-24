@@ -61,9 +61,11 @@ export default function Menu() {
               {t("menu.downloadMenu")}
             </Button>
           </a>
-          <p className="text-xl sm:text-2xl font-medium text-foreground mt-10 leading-relaxed max-w-2xl mx-auto">
-            {t("menu.doubleServiceNotice")}
-          </p>
+          {t("menu.doubleServiceNotice") ? (
+            <p className="text-xl sm:text-2xl font-medium text-foreground mt-10 leading-relaxed max-w-2xl mx-auto">
+              {t("menu.doubleServiceNotice")}
+            </p>
+          ) : null}
         </div>
       </section>
     </div>
