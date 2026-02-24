@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Download, Eye, List, Loader2, LogOut, Pencil, Plus, Search, Trash2, Upload, UserCheck, Users, X } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Download, Eye, List, Loader2, LogOut, Mail, Pencil, Plus, Search, Trash2, Upload, UserCheck, Users, X } from "lucide-react";
 import { supabase, isSupabaseAuthConfigured } from "@/lib/supabaseClient";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTimeSlotsForDate } from "@/lib/blockedSlots";
@@ -139,6 +139,7 @@ export default function Admin() {
   const [editPartySize, setEditPartySize] = useState(2);
   const [editStatus, setEditStatus] = useState<"confirmed" | "request" | "pending" | "cancelled">("confirmed");
   const [savingBooking, setSavingBooking] = useState(false);
+  const [sendingConfirmationId, setSendingConfirmationId] = useState<string | null>(null);
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const d = new Date();
     return new Date(d.getFullYear(), d.getMonth(), 1);
@@ -753,6 +754,35 @@ export default function Admin() {
       toast.error(t("admin.syncFromWixError"));
     } finally {
       setSyncFromWixLoading(false);
+    }
+  };
+
+  const handleSendConfirmationEmail = async (id: string) => {
+    if (!token) return;
+    setSendingConfirmationId(id);
+    try {
+      const res = await fetch("/api/bookings/send-confirmation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        toast.success(t("admin.sendConfirmationEmailSuccess"));
+        if (bookingDetailId === id) {
+          const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(id)}`, { headers: getAuthHeaders(token) });
+          const detailData = await detailRes.json().catch(() => ({}));
+          if (detailData.booking && Array.isArray(detailData.emailStatuses)) {
+            setBookingDetail({ booking: detailData.booking, emailStatuses: detailData.emailStatuses });
+          }
+        }
+      } else {
+        toast.error(data.error ?? t("admin.sendConfirmationEmailError"));
+      }
+    } catch {
+      toast.error(t("admin.sendConfirmationEmailError"));
+    } finally {
+      setSendingConfirmationId(null);
     }
   };
 
@@ -1488,10 +1518,11 @@ export default function Admin() {
                               <td className="p-2 sm:p-3 truncate max-w-[140px]">{b.name}</td>
                               <td className="p-2 sm:p-3">{b.partySize}</td>
                               <td className="p-2 sm:p-3">
-                                <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
+                                <span className={`inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
                                   b.status === "confirmed" ? "bg-blue-600/20 text-blue-600" : b.status === "request" ? "bg-amber-600/20 text-amber-600" : b.status === "cancelled" ? "bg-red-600/20 text-red-600" : "bg-muted"
                                 }`}>
                                   {b.status === "request" ? <span>⚠</span> : b.status === "pending" ? <span>⏳</span> : b.status === "cancelled" ? <span>❌</span> : <span>✓</span>}
+                                  {b.status === "request" ? t("admin.statusRequest") : b.status === "pending" ? t("admin.statusPending") : b.status === "cancelled" ? t("admin.statusCancelled") : t("admin.statusConfirmed")}
                                 </span>
                               </td>
                               <td className="p-2 sm:p-3">
@@ -2325,25 +2356,30 @@ export default function Admin() {
                       <p className="text-sm">{bookingDetail.booking.specialRequests}</p>
                     </>
                   )}
-                  <div>
-                    <h4 className="text-sm font-medium mb-2">{t("admin.emailsSent")}</h4>
+                  <div className="mt-4">
+                    <h4 className="text-sm font-semibold mb-2">{t("admin.emailsSentTitle")}</h4>
+                    <p className="text-xs text-muted-foreground mb-2">{t("admin.emailsSentDesc")}</p>
                     {bookingDetail.emailStatuses.length === 0 ? (
                       <p className="text-sm text-muted-foreground">{t("admin.noEmailsSent")}</p>
                     ) : (
                       <table className="w-full text-sm border rounded">
                         <thead>
                           <tr className="border-b bg-muted/50">
-                            <th className="text-left p-2">{t("admin.emailType")}</th>
-                            <th className="text-left p-2">{t("admin.date")}</th>
-                            <th className="text-left p-2">{t("admin.emailStatus")}</th>
+                            <th className="text-left p-2 font-medium">{t("admin.emailTypeHeader")}</th>
+                            <th className="text-left p-2 font-medium">{t("admin.sentAtHeader")}</th>
+                            <th className="text-left p-2 font-medium">{t("admin.deliveryStatusHeader")}</th>
                           </tr>
                         </thead>
                         <tbody>
                           {bookingDetail.emailStatuses.map((e) => (
                             <tr key={e.id} className="border-b">
-                              <td className="p-2">{e.type}</td>
+                              <td className="p-2">{t(`admin.emailType_${e.type}`) || e.type}</td>
                               <td className="p-2"><span>{e.sentAt ? new Date(e.sentAt).toLocaleString() : "—"}</span></td>
-                              <td className="p-2">{e.status ?? "—"}</td>
+                              <td className="p-2">
+                                <span className={e.status === "delivered" ? "text-green-600" : e.status === "failed" ? "text-red-600" : e.status === "opened" || e.status === "clicked" ? "text-blue-600" : ""}>
+                                  {t(`admin.emailStatus_${e.status ?? "sent"}`)}
+                                </span>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -2355,6 +2391,20 @@ export default function Admin() {
                       <Pencil className="w-4 h-4 mr-2" />
                       {modalLabels.modify}
                     </Button>
+                    {bookingDetail.booking.email?.trim() && (
+                      <Button
+                        variant="outline"
+                        onClick={() => handleSendConfirmationEmail(bookingDetail.booking.id)}
+                        disabled={sendingConfirmationId !== null}
+                      >
+                        {sendingConfirmationId === bookingDetail.booking.id ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Mail className="w-4 h-4 mr-2" />
+                        )}
+                        {t("admin.sendConfirmationEmail")}
+                      </Button>
+                    )}
                     {(bookingDetail.booking.status === "request" || bookingDetail.booking.status === "pending") && (
                       <>
                         <Button

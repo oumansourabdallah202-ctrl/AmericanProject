@@ -112,14 +112,26 @@ export default async function handler(req: Req, res: Res): Promise<void> {
         let emailStatuses: SentEmailWithStatus[] = sentEmails.map((e) => ({ ...e }));
         if (resendKey && sentEmails.length > 0) {
           const resend = new Resend(resendKey);
+          /** Map Resend last_event to a stable key for UI (delivered, sent, failed, etc.). */
+          const mapResendStatus = (lastEvent: string | undefined): string => {
+            if (!lastEvent) return "sent";
+            const e = lastEvent.toLowerCase();
+            if (e.includes("delivered")) return "delivered";
+            if (e.includes("bounced") || e.includes("failed") || e.includes("complained")) return "failed";
+            if (e.includes("delivery_delayed")) return "delayed";
+            if (e.includes("opened")) return "opened";
+            if (e.includes("clicked")) return "clicked";
+            if (e.includes("sent") || e.includes("queued") || e.includes("scheduled")) return "sent";
+            return "sent";
+          };
           const statuses = await Promise.all(
             sentEmails.map(async (e) => {
               try {
                 const got = await resend.emails.get(e.id);
                 const d = (got as { data?: { last_event?: string } }).data;
-                return { ...e, status: d?.last_event ?? "unknown" };
+                return { ...e, status: mapResendStatus(d?.last_event) };
               } catch {
-                return { ...e, status: "—" };
+                return { ...e, status: "sent" };
               }
             })
           );
