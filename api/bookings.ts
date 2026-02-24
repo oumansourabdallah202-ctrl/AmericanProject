@@ -182,7 +182,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       return;
     }
     const status = typeof o.status === "string" ? o.status.trim() : "";
-    if (status !== "confirmed" && status !== "pending" && status !== "request" && status !== "cancelled") {
+    if (status !== "confirmed" && status !== "pending" && status !== "request" && status !== "cancelled" && status !== "archived") {
       res.status(400).json({ error: "Invalid status" });
       return;
     }

@@ -98,6 +98,8 @@ export default function Admin() {
   const [importing, setImporting] = useState(false);
   const [syncFromWixLoading, setSyncFromWixLoading] = useState(false);
   const [exportGuestsLoading, setExportGuestsLoading] = useState(false);
+  const [archivingId, setArchivingId] = useState<string | null>(null);
+  const [markAllArchiving, setMarkAllArchiving] = useState(false);
   const [clients, setClients] = useState<ClientRecord[]>([]);
   const [clientsError, setClientsError] = useState("");
   const [clientsMessage, setClientsMessage] = useState<string | null>(null);
@@ -110,7 +112,7 @@ export default function Admin() {
   const [requestSearch, setRequestSearch] = useState("");
   const [requestDateFilter, setRequestDateFilter] = useState<string>("");
   const [requestSort, setRequestSort] = useState<"date" | "time" | "name" | "guests">("date");
-  const [requestSortOrder, setRequestSortOrder] = useState<"asc" | "desc">("asc");
+  const [requestSortOrder, setRequestSortOrder] = useState<"asc" | "desc">("desc");
   const [addClientOpen, setAddClientOpen] = useState(false);
   const [addClientName, setAddClientName] = useState("");
   const [addClientEmail, setAddClientEmail] = useState("");
@@ -136,7 +138,7 @@ export default function Admin() {
   const [editDate, setEditDate] = useState("");
   const [editTime, setEditTime] = useState("");
   const [editPartySize, setEditPartySize] = useState(2);
-  const [editStatus, setEditStatus] = useState<"confirmed" | "request" | "pending" | "cancelled">("confirmed");
+  const [editStatus, setEditStatus] = useState<"confirmed" | "request" | "pending" | "cancelled" | "archived">("confirmed");
   const [savingBooking, setSavingBooking] = useState(false);
   const [sendingConfirmationId, setSendingConfirmationId] = useState<string | null>(null);
   const [calendarMonth, setCalendarMonth] = useState(() => {
@@ -865,6 +867,56 @@ export default function Admin() {
     }
   };
 
+  const handleMarkAsRead = async (id: string) => {
+    if (!token) return;
+    setArchivingId(id);
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "PATCH",
+        headers: getAuthHeaders(token),
+        body: JSON.stringify({ id, status: "archived" }),
+      });
+      if (res.ok) {
+        await fetchBookings(token);
+        if (bookingDetailId === id) setBookingDetailId(null);
+        else if (bookingDetailId) {
+          const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`, { headers: getAuthHeaders(token) });
+          const data = await detailRes.json().catch(() => ({}));
+          if (data.booking && Array.isArray(data.emailStatuses)) {
+            setBookingDetail({ booking: data.booking, emailStatuses: data.emailStatuses });
+          }
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err?.error ?? t("admin.fetchError"));
+      }
+    } finally {
+      setArchivingId(null);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    if (!token || filteredPendingRequests.length === 0) return;
+    setMarkAllArchiving(true);
+    try {
+      const res = await fetch("/api/bookings/bulk-archive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
+        body: JSON.stringify({ ids: filteredPendingRequests.map((b) => b.id) }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        await fetchBookings(token);
+        setBookingDetailId(null);
+        toast.success(data.archived ? t("admin.markAllAsRead") + ` (${data.archived})` : t("admin.markAllAsRead"));
+      } else {
+        toast.error(data?.error ?? t("admin.fetchError"));
+      }
+    } finally {
+      setMarkAllArchiving(false);
+    }
+  };
+
   useEffect(() => {
     if (!bookingDetailId || !token) {
       setBookingDetail(null);
@@ -892,7 +944,7 @@ export default function Admin() {
     setEditDate(bookingDetail.booking.date);
     setEditTime(bookingDetail.booking.time);
     setEditPartySize(partySize);
-    setEditStatus((bookingDetail.booking.status as "confirmed" | "request" | "pending" | "cancelled") || "confirmed");
+    setEditStatus((bookingDetail.booking.status as "confirmed" | "request" | "pending" | "cancelled" | "archived") || "confirmed");
     setBookingDetailEditOpen(true);
   };
 
@@ -1507,7 +1559,7 @@ export default function Admin() {
                                   b.status === "confirmed" ? "bg-blue-600/20 text-blue-600" : b.status === "request" ? "bg-amber-600/20 text-amber-600" : b.status === "cancelled" ? "bg-red-600/20 text-red-600" : "bg-muted"
                                 }`}>
                                   {b.status === "request" ? <span>⚠</span> : b.status === "pending" ? <span>⏳</span> : b.status === "cancelled" ? <span>❌</span> : <span>✓</span>}
-                                  {b.status === "request" ? t("admin.statusRequest") : b.status === "pending" ? t("admin.statusPending") : b.status === "cancelled" ? t("admin.statusCancelled") : t("admin.statusConfirmed")}
+                                  {b.status === "request" ? t("admin.statusRequest") : b.status === "pending" ? t("admin.statusPending") : b.status === "cancelled" ? t("admin.statusCancelled") : b.status === "archived" ? t("admin.statusArchived") : t("admin.statusConfirmed")}
                                 </span>
                               </td>
                               <td className="p-2 sm:p-3">
@@ -1631,6 +1683,18 @@ export default function Admin() {
                           <span className="text-xs text-muted-foreground">
                             {filteredPendingRequests.length} / {pendingRequestsBookings.length}
                           </span>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="h-9"
+                            disabled={markAllArchiving || filteredPendingRequests.length === 0}
+                            onClick={handleMarkAllAsRead}
+                            title={t("admin.markAllAsRead")}
+                          >
+                            {markAllArchiving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                            {t("admin.markAllAsRead")}
+                          </Button>
                         </div>
                         {filteredPendingRequests.length === 0 ? (
                           <div className="text-center text-muted-foreground py-8">{t("admin.noResultsForFilters")}</div>
@@ -1664,18 +1728,28 @@ export default function Admin() {
                                       {b.specialRequests?.trim() || "—"}
                                     </td>
                                     <td className="p-3">
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1 flex-wrap">
                                         <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")}>
                                           <Eye className="w-4 h-4" />
                                         </Button>
                                         <Button
                                           size="sm"
                                           variant="default"
-                                          disabled={acceptingId !== null}
+                                          disabled={acceptingId !== null || archivingId !== null}
                                           onClick={() => handleAccept(b.id)}
                                         >
                                           {acceptingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 mr-1" />}
                                           {t("admin.accept")}
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          disabled={acceptingId !== null || archivingId !== null}
+                                          onClick={() => handleMarkAsRead(b.id)}
+                                          title={t("admin.markAsRead")}
+                                        >
+                                          {archivingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                                          {t("admin.markAsRead")}
                                         </Button>
                                       </div>
                                     </td>
@@ -2288,6 +2362,7 @@ export default function Admin() {
                         <SelectItem value="request">{t("admin.statusRequest")}</SelectItem>
                         <SelectItem value="pending">{t("admin.statusPending")}</SelectItem>
                         <SelectItem value="cancelled">{t("admin.statusCancelled")}</SelectItem>
+                        <SelectItem value="archived">{t("admin.statusArchived")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -2324,7 +2399,9 @@ export default function Admin() {
                           ? "text-amber-600"
                           : bookingDetail.booking.status === "cancelled"
                             ? "text-red-600"
-                            : ""
+                            : bookingDetail.booking.status === "archived"
+                              ? "text-muted-foreground"
+                              : ""
                     }`}>
                       {bookingDetail.booking.status === "request"
                         ? <span>{t("admin.statusRequest")}</span>
@@ -2332,7 +2409,9 @@ export default function Admin() {
                           ? <span>{t("admin.statusConfirmed")}</span>
                           : bookingDetail.booking.status === "cancelled"
                             ? <span>{t("admin.statusCancelled")}</span>
-                            : <span>{t("admin.statusPending")}</span>}
+                            : bookingDetail.booking.status === "archived"
+                              ? <span>{t("admin.statusArchived")}</span>
+                              : <span>{t("admin.statusPending")}</span>}
                     </span>
                   </div>
                   {bookingDetail.booking.specialRequests && (
@@ -2395,7 +2474,7 @@ export default function Admin() {
                         <Button
                           variant="default"
                           onClick={() => handleAccept(bookingDetail.booking.id)}
-                          disabled={acceptingId !== null}
+                          disabled={acceptingId !== null || archivingId !== null}
                         >
                           {acceptingId === bookingDetail.booking.id ? (
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -2407,10 +2486,21 @@ export default function Admin() {
                         <Button
                           variant="destructive"
                           onClick={() => handleDecline(bookingDetail.booking.id)}
-                          disabled={acceptingId !== null}
+                          disabled={acceptingId !== null || archivingId !== null}
                         >
                           <X className="w-4 h-4 mr-2" />
                           {t("admin.decline")}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => handleMarkAsRead(bookingDetail.booking.id)}
+                          disabled={acceptingId !== null || archivingId !== null}
+                          title={t("admin.markAsRead")}
+                        >
+                          {archivingId === bookingDetail.booking.id ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : null}
+                          {t("admin.markAsRead")}
                         </Button>
                       </>
                     )}
