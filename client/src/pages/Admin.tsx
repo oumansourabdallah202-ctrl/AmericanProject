@@ -97,6 +97,7 @@ export default function Admin() {
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
   const [syncFromWixLoading, setSyncFromWixLoading] = useState(false);
+  const [exportGuestsLoading, setExportGuestsLoading] = useState(false);
   const [clients, setClients] = useState<ClientRecord[]>([]);
   const [clientsError, setClientsError] = useState("");
   const [clientsMessage, setClientsMessage] = useState<string | null>(null);
@@ -365,6 +366,38 @@ export default function Admin() {
     a.download = `spinella-bookings-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
+  };
+
+  const handleExportGuestsThisMonth = async () => {
+    if (!token) return;
+    setExportGuestsLoading(true);
+    try {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const res = await fetch(
+        `/api/bookings/guests-export?year=${year}&month=${month}&format=csv`,
+        { headers: getAuthHeaders(token) }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.error(data.error ?? "Export failed");
+        return;
+      }
+      if (typeof data.csv !== "string") {
+        toast.error("No data");
+        return;
+      }
+      const blob = new Blob(["\uFEFF" + data.csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = data.filename ?? `spinella-guests-${year}-${String(month).padStart(2, "0")}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast.success(`${data.count ?? 0} emails exportés`);
+    } finally {
+      setExportGuestsLoading(false);
+    }
   };
 
   const handleImportBookingsCsv = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1107,6 +1140,10 @@ export default function Admin() {
             <Button type="button" variant="outline" size="sm" onClick={handleExportBookingsCsv} disabled={bookings.length === 0} className="flex-1 sm:flex-initial">
               <Download className="w-4 h-4 sm:mr-2" />
               <span className="hidden sm:inline">{t("admin.exportBookingsCsv")}</span>
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={handleExportGuestsThisMonth} disabled={exportGuestsLoading} className="flex-1 sm:flex-initial" title={t("admin.exportGuestsThisMonthCsv")}>
+              {exportGuestsLoading ? <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" /> : <Download className="w-4 h-4 sm:mr-2" />}
+              <span className="hidden sm:inline">{t("admin.exportGuestsThisMonthCsv")}</span>
             </Button>
             <label className="flex-1 sm:flex-initial">
               <input type="file" accept=".json" className="hidden" onChange={handleImport} disabled={importing} />

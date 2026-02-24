@@ -23,6 +23,7 @@ const Takeaway = lazy(() => import("./pages/Takeaway"));
 import Booking from "./pages/Booking";
 import Admin from "./pages/Admin";
 const NotFound = lazy(() => import("./pages/NotFound"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 
 function RedirectToReservations() {
   const [, setLocation] = useLocation();
@@ -55,6 +56,7 @@ function Router() {
           <Route path="/events" component={Events} />
           <Route path="/faq" component={FAQ} />
           <Route path="/contact" component={Contact} />
+          <Route path="/privacy" component={Privacy} />
           <Route path="/careers" component={Careers} />
           <Route path="/booking" component={RedirectToReservations} />
           <Route path="/reservations" component={Booking} />

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Loader2 } from "lucide-react";
 
@@ -92,7 +93,15 @@ export function ConsentNewsletterPopups() {
               {t("consent.title")}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground mt-2">
-              {t("consent.message")}
+              {t("consent.messageBeforeLink")}
+              <Link
+                href="/privacy"
+                className="gold-text underline hover:no-underline font-medium"
+                onClick={() => setConsentOpen(false)}
+              >
+                {t("consent.linkText")}
+              </Link>
+              {t("consent.messageAfterLink")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-3 sm:gap-2 mt-4">
