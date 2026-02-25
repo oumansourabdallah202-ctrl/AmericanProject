@@ -16,12 +16,54 @@ function getAuthToken(req: Req): string {
   return auth?.startsWith("Bearer ") ? auth.slice(7) : "";
 }
 
+type WixReserveeLike = Record<string, unknown> | undefined;
+
 interface WixReservation {
   id?: string;
   status?: string;
-  details?: { startDate?: string; partySize?: number };
-  reservee?: { firstName?: string; lastName?: string; email?: string; phone?: string };
+  details?: { startDate?: string; partySize?: number; party_size?: number; start_date?: string };
+  reservee?: WixReserveeLike;
   teamMessage?: string;
+  team_message?: string;
+}
+
+function str(o: unknown): string {
+  if (o == null) return "";
+  if (typeof o === "string") return o.trim();
+  if (typeof o === "number" || typeof o === "boolean") return String(o).trim();
+  return "";
+}
+
+function getReserveeField(r: WixReservation): { name: string; email: string; phone: string } {
+  const e = r.reservee as Record<string, unknown> | undefined;
+  if (!e || typeof e !== "object") {
+    return { name: "Guest", email: "wix-sync@spinella.ch", phone: "+41" };
+  }
+  const firstName = str(e.firstName ?? e.first_name);
+  const lastName = str(e.lastName ?? e.last_name);
+  const fullName = str(e.fullName ?? e.full_name ?? e.name);
+  const name =
+    [firstName, lastName].filter(Boolean).join(" ") ||
+    fullName ||
+    "Guest";
+  const email = str(e.email) || "wix-sync@spinella.ch";
+  const phone = str(e.phone) || "+41";
+  return { name, email, phone };
+}
+
+function getStartDate(details: WixReservation["details"]): string | undefined {
+  if (!details) return undefined;
+  const raw = details.startDate ?? details.start_date;
+  if (typeof raw === "string") return raw;
+  if (raw && typeof raw === "object" && "value" in raw) return String((raw as { value?: string }).value ?? "");
+  return undefined;
+}
+
+function getPartySize(details: WixReservation["details"]): number {
+  if (!details) return 1;
+  const n = details.partySize ?? details.party_size;
+  if (typeof n === "number" && n >= 1) return n;
+  return 1;
 }
 
 interface WixQueryResponse {
@@ -201,18 +243,23 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     cursor = meta?.cursors?.next;
     pageCount += 1;
 
+    if (pageCount === 1 && reservations.length > 0) {
+      const first = reservations[0];
+      const re = first.reservee;
+      console.log("[sync-from-wix] First reservation reservee keys:", re && typeof re === "object" ? Object.keys(re) : "none");
+    }
+
     for (const r of reservations) {
-      const start = r.details?.startDate;
+      const start = getStartDate(r.details);
       const { date, time } = isoToDateAndTime(start);
-      const firstName = (r.reservee?.firstName ?? "").trim();
-      const lastName = (r.reservee?.lastName ?? "").trim();
-      const name = [firstName, lastName].filter(Boolean).join(" ") || "Guest";
-      const email = (r.reservee?.email ?? "").trim();
-      const phone = (r.reservee?.phone ?? "").trim();
+      const { name, email, phone } = getReserveeField(r);
+      const partySize = getPartySize(r.details);
+      const teamMsg = r.teamMessage ?? (r as Record<string, unknown>).team_message;
+      const specialRequests = teamMsg != null && String(teamMsg).trim() ? String(teamMsg).trim() : null;
 
       if (!date || !time) continue;
 
-      const key = `${date}|${time}|${email.toLowerCase()}`;
+      const key = `${date}|${time}|${(email || r.id || "").toLowerCase()}`;
       if (existingKeys.has(key)) continue;
       existingKeys.add(key);
 
@@ -222,8 +269,8 @@ export default async function handler(req: Req, res: Res): Promise<void> {
         phone: phone || "+41",
         date,
         time,
-        party_size: Math.max(1, Number(r.details?.partySize) || 1),
-        special_requests: (r.teamMessage ?? null) ? String(r.teamMessage) : null,
+        party_size: Math.max(1, partySize),
+        special_requests: specialRequests,
         status: wixStatusToOurs(r.status),
       });
     }
