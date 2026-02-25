@@ -1,5 +1,5 @@
 /**
- * POST: delete all bookings where name = 'Guest' and email = 'wix-sync@spinella.ch'.
+ * POST: delete all bookings where email = 'wix-sync@spinella.ch' (placeholder rows from Wix sync).
  * Admin only. Returns { ok: true, deleted: number }.
  */
 import { getSupabase, BOOKINGS_TABLE } from "../_lib/supabase.js";
@@ -19,7 +19,6 @@ function getAuthToken(req: Req): string {
   return auth?.startsWith("Bearer ") ? auth.slice(7) : "";
 }
 
-const GUEST_NAME = "Guest";
 const PLACEHOLDER_EMAIL = "wix-sync@spinella.ch";
 
 export default async function handler(req: Req, res: Res): Promise<void> {
@@ -43,11 +42,10 @@ export default async function handler(req: Req, res: Res): Promise<void> {
 
   try {
     const supabase = getSupabase();
-    // Single DELETE with filter (no fetch of all ids) so it stays fast with large datasets
+    // Delete by placeholder email only so we catch all "Guest" rows regardless of name casing
     const { data: deletedRows, error: deleteErr } = await supabase
       .from(BOOKINGS_TABLE)
       .delete()
-      .eq("name", GUEST_NAME)
       .eq("email", PLACEHOLDER_EMAIL)
       .select("id");
     if (deleteErr) {

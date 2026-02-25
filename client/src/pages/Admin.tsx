@@ -1591,7 +1591,7 @@ export default function Admin() {
                             {!(b.sentEmails?.length) && (
                               <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
                             )}
-                            <span className="truncate">{b.name}</span>
+                            <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                           </span>
                         </td>
                         <td className="p-2 sm:p-3">{b.partySize}</td>
@@ -1606,7 +1606,7 @@ export default function Admin() {
                           <span>{b.createdAt ? new Date(b.createdAt).toLocaleDateString() : "—"}</span>
                         </td>
                         <td className="p-2 sm:p-3 hidden lg:table-cell text-[10px] sm:text-xs">{b.phone}</td>
-                        <td className="p-2 sm:p-3 hidden xl:table-cell text-[10px] sm:text-xs">{b.email}</td>
+                        <td className="p-2 sm:p-3 hidden xl:table-cell text-[10px] sm:text-xs">{b.email === "wix-sync@spinella.ch" ? "—" : b.email}</td>
                         <td className="p-2 sm:p-3">
                           <div className="flex items-center gap-1">
                             <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")} className="p-1 h-auto">
@@ -1712,7 +1712,7 @@ export default function Admin() {
                                   {!(b.sentEmails?.length) && (
                                     <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
                                   )}
-                                  <span className="truncate">{b.name}</span>
+                                  <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                                 </span>
                               </td>
                               <td className="p-2 sm:p-3">{b.partySize}</td>
@@ -1884,7 +1884,7 @@ export default function Admin() {
                                         {!(b.sentEmails?.length) && (
                                           <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
                                         )}
-                                        {b.name}
+                                        {(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}
                                       </span>
                                     </td>
                                     <td className="p-3">{b.partySize}</td>
@@ -2070,7 +2070,7 @@ export default function Admin() {
                                   {!(b.sentEmails?.length) && (
                                     <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
                                   )}
-                                  <span className="text-sm truncate">{b.name}</span>
+                                  <span className="text-sm truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                                     <Users className="w-3 h-3" />
                                     {b.partySize}
@@ -2466,8 +2466,12 @@ export default function Admin() {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
+                    type="button"
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    onClick={handleDeleteGuestPlaceholders}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDeleteGuestPlaceholders();
+                    }}
                   >
                     {t("admin.deleteGuestPlaceholders")}
                   </AlertDialogAction>
