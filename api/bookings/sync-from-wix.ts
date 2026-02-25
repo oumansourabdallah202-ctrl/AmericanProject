@@ -151,13 +151,13 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   const maxPages = 20;
 
   do {
-    const body: { query: { cursorPaging?: { limit: number; cursor?: string }; sort?: { fieldName: string; order: string }[] } } = {
+    // Wix: sort/filter cannot be specified together with cursor. First page uses sort; later pages use cursor only.
+    const body: { query: { cursorPaging: { limit: number; cursor?: string }; sort?: { fieldName: string; order: string }[] } } = {
       query: {
-        cursorPaging: { limit: 100 },
-        sort: [{ fieldName: "createdDate", order: "ASC" }],
+        cursorPaging: cursor ? { limit: 100, cursor } : { limit: 100 },
       },
     };
-    if (cursor) body.query.cursorPaging = { limit: 100, cursor };
+    if (!cursor) body.query.sort = [{ fieldName: "createdDate", order: "ASC" }];
 
     let wixRes: Response;
     try {
