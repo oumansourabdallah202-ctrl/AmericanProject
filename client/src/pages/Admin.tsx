@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Download, Eye, List, Loader2, LogOut, Mail, Pencil, Plus, Search, Trash2, Upload, UserCheck, Users, X } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Download, Eye, List, Loader2, LogOut, Mail, MailX, Pencil, Plus, Search, Trash2, Upload, UserCheck, Users, X } from "lucide-react";
 import { supabase, isSupabaseAuthConfigured } from "@/lib/supabaseClient";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTimeSlotsForDate } from "@/lib/blockedSlots";
@@ -52,6 +52,7 @@ export type BookingRecord = {
   specialRequests?: string | null;
   status: string;
   createdAt?: string;
+  sentEmails?: Array<{ id: string; type: string; sentAt: string }>;
 };
 
 export type ClientRecord = {
@@ -1456,7 +1457,14 @@ export default function Admin() {
                         </td>
                         <td className="p-2 sm:p-3 whitespace-nowrap text-[10px] sm:text-xs">{b.date}</td>
                         <td className="p-2 sm:p-3 whitespace-nowrap text-[10px] sm:text-xs">{b.time}</td>
-                        <td className="p-2 sm:p-3 max-w-[120px] sm:max-w-none truncate">{b.name}</td>
+                        <td className="p-2 sm:p-3 max-w-[120px] sm:max-w-none">
+                          <span className="flex items-center gap-1.5">
+                            {!(b.sentEmails?.length) && (
+                              <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
+                            )}
+                            <span className="truncate">{b.name}</span>
+                          </span>
+                        </td>
                         <td className="p-2 sm:p-3">{b.partySize}</td>
                         <td className="p-2 sm:p-3">
                           <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -1552,7 +1560,14 @@ export default function Admin() {
                           {dailyBookings.map((b) => (
                             <tr key={b.id} className="border-b hover:bg-muted/30">
                               <td className="p-2 sm:p-3 whitespace-nowrap">{b.time}</td>
-                              <td className="p-2 sm:p-3 truncate max-w-[140px]">{b.name}</td>
+                              <td className="p-2 sm:p-3 max-w-[140px]">
+                                <span className="flex items-center gap-1.5 truncate">
+                                  {!(b.sentEmails?.length) && (
+                                    <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
+                                  )}
+                                  <span className="truncate">{b.name}</span>
+                                </span>
+                              </td>
                               <td className="p-2 sm:p-3">{b.partySize}</td>
                               <td className="p-2 sm:p-3">
                                 <span className={`inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -1717,7 +1732,14 @@ export default function Admin() {
                                   <tr key={b.id} className="border-b">
                                     <td className="p-3">{b.date}</td>
                                     <td className="p-3">{b.time}</td>
-                                    <td className="p-3">{b.name}</td>
+                                    <td className="p-3">
+                                      <span className="flex items-center gap-1.5">
+                                        {!(b.sentEmails?.length) && (
+                                          <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
+                                        )}
+                                        {b.name}
+                                      </span>
+                                    </td>
                                     <td className="p-3">{b.partySize}</td>
                                     <td className="p-3">
                                       <span className={b.status === "request" ? "text-amber-600" : "text-muted-foreground"}>
@@ -1898,6 +1920,9 @@ export default function Admin() {
                               >
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
                                   <span className="font-medium text-sm whitespace-nowrap">{b.time}</span>
+                                  {!(b.sentEmails?.length) && (
+                                    <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
+                                  )}
                                   <span className="text-sm truncate">{b.name}</span>
                                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                                     <Users className="w-3 h-3" />

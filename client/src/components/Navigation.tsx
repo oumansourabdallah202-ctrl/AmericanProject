@@ -23,6 +23,8 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [location] = useLocation();
   const { language, setLanguage, t } = useLanguage();
+  const currentLangEntry = LANGUAGES.find((l) => l.code === language);
+  const currentLanguageLabel = currentLangEntry?.label ?? language.toUpperCase();
 
   const navItems = [
     { href: "/", label: t("nav.home") },
@@ -76,10 +78,10 @@ export default function Navigation() {
               <DropdownMenuTrigger asChild>
                 <button
                   className="flex items-center gap-1.5 text-sm font-medium hover:text-[oklch(0.62_0.15_85)] transition-colors"
-                  aria-label="Switch language"
+                  aria-label={`${t("nav.language")}: ${currentLanguageLabel}`}
                 >
                   <Languages size={18} />
-                  <span className="font-semibold">{LANGUAGES.find((l) => l.code === language)?.label ?? language.toUpperCase()}</span>
+                  <span className="font-semibold">{currentLanguageLabel}</span>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -135,6 +137,9 @@ export default function Navigation() {
                   <Languages size={18} />
                   {t("nav.language")}
                 </div>
+                <p className="text-xs text-muted-foreground mb-2" aria-live="polite">
+                  {t("nav.currentLanguage")}: <span className="font-semibold text-foreground">{currentLanguageLabel}</span>
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {LANGUAGES.map(({ code, label }) => (
                     <button

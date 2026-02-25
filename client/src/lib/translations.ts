@@ -14,7 +14,8 @@ export const translations = {
       faq: "FAQ",
       bookTable: "Book a table with us",
       takeaway: "Take away",
-      language: "Language"
+      language: "Language",
+      currentLanguage: "Current language"
     },
     home: {
       welcome: "Welcome to",
@@ -335,6 +336,7 @@ export const translations = {
       statusCancelled: "Cancelled",
       statusArchived: "Archived",
       fetchError: "Failed to load reservations",
+      noEmailSent: "No email sent",
       authNotConfigured: "Admin auth is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY, then create an admin user in Supabase Authentication.",
       invalidCredentials: "Invalid email or password",
       loading: "Loading...",
@@ -476,7 +478,8 @@ export const translations = {
       faq: "FAQ",
       bookTable: "Réserver une table",
       takeaway: "À emporter",
-      language: "Langue"
+      language: "Langue",
+      currentLanguage: "Langue actuelle"
     },
     home: {
       welcome: "Bienvenue chez",
@@ -798,6 +801,7 @@ export const translations = {
       statusCancelled: "Annulé",
       statusArchived: "Archivé",
       fetchError: "Échec du chargement des réservations",
+      noEmailSent: "Aucun e-mail envoyé",
       authNotConfigured: "L'authentification admin n'est pas configurée. Définissez VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY, puis créez un utilisateur admin dans Supabase Authentication.",
       invalidCredentials: "Email ou mot de passe incorrect",
       loading: "Chargement...",
@@ -939,7 +943,8 @@ export const translations = {
       faq: "FAQ",
       bookTable: "Prenota un tavolo",
       takeaway: "Da asporto",
-      language: "Lingua"
+      language: "Lingua",
+      currentLanguage: "Lingua attuale"
     },
     home: {
       welcome: "Benvenuti a",
@@ -1261,6 +1266,7 @@ export const translations = {
       statusCancelled: "Annullato",
       statusArchived: "Archiviato",
       fetchError: "Impossibile caricare le prenotazioni",
+      noEmailSent: "Nessuna e-mail inviata",
       authNotConfigured: "L'autenticazione admin non è configurata. Imposta VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY, poi crea un utente admin in Supabase Authentication.",
       invalidCredentials: "Email o password non validi",
       loading: "Caricamento...",
@@ -1392,7 +1398,7 @@ export const translations = {
     }
   },
   de: {
-    nav: { home: "Start", menu: "Menü", gallery: "Galerie", events: "Events", about: "Über uns", contact: "Kontakt", faq: "FAQ", bookTable: "Tisch reservieren", takeaway: "Takeaway", language: "Sprache" },
+    nav: { home: "Start", menu: "Menü", gallery: "Galerie", events: "Events", about: "Über uns", contact: "Kontakt", faq: "FAQ", bookTable: "Tisch reservieren", takeaway: "Takeaway", language: "Sprache", currentLanguage: "Aktuelle Sprache" },
     home: {
       welcome: "Willkommen bei",
       welcomeHome: "Willkommen zu Hause.",
@@ -1456,13 +1462,13 @@ export const translations = {
       story2: "Als wir, Salvatore, Marco und Gabriele, unsere Heimat verliessen, um diese Seele nach Genf zu bringen, hielten uns viele für verrückt. „Genf hat schon sizilianische Restaurants.“ Aber wir eröffneten nicht einfach ein weiteres Restaurant. Wir schufen ein Zuhause fern der Heimat. Einen Ort, an dem jeder Gast spürt, was wir beim Aufwachsen fühlten: dass ein geteiltes Mahl ein geteiltes Herz ist.",
       story3: "Heute ist Spinella das bestbewertete Restaurant in Genf. Aber darauf sind wir nicht stolz. Was uns erfüllt, ist wenn ein Gast sagt: „Ich habe mich hier wie in der Familie gefühlt.“ Denn genau das wollten wir schaffen.",
       salvatore: "Salvatore",
-      salvatoreTitle: "Die Seele der Bar",
+      salvatoreTitle: ": Die Seele der Bar",
       salvatoreDesc: "Als Salvatore die beste Note in der Geschichte der European Bartender School in London erhielt, waren seine Lehrer nicht überrascht. Sie hatten gesehen, wie er Cocktail-Machen von einer Technik zur Kunstform verwandelte: nicht durch Tricks, sondern durch echte Verbindung. Ein grossartiger Barkeeper mischt nicht nur Drinks: er hört zu, erinnert sich und lässt Sie sich wie die wichtigste Person fühlen. Ausgebildet im Four Seasons Hotel des Bergues in Genf und fliessend in fünf Sprachen, ist Salvatore ein Geschichtenerzähler, ein Freund, eine Brücke zwischen Kulturen. An der Bar von Spinella wird er nach Ihrem Tag fragen, Ihren Namen behalten und einen Cocktail kreieren, der genau das einfängt, was Sie brauchten. Das ist nicht nur Talent. Das ist Leidenschaft. Das ist Salvatore.",
       marco: "Marco",
-      marcoTitle: "Die Seele der Küche",
+      marcoTitle: ": Die Seele der Küche",
       marcoDesc: "Marco ist der Bruder, für den das Kochen eine Art ist, Freude zu vermitteln. Er lernte seine ersten Handgriffe in der Küche seiner Grossmutter in Sizilien und wuchs dann zwischen verschiedenen kulinarischen Welten auf: von einfachen, authentischen Trattorias bis zu anspruchsvolleren Küchen. Diese Vielfalt prägte seinen Blick, sein Know-how und vor allem seine tiefe Achtung vor dem Produkt. Jede Erfahrung hat ihn bereichert, aber in der traditionellen Küche findet er seine Seele – wo jede Geste die Einfachheit und Wahrheit der Zutaten respektiert. Marco hat die seltene Gabe, das Wesen einer Zutat zu extrahieren und in ein Gericht zu verwandeln, das in Erinnerung bleibt. Bei ihm isst man nicht nur: man fühlt. Er schafft diese Magie, bei der man selbst in der Schweiz das Gefühl hat, in Italien zu sein, in einer warmen, aufrichtigen Küche, die von Familienrezepten geerbt wurde. Als Küchenchef und Mitgeschäftsführer sorgt er dafür, dass jedes Gericht dasselbe Versprechen trägt: Tradition kann bewegen, und Kochen kann glücklich machen. Das ist Marco.",
       gabriele: "Gabriele",
-      gabrieleTitle: "Die Freude Siziliens",
+      gabrieleTitle: ": Die Freude Siziliens",
       gabrieleDesc: "Gabriele ist der Bruder, dessen Liebe zu Sizilien buchstäblich auf der Haut steht: die Insel ist auf seinem Arm tätowiert. Der Jüngste der drei arbeitet als Sous Chef an Marcos Seite mit der Begeisterung von jemandem, der jeden Tag seinen Traum lebt. Ausgebildet im Restaurant du Parc des Bastions bringt Gabriele Freude und Präzision in jedes Gericht. Sein Tattoo ist nicht nur Körperkunst: es ist eine tägliche Erinnerung daran, warum sie das tun, die Seele ihrer Heimat mit jedem Gast teilen. Seine Handschrift finden Sie in den handgemachten Details: die dreieckige Form Siziliens auf unseren Brettchen, die handgemachte Wanduhr. Das ist Gabriele.",
       ourMission: "Unsere Philosophie",
       missionDesc: "„Ein Mahl teilen heisst, eine Bindung schaffen.“ Bei Spinella geht es beim Essen um mehr als Konsum. Es geht um emotionale Verbindungen, das Feiern von Leben und Kultur. Wir sind stolz darauf, das sizilianische kulinarische Erbe (von der UNESCO anerkannt) Teller für Teller zu bewahren.",
@@ -1699,7 +1705,7 @@ export const translations = {
     }
   },
   es: {
-    nav: { home: "Inicio", menu: "Menú", gallery: "Galería", events: "Eventos", about: "Nosotros", contact: "Contacto", faq: "FAQ", bookTable: "Reservar mesa", takeaway: "Para llevar", language: "Idioma" },
+    nav: { home: "Inicio", menu: "Menú", gallery: "Galería", events: "Eventos", about: "Nosotros", contact: "Contacto", faq: "FAQ", bookTable: "Reservar mesa", takeaway: "Para llevar", language: "Idioma", currentLanguage: "Idioma actual" },
     home: {
       welcome: "Bienvenido a",
       welcomeHome: "Bienvenido a casa.",
