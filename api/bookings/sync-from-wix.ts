@@ -90,14 +90,21 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   const existingKeys = new Set<string>();
 
   try {
-    const { data: existingRows } = await supabase
-      .from(BOOKINGS_TABLE)
-      .select("date, time, email");
-    if (Array.isArray(existingRows)) {
-      for (const r of existingRows as { date: string; time: string; email: string }[]) {
+    const PAGE = 1000;
+    let from = 0;
+    while (true) {
+      const { data: page, error } = await supabase
+        .from(BOOKINGS_TABLE)
+        .select("date, time, email")
+        .range(from, from + PAGE - 1);
+      if (error) throw error;
+      const list = (page ?? []) as { date: string; time: string; email: string }[];
+      for (const r of list) {
         const email = (r.email ?? "").toLowerCase().trim();
         existingKeys.add(`${r.date}|${r.time}|${email}`);
       }
+      if (list.length < PAGE) break;
+      from += PAGE;
     }
   } catch (e) {
     console.error("[sync-from-wix] Failed to load existing bookings:", e);

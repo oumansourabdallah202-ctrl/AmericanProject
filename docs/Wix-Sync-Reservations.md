@@ -51,18 +51,25 @@ The admin has a **Sync from Wix** button that calls the Wix Table Reservations A
 ### Setup
 
 1. In the [Wix Developer Center](https://dev.wix.com/), create an API key for your site and grant **Table Reservations** / **Manage Reservations (Medium)** (or the scope that allows querying reservations).
-2. In your deployment (e.g. Vercel), set:
-   - `WIX_SITE_ID` = your Wix site ID  
-   - `WIX_API_KEY` = the API key (or the token Wix gives you for REST calls)
-3. In **Admin** → **Reservations**, click **Sync from Wix**. The app will:
-   - Query Wix for reservations (with paging),
+2. Get your **Site ID** (from the Wix dashboard URL or site settings) and the **API key** (from the key you created).
+3. **Where to put them in Vercel:**
+   - Open your project on [Vercel](https://vercel.com) → **Settings** → **Environment Variables**.
+   - Add:
+     - **Name:** `WIX_SITE_ID` → **Value:** your Wix site ID (e.g. `abc12345-...`).
+     - **Name:** `WIX_API_KEY` → **Value:** your Wix API key (the long token).
+   - Choose **Production** (and **Preview** if you want sync to work on preview deployments).
+   - Save. **Redeploy** the project (Deployments → ⋮ on latest → Redeploy) so the new variables are applied.
+4. In **Admin** → **Reservations**, click **Synchroniser avec Wix** (Sync from Wix). The app will:
+   - Query Wix for **all** reservations (paginated, oldest first),
    - Map them to the Spinella booking format,
-   - Skip any that already exist (same date, time, and email),
-   - Insert the rest into Supabase.
+   - **Skip** any that already exist in the admin (same date, time, and email),
+   - **Insert** only the new ones into Supabase.
 
-### Duplicates
+### New vs old reservations
 
-Sync uses **date + time + email** to detect existing bookings. If a reservation with the same date, time, and email is already in the admin, it is not inserted again.
+- **New reservations** in Wix: run **Sync from Wix** whenever you want; only reservations not already in the admin are added.
+- **Old reservations** in Wix: run **Sync from Wix** once to pull all past Wix reservations into the admin. They are deduplicated by **date + time + email**, so you can run sync multiple times without creating duplicates.
+- Existing admin reservations (e.g. added manually or from spinella.ch) are never overwritten; Wix reservations with the same date, time, and email are skipped.
 
 ### If “Sync from Wix” is disabled
 
