@@ -1,8 +1,23 @@
+import type { Language } from "@/lib/translations";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Languages } from "lucide-react";
+import { Menu, X, Languages, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+const LANGUAGES: { code: Language; label: string }[] = [
+  { code: "fr", label: "Français" },
+  { code: "en", label: "English" },
+  { code: "it", label: "Italiano" },
+  { code: "de", label: "Deutsch" },
+  { code: "es", label: "Español" },
+];
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,14 +72,29 @@ export default function Navigation() {
                 </span>
               </Link>
             ))}
-            <button
-              onClick={() => setLanguage(language === "en" ? "fr" : language === "fr" ? "it" : language === "it" ? "de" : language === "de" ? "es" : "en")}
-              className="flex items-center gap-1.5 text-sm font-medium hover:text-[oklch(0.62_0.15_85)] transition-colors"
-              aria-label="Switch language"
-            >
-              <Languages size={18} />
-              <span className="font-semibold">{{ en: "EN", fr: "FR", it: "IT", de: "DE", es: "ES" }[language]}</span>
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex items-center gap-1.5 text-sm font-medium hover:text-[oklch(0.62_0.15_85)] transition-colors"
+                  aria-label="Switch language"
+                >
+                  <Languages size={18} />
+                  <span className="font-semibold">{LANGUAGES.find((l) => l.code === language)?.label ?? language.toUpperCase()}</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {LANGUAGES.map(({ code, label }) => (
+                  <DropdownMenuItem
+                    key={code}
+                    onClick={() => setLanguage(code)}
+                    className="cursor-pointer"
+                  >
+                    {language === code ? <Check className="w-4 h-4" /> : <span className="w-4" />}
+                    {label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Link href="/reservations">
               <Button className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
                 {t("nav.bookTable")}
@@ -100,14 +130,30 @@ export default function Navigation() {
                   </span>
                 </Link>
               ))}
-              <button
-                onClick={() => setLanguage(language === "en" ? "fr" : language === "fr" ? "it" : language === "it" ? "de" : language === "de" ? "es" : "en")}
-                className="flex items-center gap-2 py-3 min-h-[44px] text-left text-sm font-medium hover:text-[oklch(0.62_0.15_85)] transition-colors border-b border-border/50 w-full"
-                aria-label="Switch language"
-              >
-                <Languages size={18} />
-                <span className="font-semibold">{{ en: "FR", fr: "IT", it: "DE", de: "ES", es: "EN" }[language]}</span>
-              </button>
+              <div className="py-3 border-b border-border/50">
+                <div className="flex items-center gap-2 mb-2 text-sm font-medium text-muted-foreground">
+                  <Languages size={18} />
+                  {t("nav.language")}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {LANGUAGES.map(({ code, label }) => (
+                    <button
+                      key={code}
+                      onClick={() => {
+                        setLanguage(code);
+                        setIsOpen(false);
+                      }}
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors min-h-[44px] ${
+                        language === code
+                          ? "gold-bg text-black"
+                          : "bg-muted/50 text-foreground hover:bg-muted"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <Link href="/reservations" className="mt-4">
                 <Button
                   className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold w-full min-h-[44px]"

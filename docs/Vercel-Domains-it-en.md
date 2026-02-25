@@ -31,4 +31,4 @@ Une fois les domaines ajoutés et valides :
 - **es.spinella.ch** → espagnol
 - **spinella.ch** (et www) → langue selon le choix utilisateur ou français par défaut.
 
-La détection se fait au chargement selon le sous-domaine (voir `client/src/contexts/LanguageContext.tsx`).
+La détection se fait au chargement : le choix utilisateur (localStorage) prime sur le sous-domaine. Si l'utilisateur a déjà sélectionné une langue via le menu, elle est conservée. Sinon, le sous-domaine détermine la langue par défaut (voir `client/src/contexts/LanguageContext.tsx`).

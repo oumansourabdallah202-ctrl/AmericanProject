@@ -9,17 +9,20 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-/** Language from subdomain: fr/en/it/de/es.spinella.ch → corresponding language; otherwise use saved or default. */
+/** Language: user's saved choice wins; subdomain is fallback for first visit. */
 function getInitialLanguage(): Language {
   if (typeof window === "undefined") return "fr";
+  const saved = localStorage.getItem("language");
+  if (saved && ["en", "fr", "it", "de", "es"].includes(saved)) {
+    return saved as Language;
+  }
   const host = window.location.hostname.toLowerCase();
   if (host === "fr.spinella.ch") return "fr";
   if (host === "en.spinella.ch") return "en";
   if (host === "it.spinella.ch") return "it";
   if (host === "de.spinella.ch") return "de";
   if (host === "es.spinella.ch") return "es";
-  const saved = localStorage.getItem("language");
-  return (saved as Language) || "fr";
+  return "fr";
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {

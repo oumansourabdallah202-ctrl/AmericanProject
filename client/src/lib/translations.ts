@@ -13,7 +13,8 @@ export const translations = {
       contact: "Contact",
       faq: "FAQ",
       bookTable: "Book a table with us",
-      takeaway: "Take away"
+      takeaway: "Take away",
+      language: "Language"
     },
     home: {
       welcome: "Welcome to",
@@ -474,7 +475,8 @@ export const translations = {
       contact: "Contact",
       faq: "FAQ",
       bookTable: "Réserver une table",
-      takeaway: "À emporter"
+      takeaway: "À emporter",
+      language: "Langue"
     },
     home: {
       welcome: "Bienvenue chez",
@@ -936,7 +938,8 @@ export const translations = {
       contact: "Contatti",
       faq: "FAQ",
       bookTable: "Prenota un tavolo",
-      takeaway: "Da asporto"
+      takeaway: "Da asporto",
+      language: "Lingua"
     },
     home: {
       welcome: "Benvenuti a",
@@ -1389,7 +1392,7 @@ export const translations = {
     }
   },
   de: {
-    nav: { home: "Start", menu: "Menü", gallery: "Galerie", events: "Events", about: "Über uns", contact: "Kontakt", faq: "FAQ", bookTable: "Tisch reservieren", takeaway: "Takeaway" },
+    nav: { home: "Start", menu: "Menü", gallery: "Galerie", events: "Events", about: "Über uns", contact: "Kontakt", faq: "FAQ", bookTable: "Tisch reservieren", takeaway: "Takeaway", language: "Sprache" },
     home: {
       welcome: "Willkommen bei",
       welcomeHome: "Willkommen zu Hause.",
@@ -1696,7 +1699,7 @@ export const translations = {
     }
   },
   es: {
-    nav: { home: "Inicio", menu: "Menú", gallery: "Galería", events: "Eventos", about: "Nosotros", contact: "Contacto", faq: "FAQ", bookTable: "Reservar mesa", takeaway: "Para llevar" },
+    nav: { home: "Inicio", menu: "Menú", gallery: "Galería", events: "Eventos", about: "Nosotros", contact: "Contacto", faq: "FAQ", bookTable: "Reservar mesa", takeaway: "Para llevar", language: "Idioma" },
     home: {
       welcome: "Bienvenido a",
       welcomeHome: "Bienvenido a casa.",
