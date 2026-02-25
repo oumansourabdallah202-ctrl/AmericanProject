@@ -73,6 +73,8 @@ function getAuthHeaders(token: string): HeadersInit {
 }
 
 const POLL_INTERVAL_MS = 45_000;
+const PAGE_SIZE_RESERVATIONS = 100;
+const PAGE_SIZE_CLIENTS = 100;
 
 /** Party sizes allowed in the edit form Select; 1–20 avoids "value not in list" → removeChild on Android. */
 const ALLOWED_PARTY_SIZES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
@@ -109,10 +111,12 @@ export default function Admin() {
   const [importingClients, setImportingClients] = useState(false);
   const [clientSearch, setClientSearch] = useState("");
   const [clientSort, setClientSort] = useState<"name" | "email" | "date">("date");
+  const [clientsPage, setClientsPage] = useState(0);
   const [bookingSort, setBookingSort] = useState<"created" | "date" | "name">("date");
   const [allReservationsSort, setAllReservationsSort] = useState<"date" | "name" | "created">("date");
   const [allReservationsSortOrder, setAllReservationsSortOrder] = useState<"asc" | "desc">("desc");
   const [allReservationsSearch, setAllReservationsSearch] = useState("");
+  const [allReservationsPage, setAllReservationsPage] = useState(0);
   const [requestSearch, setRequestSearch] = useState("");
   const [requestDateFilter, setRequestDateFilter] = useState<string>("");
   const [requestSort, setRequestSort] = useState<"date" | "time" | "name" | "guests">("date");
@@ -201,6 +205,7 @@ export default function Admin() {
 
   const previousBookingIds = useRef<Set<string>>(new Set());
   const wixAutoSyncRanRef = useRef(false);
+  const deleteGuestPlaceholdersRanRef = useRef(false);
 
   const fetchBookings = useCallback(async (authToken: string) => {
     setFetchError("");
@@ -269,6 +274,27 @@ export default function Admin() {
     );
   }, [bookings, allReservationsSearch]);
 
+  const allReservationsSorted = useMemo(() => {
+    return [...allReservationsFiltered].sort((a, b) => {
+      let comparison = 0;
+      if (allReservationsSort === "name") {
+        comparison = a.name.localeCompare(b.name);
+      } else if (allReservationsSort === "created") {
+        comparison = (b.createdAt || "").localeCompare(a.createdAt || "");
+      } else {
+        comparison = b.date.localeCompare(a.date) || b.time.localeCompare(a.time);
+      }
+      return allReservationsSortOrder === "asc" ? -comparison : comparison;
+    });
+  }, [allReservationsFiltered, allReservationsSort, allReservationsSortOrder]);
+
+  const allReservationsPaginated = useMemo(() => {
+    const start = allReservationsPage * PAGE_SIZE_RESERVATIONS;
+    return allReservationsSorted.slice(start, start + PAGE_SIZE_RESERVATIONS);
+  }, [allReservationsSorted, allReservationsPage]);
+
+  const totalReservationsPages = Math.max(1, Math.ceil(allReservationsSorted.length / PAGE_SIZE_RESERVATIONS));
+
   const filteredAndSortedClients = useMemo(() => {
     let list = [...clients];
     const q = clientSearch.trim().toLowerCase();
@@ -289,6 +315,13 @@ export default function Admin() {
     });
     return list;
   }, [clients, clientSearch, clientSort]);
+
+  const clientsPaginated = useMemo(() => {
+    const start = clientsPage * PAGE_SIZE_CLIENTS;
+    return filteredAndSortedClients.slice(start, start + PAGE_SIZE_CLIENTS);
+  }, [filteredAndSortedClients, clientsPage]);
+
+  const totalClientsPages = Math.max(1, Math.ceil(filteredAndSortedClients.length / PAGE_SIZE_CLIENTS));
 
   const handleAddClient = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1038,6 +1071,21 @@ export default function Admin() {
   }, [token, verified, fetchBookings]);
 
   useEffect(() => {
+    if (!token || !verified) return;
+    if (deleteGuestPlaceholdersRanRef.current) return;
+    deleteGuestPlaceholdersRanRef.current = true;
+    fetch("/api/bookings/delete-guest-placeholders", { method: "POST", headers: getAuthHeaders(token) })
+      .then((res) => res.json().catch(() => ({})))
+      .then((result) => {
+        if (result.ok && result.deleted > 0) {
+          fetchBookings(token);
+          toast.success(t("admin.deleteGuestPlaceholdersSuccess").replace("{count}", String(result.deleted)));
+        }
+      })
+      .catch(() => {});
+  }, [token, verified, fetchBookings, t]);
+
+  useEffect(() => {
     if (token && verified) fetchClients(token);
   }, [token, verified, fetchClients]);
 
@@ -1339,7 +1387,7 @@ export default function Admin() {
                     type="search"
                     placeholder={t("admin.filterSearchPlaceholder")}
                     value={allReservationsSearch}
-                    onChange={(e) => setAllReservationsSearch(e.target.value)}
+                    onChange={(e) => { setAllReservationsSearch(e.target.value); setAllReservationsPage(0); }}
                     className="pl-8 h-9"
                     aria-label={t("admin.filterSearchPlaceholder")}
                   />
@@ -1415,6 +1463,7 @@ export default function Admin() {
                 <Select 
                   value={allReservationsSort} 
                   onValueChange={(v: any) => {
+                    setAllReservationsPage(0);
                     setAllReservationsSort(v);
                     if (v === "created") {
                       setAllReservationsSortOrder("desc");
@@ -1437,7 +1486,7 @@ export default function Admin() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setAllReservationsSortOrder(allReservationsSortOrder === "desc" ? "asc" : "desc")}
+                  onClick={() => { setAllReservationsPage(0); setAllReservationsSortOrder(allReservationsSortOrder === "desc" ? "asc" : "desc"); }}
                   className="h-8 px-2"
                   title={allReservationsSortOrder === "desc" ? "Plus récent → Plus ancien" : "Plus ancien → Plus récent"}
                 >
@@ -1516,23 +1565,7 @@ export default function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {(() => {
-                      const sorted = [...allReservationsFiltered].sort((a, b) => {
-                        let comparison = 0;
-                        
-                        if (allReservationsSort === "name") {
-                          comparison = a.name.localeCompare(b.name);
-                        } else if (allReservationsSort === "created") {
-                          comparison = (b.createdAt || "").localeCompare(a.createdAt || "");
-                        } else {
-                          // date
-                          comparison = b.date.localeCompare(a.date) || b.time.localeCompare(a.time);
-                        }
-                        
-                        return allReservationsSortOrder === "asc" ? -comparison : comparison;
-                      });
-                      return sorted;
-                    })().map((b) => (
+                    {allReservationsPaginated.map((b) => (
                       <tr key={b.id} className="border-b hover:bg-muted/30">
                         <td className="p-2 sm:p-3">
                           <input
@@ -1611,6 +1644,23 @@ export default function Admin() {
                   </tbody>
                 </table>
               </div>
+              {allReservationsSorted.length > PAGE_SIZE_RESERVATIONS && (
+                <div className="flex items-center justify-between gap-2 mt-3 px-1">
+                  <p className="text-xs text-muted-foreground">
+                    {t("admin.page")} {allReservationsPage + 1} / {totalReservationsPages} ({allReservationsSorted.length} {t("admin.reservations").toLowerCase()})
+                  </p>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" disabled={allReservationsPage === 0} onClick={() => setAllReservationsPage((p) => Math.max(0, p - 1))}>
+                      <ChevronLeft className="w-4 h-4" />
+                      {t("admin.prev")}
+                    </Button>
+                    <Button variant="outline" size="sm" disabled={allReservationsPage >= totalReservationsPages - 1} onClick={() => setAllReservationsPage((p) => Math.min(totalReservationsPages - 1, p + 1))}>
+                      {t("admin.next")}
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             )}
           </TabsContent>
           <TabsContent value="daily" className="mt-4 sm:mt-6">
@@ -2188,10 +2238,10 @@ export default function Admin() {
                     type="search"
                     placeholder={t("admin.searchClients")}
                     value={clientSearch}
-                    onChange={(e) => setClientSearch(e.target.value)}
+                    onChange={(e) => { setClientSearch(e.target.value); setClientsPage(0); }}
                     className="max-w-xs"
                   />
-                  <Select value={clientSort} onValueChange={(v) => setClientSort(v as "name" | "email" | "date")}>
+                  <Select value={clientSort} onValueChange={(v) => { setClientsPage(0); setClientSort(v as "name" | "email" | "date"); }}>
                     <SelectTrigger className="w-[200px]">
                       <SelectValue placeholder={t("admin.sortBy")} />
                     </SelectTrigger>
@@ -2239,7 +2289,7 @@ export default function Admin() {
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredAndSortedClients.map((c, index) => (
+                        {clientsPaginated.map((c, index) => (
                           <tr key={c.id} className="border-b hover:bg-muted/30">
                             <td className="p-3">
                               <input
@@ -2257,7 +2307,7 @@ export default function Admin() {
                                 className="cursor-pointer"
                               />
                             </td>
-                            <td className="p-3 text-muted-foreground tabular-nums">{index + 1}</td>
+                            <td className="p-3 text-muted-foreground tabular-nums">{clientsPage * PAGE_SIZE_CLIENTS + index + 1}</td>
                             <td className="p-3">{c.name}</td>
                             <td className="p-3">{c.email}</td>
                             <td className="p-3">{c.phone ?? "—"}</td>
@@ -2288,6 +2338,23 @@ export default function Admin() {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                )}
+                {filteredAndSortedClients.length > PAGE_SIZE_CLIENTS && (
+                  <div className="flex items-center justify-between gap-2 mt-3 px-4 pb-4">
+                    <p className="text-xs text-muted-foreground">
+                      {t("admin.page")} {clientsPage + 1} / {totalClientsPages} ({filteredAndSortedClients.length} clients)
+                    </p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" disabled={clientsPage === 0} onClick={() => setClientsPage((p) => Math.max(0, p - 1))}>
+                        <ChevronLeft className="w-4 h-4" />
+                        {t("admin.prev")}
+                      </Button>
+                      <Button variant="outline" size="sm" disabled={clientsPage >= totalClientsPages - 1} onClick={() => setClientsPage((p) => Math.min(totalClientsPages - 1, p + 1))}>
+                        {t("admin.next")}
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 )}
               </CardContent>

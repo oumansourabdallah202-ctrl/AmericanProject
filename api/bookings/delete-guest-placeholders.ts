@@ -43,31 +43,20 @@ export default async function handler(req: Req, res: Res): Promise<void> {
 
   try {
     const supabase = getSupabase();
-    const { data: rows, error: fetchErr } = await supabase
-      .from(BOOKINGS_TABLE)
-      .select("id")
-      .eq("name", GUEST_NAME)
-      .eq("email", PLACEHOLDER_EMAIL);
-    if (fetchErr) {
-      console.error("[delete-guest-placeholders] Fetch error:", fetchErr);
-      res.status(500).json({ error: "Failed to fetch guest placeholders" });
-      return;
-    }
-    const ids = (rows ?? []).map((r: { id: string }) => r.id);
-    if (ids.length === 0) {
-      res.status(200).json({ ok: true, deleted: 0, message: "No guest placeholders to delete." });
-      return;
-    }
-    const { error: deleteErr } = await supabase
+    // Single DELETE with filter (no fetch of all ids) so it stays fast with large datasets
+    const { data: deletedRows, error: deleteErr } = await supabase
       .from(BOOKINGS_TABLE)
       .delete()
-      .in("id", ids);
+      .eq("name", GUEST_NAME)
+      .eq("email", PLACEHOLDER_EMAIL)
+      .select("id");
     if (deleteErr) {
       console.error("[delete-guest-placeholders] Delete error:", deleteErr);
       res.status(500).json({ error: "Failed to delete guest placeholders" });
       return;
     }
-    res.status(200).json({ ok: true, deleted: ids.length });
+    const count = Array.isArray(deletedRows) ? deletedRows.length : 0;
+    res.status(200).json({ ok: true, deleted: count, message: count === 0 ? "No guest placeholders to delete." : undefined });
   } catch (e) {
     console.error("[delete-guest-placeholders] Error:", e);
     res.status(500).json({ error: "Server error" });
