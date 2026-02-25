@@ -110,6 +110,7 @@ export default function Admin() {
   const [bookingSort, setBookingSort] = useState<"created" | "date" | "name">("date");
   const [allReservationsSort, setAllReservationsSort] = useState<"date" | "name" | "created">("created");
   const [allReservationsSortOrder, setAllReservationsSortOrder] = useState<"asc" | "desc">("desc");
+  const [allReservationsSearch, setAllReservationsSearch] = useState("");
   const [requestSearch, setRequestSearch] = useState("");
   const [requestDateFilter, setRequestDateFilter] = useState<string>("");
   const [requestSort, setRequestSort] = useState<"date" | "time" | "name" | "guests">("date");
@@ -197,6 +198,7 @@ export default function Admin() {
   };
 
   const previousBookingIds = useRef<Set<string>>(new Set());
+  const wixAutoSyncRanRef = useRef(false);
 
   const fetchBookings = useCallback(async (authToken: string) => {
     setFetchError("");
@@ -251,6 +253,19 @@ export default function Admin() {
       setClientsError(t("admin.clientsFetchError"));
     }
   }, [t]);
+
+  const allReservationsFiltered = useMemo(() => {
+    const q = allReservationsSearch.trim().toLowerCase();
+    if (!q) return bookings;
+    return bookings.filter(
+      (b) =>
+        b.name.toLowerCase().includes(q) ||
+        b.email.toLowerCase().includes(q) ||
+        (b.phone ?? "").toLowerCase().includes(q) ||
+        b.date.includes(q) ||
+        b.time.includes(q)
+    );
+  }, [bookings, allReservationsSearch]);
 
   const filteredAndSortedClients = useMemo(() => {
     let list = [...clients];
@@ -779,6 +794,7 @@ export default function Admin() {
       const result = await res.json().catch(() => ({}));
       if (res.ok) {
         await fetchBookings(token);
+        await fetchClients(token);
         const added = result.added ?? 0;
         toast.success(added > 0 ? t("admin.syncFromWixSuccess").replace("{count}", String(added)) : (result.message || t("admin.syncFromWixSuccessNone")));
       } else {
@@ -1004,6 +1020,39 @@ export default function Admin() {
     const interval = setInterval(() => fetchBookings(token), POLL_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [token, verified, fetchBookings]);
+
+  const runWixSyncInBackground = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await fetch("/api/bookings/sync-from-wix", { method: "POST", headers: getAuthHeaders(token) });
+      const result = await res.json().catch(() => ({}));
+      if (res.ok) {
+        await fetchBookings(token);
+        await fetchClients(token);
+      }
+    } catch {
+      // silent; manual sync button and toasts for user-initiated sync
+    }
+  }, [token, fetchBookings, fetchClients]);
+
+  useEffect(() => {
+    if (!token || !verified) return;
+    const WIX_SYNC_INTERVAL_MS = 15 * 60 * 1000;
+    const runOnce = () => {
+      if (wixAutoSyncRanRef.current) return;
+      wixAutoSyncRanRef.current = true;
+      const t = setTimeout(() => {
+        runWixSyncInBackground();
+      }, 3000);
+      return () => clearTimeout(t);
+    };
+    const cleanupOnce = runOnce();
+    const interval = setInterval(runWixSyncInBackground, WIX_SYNC_INTERVAL_MS);
+    return () => {
+      cleanupOnce?.();
+      clearInterval(interval);
+    };
+  }, [token, verified, runWixSyncInBackground]);
 
   // Subscribe to push notifications when admin logs in
   useEffect(() => {
@@ -1253,6 +1302,19 @@ export default function Admin() {
           </TabsList>
           <TabsContent value="all" className="mt-4 sm:mt-6">
             <div className="flex flex-col gap-3 mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                  <Input
+                    type="search"
+                    placeholder={t("admin.filterSearchPlaceholder")}
+                    value={allReservationsSearch}
+                    onChange={(e) => setAllReservationsSearch(e.target.value)}
+                    className="pl-8 h-9"
+                    aria-label={t("admin.filterSearchPlaceholder")}
+                  />
+                </div>
+              </div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   {selectedBookingIds.size > 0 && (
@@ -1272,7 +1334,7 @@ export default function Admin() {
                   )}
                   {selectedBookingIds.size === 0 && (
                     <p className="text-sm text-muted-foreground">
-                      {bookings.length} réservations
+                      {allReservationsSearch.trim() ? `${allReservationsFiltered.length} / ${bookings.length}` : bookings.length} réservations
                     </p>
                   )}
                 </div>
@@ -1281,15 +1343,16 @@ export default function Admin() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      if (selectedBookingIds.size === bookings.length) {
+                      const filteredIds = new Set(allReservationsFiltered.map((b) => b.id));
+                      if (filteredIds.size > 0 && selectedBookingIds.size === filteredIds.size && allReservationsFiltered.every((b) => selectedBookingIds.has(b.id))) {
                         setSelectedBookingIds(new Set());
                       } else {
-                        setSelectedBookingIds(new Set(bookings.map(b => b.id)));
+                        setSelectedBookingIds(new Set(allReservationsFiltered.map((b) => b.id)));
                       }
                     }}
                     className="h-8"
                   >
-                    {selectedBookingIds.size === bookings.length ? <span>Désélectionner tout</span> : <span>Sélectionner tout</span>}
+                    {allReservationsFiltered.length > 0 && selectedBookingIds.size === allReservationsFiltered.length && allReservationsFiltered.every((b) => selectedBookingIds.has(b.id)) ? <span>Désélectionner tout</span> : <span>Sélectionner tout</span>}
                   </Button>
                   <Button
                     variant="outline"
@@ -1354,6 +1417,8 @@ export default function Admin() {
             </div>
             {bookings.length === 0 ? (
               <div className="p-4 sm:p-8 text-center text-sm text-muted-foreground">{t("admin.emptyList")}</div>
+            ) : allReservationsFiltered.length === 0 ? (
+              <div className="p-4 sm:p-8 text-center text-sm text-muted-foreground">{t("admin.noResultsForFilters")}</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm">
@@ -1362,10 +1427,10 @@ export default function Admin() {
                       <th className="p-2 sm:p-3 w-10">
                         <input
                           type="checkbox"
-                          checked={selectedBookingIds.size === bookings.length && bookings.length > 0}
+                          checked={allReservationsFiltered.length > 0 && allReservationsFiltered.every((b) => selectedBookingIds.has(b.id))}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedBookingIds(new Set(bookings.map(b => b.id)));
+                              setSelectedBookingIds(new Set(allReservationsFiltered.map((b) => b.id)));
                             } else {
                               setSelectedBookingIds(new Set());
                             }
@@ -1422,7 +1487,7 @@ export default function Admin() {
                   </thead>
                   <tbody>
                     {(() => {
-                      const sorted = [...bookings].sort((a, b) => {
+                      const sorted = [...allReservationsFiltered].sort((a, b) => {
                         let comparison = 0;
                         
                         if (allReservationsSort === "name") {
