@@ -148,16 +148,17 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   const toAdd: Array<Record<string, unknown>> = [];
   let cursor: string | undefined;
   let pageCount = 0;
-  const maxPages = 20;
+  const maxPages = 50;
 
   do {
     // Wix: sort/filter cannot be specified together with cursor. First page uses sort; later pages use cursor only.
+    // Use DESC so newest reservations are fetched first (otherwise with ASC we only get oldest 2000 and miss recent ones like Kevin Phelan / Hannaé Pasche).
     const body: { query: { cursorPaging: { limit: number; cursor?: string }; sort?: { fieldName: string; order: string }[] } } = {
       query: {
         cursorPaging: cursor ? { limit: 100, cursor } : { limit: 100 },
       },
     };
-    if (!cursor) body.query.sort = [{ fieldName: "createdDate", order: "ASC" }];
+    if (!cursor) body.query.sort = [{ fieldName: "createdDate", order: "DESC" }];
 
     let wixRes: Response;
     try {
