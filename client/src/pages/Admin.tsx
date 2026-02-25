@@ -98,6 +98,8 @@ export default function Admin() {
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
   const [syncFromWixLoading, setSyncFromWixLoading] = useState(false);
+  const [deleteGuestPlaceholdersLoading, setDeleteGuestPlaceholdersLoading] = useState(false);
+  const [deleteGuestPlaceholdersOpen, setDeleteGuestPlaceholdersOpen] = useState(false);
   const [exportGuestsLoading, setExportGuestsLoading] = useState(false);
   const [archivingId, setArchivingId] = useState<string | null>(null);
   const [markAllArchiving, setMarkAllArchiving] = useState(false);
@@ -108,7 +110,7 @@ export default function Admin() {
   const [clientSearch, setClientSearch] = useState("");
   const [clientSort, setClientSort] = useState<"name" | "email" | "date">("date");
   const [bookingSort, setBookingSort] = useState<"created" | "date" | "name">("date");
-  const [allReservationsSort, setAllReservationsSort] = useState<"date" | "name" | "created">("created");
+  const [allReservationsSort, setAllReservationsSort] = useState<"date" | "name" | "created">("date");
   const [allReservationsSortOrder, setAllReservationsSortOrder] = useState<"asc" | "desc">("desc");
   const [allReservationsSearch, setAllReservationsSearch] = useState("");
   const [requestSearch, setRequestSearch] = useState("");
@@ -807,6 +809,30 @@ export default function Admin() {
     }
   };
 
+  const handleDeleteGuestPlaceholders = async () => {
+    if (!token) return;
+    setDeleteGuestPlaceholdersOpen(false);
+    setDeleteGuestPlaceholdersLoading(true);
+    try {
+      const res = await fetch("/api/bookings/delete-guest-placeholders", {
+        method: "POST",
+        headers: getAuthHeaders(token),
+      });
+      const result = await res.json().catch(() => ({}));
+      if (res.ok) {
+        await fetchBookings(token);
+        const deleted = result.deleted ?? 0;
+        toast.success(deleted > 0 ? t("admin.deleteGuestPlaceholdersSuccess").replace("{count}", String(deleted)) : (result.message || t("admin.deleteGuestPlaceholdersNone")));
+      } else {
+        toast.error(result.error ?? t("admin.deleteGuestPlaceholdersError"));
+      }
+    } catch {
+      toast.error(t("admin.deleteGuestPlaceholdersError"));
+    } finally {
+      setDeleteGuestPlaceholdersLoading(false);
+    }
+  };
+
   const handleSendConfirmationEmail = async (id: string) => {
     if (!token) return;
     setSendingConfirmationId(id);
@@ -1259,6 +1285,10 @@ export default function Admin() {
             <Button type="button" variant="outline" size="sm" onClick={handleSyncFromWix} disabled={syncFromWixLoading} className="flex-1 sm:flex-initial">
               {syncFromWixLoading ? <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" /> : null}
               <span className="hidden sm:inline">{t("admin.syncFromWix")}</span>
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={() => setDeleteGuestPlaceholdersOpen(true)} disabled={deleteGuestPlaceholdersLoading} className="flex-1 sm:flex-initial">
+              {deleteGuestPlaceholdersLoading ? <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" /> : <Trash2 className="w-4 h-4 sm:mr-2" />}
+              <span className="hidden sm:inline">{t("admin.deleteGuestPlaceholders")}</span>
             </Button>
             {userEmail && (
               <span className="text-xs sm:text-sm text-muted-foreground mr-2 hidden lg:inline">
@@ -2354,6 +2384,23 @@ export default function Admin() {
                     onClick={() => deleteClientId && handleDeleteClient(deleteClientId)}
                   >
                     {t("admin.deleteClient")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <AlertDialog open={deleteGuestPlaceholdersOpen} onOpenChange={setDeleteGuestPlaceholdersOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("admin.deleteGuestPlaceholders")}</AlertDialogTitle>
+                  <AlertDialogDescription>{t("admin.deleteGuestPlaceholdersConfirm")}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={handleDeleteGuestPlaceholders}
+                  >
+                    {t("admin.deleteGuestPlaceholders")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
