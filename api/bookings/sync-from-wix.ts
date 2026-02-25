@@ -57,6 +57,14 @@ function isoToDateAndTime(iso: string | undefined): { date: string; time: string
   }
 }
 
+function sendError(res: Res, code: number, error: string, details?: string): void {
+  try {
+    res.status(code).json(details ? { error, details } : { error });
+  } catch {
+    // ignore
+  }
+}
+
 export default async function handler(req: Req, res: Res): Promise<void> {
   res.setHeader?.("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
@@ -69,15 +77,32 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     return;
   }
 
-  const token = getAuthToken(req);
-  const user = await verifySupabaseToken(token);
+  let token: string;
+  let siteId: string | undefined;
+  let apiKey: string | undefined;
+  try {
+    token = getAuthToken(req);
+  } catch (e) {
+    console.error("[sync-from-wix] Auth read error:", e);
+    sendError(res, 500, "Invalid request");
+    return;
+  }
+
+  let user: Awaited<ReturnType<typeof verifySupabaseToken>>;
+  try {
+    user = await verifySupabaseToken(token);
+  } catch (e) {
+    console.error("[sync-from-wix] Token verification error:", e);
+    sendError(res, 500, "Authentication failed");
+    return;
+  }
   if (!user || !isAllowedAdmin(user)) {
     res.status(401).json({ error: "Unauthorized" });
     return;
   }
 
-  const siteId = process.env.WIX_SITE_ID?.trim();
-  const apiKey = process.env.WIX_API_KEY?.trim();
+  siteId = process.env.WIX_SITE_ID?.trim();
+  apiKey = process.env.WIX_API_KEY?.trim();
   if (!siteId || !apiKey) {
     res.status(503).json({
       error: "Wix sync not configured",
@@ -86,7 +111,15 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     return;
   }
 
-  const supabase = getSupabase();
+  let supabase: ReturnType<typeof getSupabase>;
+  try {
+    supabase = getSupabase();
+  } catch (e) {
+    console.error("[sync-from-wix] Supabase init error:", e);
+    sendError(res, 503, "Database not configured");
+    return;
+  }
+
   const existingKeys = new Set<string>();
 
   try {
@@ -108,7 +141,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     }
   } catch (e) {
     console.error("[sync-from-wix] Failed to load existing bookings:", e);
-    res.status(500).json({ error: "Failed to load existing bookings" });
+    sendError(res, 500, "Failed to load existing bookings");
     return;
   }
 
@@ -126,15 +159,22 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     };
     if (cursor) body.query.cursorPaging = { limit: 100, cursor };
 
-    const wixRes = await fetch(WIX_QUERY_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: apiKey,
-        "wix-site-id": siteId,
-      },
-      body: JSON.stringify(body),
-    });
+    let wixRes: Response;
+    try {
+      wixRes = await fetch(WIX_QUERY_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: apiKey,
+          "wix-site-id": siteId,
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (e) {
+      console.error("[sync-from-wix] Network error calling Wix:", e);
+      sendError(res, 502, "Wix API unreachable", String((e as Error).message).slice(0, 200));
+      return;
+    }
 
     if (!wixRes.ok) {
       const text = await wixRes.text();
@@ -147,7 +187,14 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       return;
     }
 
-    const json = (await wixRes.json()) as WixQueryResponse;
+    let json: WixQueryResponse;
+    try {
+      json = (await wixRes.json()) as WixQueryResponse;
+    } catch (e) {
+      console.error("[sync-from-wix] Wix API invalid JSON:", e);
+      sendError(res, 502, "Wix API returned invalid response");
+      return;
+    }
     const reservations = json.reservations ?? [];
     const meta = json.pagingMetadata;
     cursor = meta?.cursors?.next;
