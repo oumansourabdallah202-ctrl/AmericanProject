@@ -1499,6 +1499,7 @@ export default function Admin() {
             ) : allReservationsFiltered.length === 0 ? (
               <div className="p-4 sm:p-8 text-center text-sm text-muted-foreground">{t("admin.noResultsForFilters")}</div>
             ) : (
+              <>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm">
                   <thead>
@@ -1661,6 +1662,7 @@ export default function Admin() {
                   </div>
                 </div>
               )}
+              </>
             )}
           </TabsContent>
           <TabsContent value="daily" className="mt-4 sm:mt-6">
