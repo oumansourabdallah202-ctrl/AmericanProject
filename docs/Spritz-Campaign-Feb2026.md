@@ -64,9 +64,12 @@ On vous attend le 26 février ! 🍹🥂
 ## 3. HTML template
 
 - See **`Spritz-Campaign-Feb2026.html`** in this folder.
-- Replace `IMAGE_URL` in the file with the final URL of your poster image (e.g. after uploading to your site or CDN).  
+- Replace **`IMAGE_URL`** in the file with the final URL of your poster image (e.g. after uploading to your site or CDN).  
   Example: if you put the image in `client/public/images/spritz-soiree-2026.jpg`, use:  
-  `https://YOUR_DOMAIN/images/spritz-soiree-2026.jpg`
+  `https://spinella.ch/images/spritz-soiree-2026.jpg`
+- Replace **`{{UNSUBSCRIBE_URL}}`** with your unsubscribe link so recipients can opt out. Examples:
+  - Unsubscribe page: `https://spinella.ch/unsubscribe?email=RECIPIENT_EMAIL` (in Make.com, map the recipient’s email into the URL).
+  - Or use a mailto: `mailto:info@spinella.ch?subject=Désabonnement%20newsletter` so they can request removal by email.
 
 ---
 
