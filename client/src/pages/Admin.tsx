@@ -143,6 +143,9 @@ export default function Admin() {
   } | null>(null);
   const [bookingDetailLoading, setBookingDetailLoading] = useState(false);
   const [bookingDetailEditOpen, setBookingDetailEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPhone, setEditPhone] = useState("");
   const [editDate, setEditDate] = useState("");
   const [editTime, setEditTime] = useState("");
   const [editPartySize, setEditPartySize] = useState(2);
@@ -1017,6 +1020,9 @@ export default function Admin() {
     if (!bookingDetail) return;
     const rawParty = bookingDetail.booking.partySize || 2;
     const partySize = Math.min(20, Math.max(1, rawParty));
+    setEditName(bookingDetail.booking.name ?? "");
+    setEditEmail(bookingDetail.booking.email ?? "");
+    setEditPhone(bookingDetail.booking.phone ?? "");
     setEditDate(bookingDetail.booking.date);
     setEditTime(bookingDetail.booking.time);
     setEditPartySize(partySize);
@@ -1034,6 +1040,9 @@ export default function Admin() {
         body: JSON.stringify({
           id: bookingDetailId,
           status: editStatus,
+          name: editName,
+          email: editEmail,
+          phone: editPhone,
           date: editDate,
           time: editTime,
           party_size: editPartySize,
@@ -2505,6 +2514,18 @@ export default function Admin() {
             ) : bookingDetail ? (
               bookingDetailEditOpen ? (
                 <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>{t("admin.name")}</Label>
+                    <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder={t("admin.name")} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("admin.email")}</Label>
+                    <Input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} placeholder="email@example.com" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("admin.phone")}</Label>
+                    <Input type="tel" value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder={t("admin.phone")} />
+                  </div>
                   <div className="space-y-2">
                     <Label>{t("admin.guests")}</Label>
                     <Select

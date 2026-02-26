@@ -189,6 +189,9 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     const patchDate = typeof o.date === "string" ? String(o.date).slice(0, 10) : undefined;
     const patchTime = typeof o.time === "string" ? String(o.time).trim() : undefined;
     const patchPartySize = typeof o.party_size === "number" ? o.party_size : typeof o.partySize === "number" ? o.partySize : undefined;
+    const patchName = typeof o.name === "string" ? o.name.trim().slice(0, 500) : undefined;
+    const patchEmail = typeof o.email === "string" ? o.email.trim().toLowerCase().slice(0, 320) : undefined;
+    const patchPhone = typeof o.phone === "string" ? o.phone.trim().slice(0, 100) : undefined;
 
     try {
       const supabase = getSupabase();
@@ -208,9 +211,15 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       if (patchDate) updatePayload.date = patchDate;
       if (patchTime) updatePayload.time = patchTime;
       if (patchPartySize !== undefined && patchPartySize >= 1) updatePayload.party_size = patchPartySize;
+      if (patchName !== undefined) updatePayload.name = patchName;
+      if (patchEmail !== undefined) updatePayload.email = patchEmail;
+      if (patchPhone !== undefined) updatePayload.phone = patchPhone;
 
       const rowAfter = {
         ...row,
+        name: patchName ?? row.name,
+        email: patchEmail ?? row.email,
+        phone: patchPhone ?? row.phone,
         date: patchDate ?? row.date,
         time: patchTime ?? row.time,
         party_size: patchPartySize !== undefined && patchPartySize >= 1 ? patchPartySize : row.party_size,
@@ -218,7 +227,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
 
       let finalPayload: Record<string, unknown> = { ...updatePayload };
 
-      if (status === "confirmed" && row.email) {
+      if (status === "confirmed" && rowAfter.email) {
         const resendKey = process.env.RESEND_API_KEY;
         if (resendKey) {
           const resend = new Resend(resendKey);
@@ -226,16 +235,16 @@ export default async function handler(req: Req, res: Res): Promise<void> {
           const flyerUrl = `${getBaseUrl()}/valentines-menu.jpeg`;
           const { data: sendData, error: sendErr } = await resend.emails.send({
             from: FROM,
-            to: [row.email],
+            to: [rowAfter.email],
             subject: isValentines ? `Saint-Valentin à Spinella – Votre table est réservée` : `Spinella – Votre réservation est confirmée`,
             html: isValentines
-              ? valentinesGuestEmailHtml(row.name ?? "Client", flyerUrl)
+              ? valentinesGuestEmailHtml(rowAfter.name ?? "Client", flyerUrl)
               : confirmedEmailHtml({
-                  name: row.name ?? "Client",
+                  name: rowAfter.name ?? "Client",
                   date: rowAfter.date ?? "",
                   time: rowAfter.time ?? "",
                   partySize: rowAfter.party_size ?? 0,
-                  phone: row.phone ?? "",
+                  phone: rowAfter.phone ?? "",
                   specialRequests: row.special_requests ?? null,
                 }),
           });
@@ -249,17 +258,17 @@ export default async function handler(req: Req, res: Res): Promise<void> {
         }
       }
 
-      if (status === "cancelled" && (previousStatus === "request" || previousStatus === "pending") && row.email) {
+      if (status === "cancelled" && (previousStatus === "request" || previousStatus === "pending") && rowAfter.email) {
         const resendKey = process.env.RESEND_API_KEY;
         if (resendKey) {
           const resend = new Resend(resendKey);
           const rebookUrl = `${getBaseUrl()}/reservations`;
           const { data: sendData, error: sendErr } = await resend.emails.send({
             from: FROM,
-            to: [row.email],
+            to: [rowAfter.email],
             subject: `Spinella – Demande de réservation`,
             html: declineEmailHtml({
-              name: row.name ?? "Client",
+              name: rowAfter.name ?? "Client",
               date: rowAfter.date ?? "",
               time: rowAfter.time ?? "",
               rebookUrl,
