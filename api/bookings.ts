@@ -117,7 +117,8 @@ export default async function handler(req: Req, res: Res): Promise<void> {
             if (!lastEvent) return "sent";
             const e = lastEvent.toLowerCase();
             if (e.includes("delivered")) return "delivered";
-            if (e.includes("bounced") || e.includes("failed") || e.includes("complained")) return "failed";
+            if (e.includes("bounced")) return "bounced";
+            if (e.includes("failed") || e.includes("complained")) return "failed";
             if (e.includes("delivery_delayed")) return "delayed";
             if (e.includes("opened")) return "opened";
             if (e.includes("clicked")) return "clicked";

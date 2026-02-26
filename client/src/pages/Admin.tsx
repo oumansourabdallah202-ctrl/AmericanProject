@@ -2671,8 +2671,8 @@ export default function Admin() {
                               <td className="p-2">{t(`admin.emailType_${e.type}`) || e.type}</td>
                               <td className="p-2"><span>{e.sentAt ? new Date(e.sentAt).toLocaleString() : "—"}</span></td>
                               <td className="p-2">
-                                <span className={e.status === "delivered" ? "text-green-600" : e.status === "failed" ? "text-red-600" : e.status === "opened" || e.status === "clicked" ? "text-blue-600" : ""}>
-                                  {t(`admin.emailStatus_${e.status ?? "sent"}`)}
+                                <span className={e.status === "delivered" ? "text-green-600" : e.status === "bounced" || e.status === "failed" ? "text-red-600 font-semibold" : e.status === "opened" || e.status === "clicked" ? "text-blue-600" : ""}>
+                                  {e.status === "bounced" ? "⚠ " : ""}{t(`admin.emailStatus_${e.status ?? "sent"}`)}
                                 </span>
                               </td>
                             </tr>
