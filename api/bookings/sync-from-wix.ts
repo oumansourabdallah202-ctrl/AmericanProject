@@ -258,6 +258,10 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       const specialRequests = teamMsg != null && String(teamMsg).trim() ? String(teamMsg).trim() : null;
 
       if (!date || !time) continue;
+      // Skip empty reservations: no real guest data (from Wix or elsewhere)
+      const nameTrim = (name ?? "").trim();
+      if (!nameTrim || nameTrim === "-" || nameTrim.toLowerCase() === "guest") continue;
+      if ((email ?? "").trim().toLowerCase() === "wix-sync@spinella.ch") continue;
 
       const key = `${date}|${time}|${(email || r.id || "").toLowerCase()}`;
       if (existingKeys.has(key)) continue;

@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Download, Eye, List, Loader2, LogOut, Mail, MailX, Pencil, Plus, Search, Trash2, Upload, UserCheck, Users, X } from "lucide-react";
+import { AlertCircle, Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Download, Eye, List, Loader2, LogOut, Mail, MailX, Pencil, Plus, Search, Trash2, Upload, UserCheck, Users, X } from "lucide-react";
 import { supabase, isSupabaseAuthConfigured } from "@/lib/supabaseClient";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTimeSlotsForDate } from "@/lib/blockedSlots";
@@ -162,6 +162,8 @@ export default function Admin() {
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   });
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  /** Resend email id -> delivery status (bounced, delivered, sent, ...) for list-view bounced flags */
+  const [emailStatusByResendId, setEmailStatusByResendId] = useState<Record<string, string>>({});
 
   // Sync selected date with calendar month: when selected is outside current month, navigate calendar to that month
   useEffect(() => {
@@ -241,6 +243,20 @@ export default function Admin() {
         }
         previousBookingIds.current = newIds;
         setBookings(newBookings);
+        // Fetch Resend delivery statuses for list-view bounced flags
+        const emailIds = [...new Set(newBookings.flatMap((b) => (b.sentEmails ?? []).map((e) => e.id)).filter(Boolean))];
+        if (emailIds.length > 0) {
+          fetch("/api/bookings/email-statuses", {
+            method: "POST",
+            headers: { ...getAuthHeaders(authToken), "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: emailIds }),
+          })
+            .then((r) => r.json().catch(() => ({})))
+            .then((d) => (d.statuses && typeof d.statuses === "object" ? setEmailStatusByResendId(d.statuses) : null))
+            .catch(() => {});
+        } else {
+          setEmailStatusByResendId({});
+        }
       } else {
         setFetchError(t("admin.fetchError"));
       }
@@ -1600,6 +1616,9 @@ export default function Admin() {
                             {!(b.sentEmails?.length) && (
                               <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
                             )}
+                            {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
+                              <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
+                            )}
                             <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                           </span>
                         </td>
@@ -1720,6 +1739,9 @@ export default function Admin() {
                                 <span className="flex items-center gap-1.5 truncate">
                                   {!(b.sentEmails?.length) && (
                                     <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
+                                  )}
+                                  {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
+                                    <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
                                   )}
                                   <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                                 </span>
@@ -1892,6 +1914,9 @@ export default function Admin() {
                                       <span className="flex items-center gap-1.5">
                                         {!(b.sentEmails?.length) && (
                                           <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
+                                        )}
+                                        {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
+                                          <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
                                         )}
                                         {(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}
                                       </span>
@@ -2078,6 +2103,9 @@ export default function Admin() {
                                   <span className="font-medium text-sm whitespace-nowrap">{b.time}</span>
                                   {!(b.sentEmails?.length) && (
                                     <MailX className="w-4 h-4 shrink-0 text-amber-600" title={t("admin.noEmailSent")} aria-label={t("admin.noEmailSent")} />
+                                  )}
+                                  {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
+                                    <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
                                   )}
                                   <span className="text-sm truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                                   <span className="text-xs text-muted-foreground flex items-center gap-1">
