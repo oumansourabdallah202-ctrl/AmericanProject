@@ -11,8 +11,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "wouter";
-import { trpc } from "@/lib/trpc";
 import { Loader2 } from "lucide-react";
+
+function getNewsletterApiUrl(): string {
+  const base = import.meta.env.VITE_API_URL?.trim();
+  if (!base) return "/api/newsletter-subscribe";
+  const normalized = base.replace(/\/$/, "");
+  return `${normalized}/api/newsletter-subscribe`;
+}
 
 const STORAGE_CONSENT = "spinella_privacy_consent";
 const STORAGE_NEWSLETTER_SHOWN = "spinella_newsletter_shown";
@@ -24,16 +30,7 @@ export function ConsentNewsletterPopups() {
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "success" | "error">("idle");
-
-  const subscribeMutation = trpc.newsletter.subscribe.useMutation({
-    onSuccess: () => {
-      setNewsletterStatus("success");
-      if (typeof localStorage !== "undefined") {
-        localStorage.setItem(STORAGE_NEWSLETTER_SHOWN, "1");
-      }
-    },
-    onError: () => setNewsletterStatus("error"),
-  });
+  const [subscribePending, setSubscribePending] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -68,11 +65,32 @@ export function ConsentNewsletterPopups() {
     setNewsletterOpen(false);
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
-    if (!trimmed) return;
-    subscribeMutation.mutate({ email: trimmed });
+    if (!trimmed || subscribePending) return;
+    setSubscribePending(true);
+    setNewsletterStatus("idle");
+    try {
+      const res = await fetch(getNewsletterApiUrl(), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean; error?: string };
+      if (res.ok && data.success) {
+        setNewsletterStatus("success");
+        if (typeof localStorage !== "undefined") {
+          localStorage.setItem(STORAGE_NEWSLETTER_SHOWN, "1");
+        }
+      } else {
+        setNewsletterStatus("error");
+      }
+    } catch {
+      setNewsletterStatus("error");
+    } finally {
+      setSubscribePending(false);
+    }
   };
 
   if (!mounted) return null;
@@ -148,7 +166,7 @@ export function ConsentNewsletterPopups() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-background border-border"
-                disabled={subscribeMutation.isPending}
+                disabled={subscribePending}
                 autoComplete="email"
               />
               {newsletterStatus === "error" && (
@@ -166,9 +184,9 @@ export function ConsentNewsletterPopups() {
                 <Button
                   type="submit"
                   className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold"
-                  disabled={subscribeMutation.isPending || !email.trim()}
+                  disabled={subscribePending || !email.trim()}
                 >
-                  {subscribeMutation.isPending ? (
+                  {subscribePending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     t("newsletter.subscribe")
