@@ -1,5 +1,7 @@
 /**
- * POST: delete all bookings where email = 'wix-sync@spinella.ch' (placeholder rows from Wix sync).
+ * POST: delete all empty/placeholder bookings:
+ * - email = 'wix-sync@spinella.ch', or
+ * - name empty / Guest / dash (no real guest data).
  * Admin only. Returns { ok: true, deleted: number }.
  */
 import { getSupabase, BOOKINGS_TABLE } from "../_lib/supabase.js";
@@ -20,6 +22,11 @@ function getAuthToken(req: Req): string {
 }
 
 const PLACEHOLDER_EMAIL = "wix-sync@spinella.ch";
+
+function isEmptyName(name: string | null | undefined): boolean {
+  const s = (name ?? "").trim();
+  return s === "" || s === "-" || s.toLowerCase() === "guest";
+}
 
 export default async function handler(req: Req, res: Res): Promise<void> {
   res.setHeader?.("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -42,19 +49,35 @@ export default async function handler(req: Req, res: Res): Promise<void> {
 
   try {
     const supabase = getSupabase();
-    // Delete by placeholder email only so we catch all "Guest" rows regardless of name casing
-    const { data: deletedRows, error: deleteErr } = await supabase
+    // 1) Delete by placeholder email (Wix sync placeholders)
+    const { data: byEmail, error: err1 } = await supabase
       .from(BOOKINGS_TABLE)
       .delete()
       .eq("email", PLACEHOLDER_EMAIL)
       .select("id");
-    if (deleteErr) {
-      console.error("[delete-guest-placeholders] Delete error:", deleteErr);
-      res.status(500).json({ error: "Failed to delete guest placeholders" });
+    if (err1) {
+      console.error("[delete-guest-placeholders] Delete by email error:", err1);
+      res.status(500).json({ error: "Failed to delete placeholders" });
       return;
     }
-    const count = Array.isArray(deletedRows) ? deletedRows.length : 0;
-    res.status(200).json({ ok: true, deleted: count, message: count === 0 ? "No guest placeholders to delete." : undefined });
+    let total = Array.isArray(byEmail) ? byEmail.length : 0;
+
+    // 2) Delete rows with empty/Guest/dash name (fetch ids then delete by id to avoid Supabase filter limits)
+    const { data: rows, error: fetchErr } = await supabase
+      .from(BOOKINGS_TABLE)
+      .select("id, name");
+    if (!fetchErr && Array.isArray(rows)) {
+      const emptyIds = (rows as { id: string; name: string | null }[])
+        .filter((r) => isEmptyName(r.name))
+        .map((r) => r.id);
+      if (emptyIds.length > 0) {
+        const { error: err2 } = await supabase.from(BOOKINGS_TABLE).delete().in("id", emptyIds);
+        if (!err2) total += emptyIds.length;
+        else console.error("[delete-guest-placeholders] Delete empty-name error:", err2);
+      }
+    }
+
+    res.status(200).json({ ok: true, deleted: total, message: total === 0 ? "No empty reservations to delete." : undefined });
   } catch (e) {
     console.error("[delete-guest-placeholders] Error:", e);
     res.status(500).json({ error: "Server error" });
