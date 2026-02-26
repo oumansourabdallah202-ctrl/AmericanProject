@@ -1624,11 +1624,18 @@ export default function Admin() {
                         </td>
                         <td className="p-2 sm:p-3">{b.partySize}</td>
                         <td className="p-2 sm:p-3">
-                          <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
-                            b.status === "confirmed" ? "bg-blue-600/20 text-blue-600" : b.status === "request" ? "bg-amber-600/20 text-amber-600" : b.status === "cancelled" ? "bg-red-600/20 text-red-600" : "bg-muted"
-                          }`}>
-                            {b.status === "request" ? <span>⚠</span> : b.status === "pending" ? <span>⏳</span> : b.status === "cancelled" ? <span>❌</span> : <span>✓</span>}
-                          </span>
+                          {(() => {
+                            const hasBounced = (b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced");
+                            const showEmailNotReceived = b.status === "confirmed" && hasBounced;
+                            return (
+                              <span className={`inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
+                                showEmailNotReceived ? "bg-red-600/20 text-red-600" : b.status === "confirmed" ? "bg-blue-600/20 text-blue-600" : b.status === "request" ? "bg-amber-600/20 text-amber-600" : b.status === "cancelled" ? "bg-red-600/20 text-red-600" : "bg-muted"
+                              }`}>
+                                {showEmailNotReceived ? <span>⚠</span> : b.status === "request" ? <span>⚠</span> : b.status === "pending" ? <span>⏳</span> : b.status === "cancelled" ? <span>❌</span> : <span>✓</span>}
+                                {showEmailNotReceived ? t("admin.statusEmailNotReceived") : b.status === "request" ? t("admin.statusRequest") : b.status === "pending" ? t("admin.statusPending") : b.status === "cancelled" ? t("admin.statusCancelled") : b.status === "archived" ? t("admin.statusArchived") : t("admin.statusConfirmed")}
+                              </span>
+                            );
+                          })()}
                         </td>
                         <td className="p-2 sm:p-3 hidden md:table-cell text-[10px] sm:text-xs">
                           <span>{b.createdAt ? new Date(b.createdAt).toLocaleDateString() : "—"}</span>
@@ -1748,12 +1755,18 @@ export default function Admin() {
                               </td>
                               <td className="p-2 sm:p-3">{b.partySize}</td>
                               <td className="p-2 sm:p-3">
-                                <span className={`inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
-                                  b.status === "confirmed" ? "bg-blue-600/20 text-blue-600" : b.status === "request" ? "bg-amber-600/20 text-amber-600" : b.status === "cancelled" ? "bg-red-600/20 text-red-600" : "bg-muted"
-                                }`}>
-                                  {b.status === "request" ? <span>⚠</span> : b.status === "pending" ? <span>⏳</span> : b.status === "cancelled" ? <span>❌</span> : <span>✓</span>}
-                                  {b.status === "request" ? t("admin.statusRequest") : b.status === "pending" ? t("admin.statusPending") : b.status === "cancelled" ? t("admin.statusCancelled") : b.status === "archived" ? t("admin.statusArchived") : t("admin.statusConfirmed")}
-                                </span>
+                                {(() => {
+                                  const hasBounced = (b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced");
+                                  const showEmailNotReceived = b.status === "confirmed" && hasBounced;
+                                  return (
+                                    <span className={`inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
+                                      showEmailNotReceived ? "bg-red-600/20 text-red-600" : b.status === "confirmed" ? "bg-blue-600/20 text-blue-600" : b.status === "request" ? "bg-amber-600/20 text-amber-600" : b.status === "cancelled" ? "bg-red-600/20 text-red-600" : "bg-muted"
+                                    }`}>
+                                      {showEmailNotReceived ? <span>⚠</span> : b.status === "request" ? <span>⚠</span> : b.status === "pending" ? <span>⏳</span> : b.status === "cancelled" ? <span>❌</span> : <span>✓</span>}
+                                      {showEmailNotReceived ? t("admin.statusEmailNotReceived") : b.status === "request" ? t("admin.statusRequest") : b.status === "pending" ? t("admin.statusPending") : b.status === "cancelled" ? t("admin.statusCancelled") : b.status === "archived" ? t("admin.statusArchived") : t("admin.statusConfirmed")}
+                                    </span>
+                                  );
+                                })()}
                               </td>
                               <td className="p-2 sm:p-3">
                                 <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")} className="p-1 h-auto">
@@ -2113,21 +2126,25 @@ export default function Admin() {
                                     {b.partySize}
                                   </span>
                                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${
-                                    b.status === "confirmed"
-                                      ? "bg-blue-600/20 text-blue-600"
-                                      : b.status === "request" || b.status === "pending"
-                                        ? "bg-amber-600/20 text-amber-600"
-                                        : b.status === "cancelled"
-                                          ? "bg-red-600/20 text-red-600"
-                                          : "bg-muted text-muted-foreground"
+                                    (b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && b.status === "confirmed"
+                                      ? "bg-red-600/20 text-red-600"
+                                      : b.status === "confirmed"
+                                        ? "bg-blue-600/20 text-blue-600"
+                                        : b.status === "request" || b.status === "pending"
+                                          ? "bg-amber-600/20 text-amber-600"
+                                          : b.status === "cancelled"
+                                            ? "bg-red-600/20 text-red-600"
+                                            : "bg-muted text-muted-foreground"
                                   }`}>
-                                    {b.status === "confirmed"
-                                      ? "Prenotato"
-                                      : b.status === "request" || b.status === "pending"
-                                        ? "In attesa"
-                                        : b.status === "cancelled"
-                                          ? "Annullato"
-                                          : b.status}
+                                    {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && b.status === "confirmed"
+                                      ? t("admin.statusEmailNotReceived")
+                                      : b.status === "confirmed"
+                                        ? t("admin.statusConfirmed")
+                                        : b.status === "request" || b.status === "pending"
+                                          ? t("admin.statusPending")
+                                          : b.status === "cancelled"
+                                            ? t("admin.statusCancelled")
+                                            : b.status}
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-1 flex-shrink-0 ml-2">
@@ -2652,25 +2669,29 @@ export default function Admin() {
                     <span>{bookingDetail.booking.partySize}</span>
                     <span className="text-muted-foreground">{t("admin.status")}</span>
                     <span className={`font-semibold ${
-                      bookingDetail.booking.status === "confirmed" 
-                        ? "text-green-600" 
-                        : bookingDetail.booking.status === "request" || bookingDetail.booking.status === "pending"
-                          ? "text-amber-600"
-                          : bookingDetail.booking.status === "cancelled"
-                            ? "text-red-600"
-                            : bookingDetail.booking.status === "archived"
-                              ? "text-muted-foreground"
-                              : ""
+                      bookingDetail.booking.status === "confirmed" && bookingDetail.emailStatuses.some((e) => e.status === "bounced")
+                        ? "text-red-600"
+                        : bookingDetail.booking.status === "confirmed"
+                          ? "text-green-600"
+                          : bookingDetail.booking.status === "request" || bookingDetail.booking.status === "pending"
+                            ? "text-amber-600"
+                            : bookingDetail.booking.status === "cancelled"
+                              ? "text-red-600"
+                              : bookingDetail.booking.status === "archived"
+                                ? "text-muted-foreground"
+                                : ""
                     }`}>
                       {bookingDetail.booking.status === "request"
                         ? <span>{t("admin.statusRequest")}</span>
-                        : bookingDetail.booking.status === "confirmed"
-                          ? <span>{t("admin.statusConfirmed")}</span>
-                          : bookingDetail.booking.status === "cancelled"
-                            ? <span>{t("admin.statusCancelled")}</span>
-                            : bookingDetail.booking.status === "archived"
-                              ? <span>{t("admin.statusArchived")}</span>
-                              : <span>{t("admin.statusPending")}</span>}
+                        : bookingDetail.booking.status === "confirmed" && bookingDetail.emailStatuses.some((e) => e.status === "bounced")
+                          ? <span>{t("admin.statusEmailNotReceived")}</span>
+                          : bookingDetail.booking.status === "confirmed"
+                            ? <span>{t("admin.statusConfirmed")}</span>
+                            : bookingDetail.booking.status === "cancelled"
+                              ? <span>{t("admin.statusCancelled")}</span>
+                              : bookingDetail.booking.status === "archived"
+                                ? <span>{t("admin.statusArchived")}</span>
+                                : <span>{t("admin.statusPending")}</span>}
                     </span>
                   </div>
                   {bookingDetail.booking.specialRequests && (
