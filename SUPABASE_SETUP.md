@@ -217,9 +217,11 @@ Run this whenever you want to refresh the client list from Resend. New bookings 
 | Table     | Purpose |
 |----------|---------|
 | `bookings` | One row per reservation: `name`, `email`, `phone`, `date`, `time`, `party_size`, `special_requests`, `status` (`pending` / `request` / `confirmed` / `cancelled`), `created_at`, `updated_at`. |
+| `newsletter_subscribers` | Newsletter signups from the site: `email`, `subscribed_at`, `subscribed` (true/false), `unsubscribe_token` (for one-click unsubscribe). Create/update with **`docs/supabase-newsletter-table.sql`**. Only `subscribed = true` should receive campaigns (e.g. via Make.com). See **`docs/Make-com-Newsletter-Automation.md`**. |
 
 - New bookings from the site are written by `/api/booking`.
 - The admin page reads and updates them via `/api/bookings` (with admin auth).
+- Newsletter: subscribe via `/api/newsletter-subscribe`; unsubscribe via `/api/newsletter-unsubscribe?token=...` (link in emails).
 
 ---
 

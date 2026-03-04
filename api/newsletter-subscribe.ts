@@ -43,13 +43,15 @@ export default async function handler(
 
   try {
     const supabase = getSupabase();
-    const { error } = await supabase.from(NEWSLETTER_TABLE).insert({ email });
+    // Upsert: new subscriber gets inserted; existing (e.g. unsubscribed) gets subscribed = true again
+    const { error } = await supabase
+      .from(NEWSLETTER_TABLE)
+      .upsert(
+        { email, subscribed: true, subscribed_at: new Date().toISOString() },
+        { onConflict: "email", ignoreDuplicates: false }
+      );
     if (error) {
-      if (error.code === "23505") {
-        res.status(200).json({ success: true, alreadySubscribed: true });
-        return;
-      }
-      console.error("[Newsletter] Insert failed:", error);
+      console.error("[Newsletter] Upsert failed:", error);
       res.status(500).json({ error: "Failed to subscribe" });
       return;
     }

@@ -475,6 +475,13 @@ export const translations = {
       skip: "Maybe later",
       success: "Thank you! You are subscribed.",
       error: "Something went wrong. Please try again."
+    },
+    unsubscribe: {
+      title: "Newsletter unsubscribe",
+      loading: "Loading...",
+      noLink: "Use the unsubscribe link at the bottom of our emails to stop receiving the newsletter.",
+      contact: "To be removed manually or for any question:",
+      contactLink: "Contact us"
     }
   },
   fr: {
@@ -950,6 +957,13 @@ export const translations = {
       skip: "Plus tard",
       success: "Merci ! Vous êtes inscrit.",
       error: "Une erreur s'est produite. Veuillez réessayer."
+    },
+    unsubscribe: {
+      title: "Désabonnement newsletter",
+      loading: "Chargement...",
+      noLink: "Utilisez le lien de désabonnement en bas de nos e-mails pour ne plus recevoir la newsletter.",
+      contact: "Pour être retiré manuellement ou pour toute question :",
+      contactLink: "Nous contacter"
     }
   },
   it: {
@@ -1425,6 +1439,13 @@ export const translations = {
       skip: "Più tardi",
       success: "Grazie! Sei iscritto.",
       error: "Qualcosa è andato storto. Riprova."
+    },
+    unsubscribe: {
+      title: "Disiscrizione newsletter",
+      loading: "Caricamento...",
+      noLink: "Usa il link di disiscrizione in fondo alle nostre e-mail per non ricevere più la newsletter.",
+      contact: "Per essere rimosso manualmente o per domande:",
+      contactLink: "Contattaci"
     }
   },
   de: {
@@ -1732,6 +1753,13 @@ export const translations = {
       skip: "Später",
       success: "Danke! Sie sind angemeldet.",
       error: "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+    },
+    unsubscribe: {
+      title: "Newsletter abmelden",
+      loading: "Laden...",
+      noLink: "Nutzen Sie den Abmeldelink am Ende unserer E-Mails, um den Newsletter abzubestellen.",
+      contact: "Zur manuellen Entfernung oder bei Fragen:",
+      contactLink: "Kontakt"
     }
   },
   es: {
@@ -2039,6 +2067,13 @@ export const translations = {
       skip: "Más tarde",
       success: "¡Gracias! Está suscrito.",
       error: "Algo salió mal. Inténtelo de nuevo."
+    },
+    unsubscribe: {
+      title: "Baja de la newsletter",
+      loading: "Cargando...",
+      noLink: "Use el enlace de baja al pie de nuestros correos para dejar de recibir la newsletter.",
+      contact: "Para darse de baja manualmente o consultas:",
+      contactLink: "Contáctenos"
     }
   }
 };
