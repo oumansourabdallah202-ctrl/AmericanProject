@@ -1,4 +1,5 @@
-import { Link } from "wouter";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Users, Utensils, Wine } from "lucide-react";
@@ -9,11 +10,29 @@ const HERO_VIDEO = "/hero.mp4";
 
 export default function Home() {
   const { t } = useLanguage();
+  const [location] = useLocation();
+  const heroRef = useRef<HTMLElement>(null);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+
+  useEffect(() => {
+    if (location !== "/") return;
+    const hero = heroRef.current;
+    if (!hero) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyCta(!entry.isIntersecting),
+      { threshold: 0, rootMargin: "-10% 0px 0px 0px" }
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [location]);
+
+  const isHome = location === "/";
 
   return (
     <div className="min-h-screen pt-20 md:pt-20">
       {/* Hero: video only (mobile + desktop), no static photo */}
       <section
+        ref={heroRef}
         className="relative flex items-center justify-center overflow-hidden min-h-[100dvh] md:min-h-[min(100dvh,calc(100vh-5rem))] aspect-auto md:aspect-[16/10]"
         style={{ minHeight: "min(100dvh, calc(100vh - 5rem))" }}
       >
@@ -205,6 +224,35 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Sticky CTA: visible after scrolling past hero, home only. Optimized for mobile touch. */}
+      {isHome && showStickyCta && (
+        <div
+          className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center gap-2 sm:gap-3 px-3 py-2.5 sm:px-4 sm:py-3 bg-background/98 backdrop-blur-sm border-t border-border shadow-[0_-4px_24px_rgba(0,0,0,0.2)] min-h-[56px] sm:min-h-0 [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))] [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))]"
+          role="banner"
+          aria-label={t("home.bookYourTable")}
+        >
+          <div className="container max-w-lg flex flex-row items-center justify-center gap-2 sm:gap-3 w-full">
+            <Link href="/reservations" className="flex-1 sm:flex-initial min-w-0">
+              <Button
+                size="lg"
+                className="w-full min-h-[44px] gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold text-sm sm:text-base px-4 sm:px-6 py-4 sm:py-5 rounded-lg shadow-md transition-all hover:shadow-lg active:scale-[0.98] touch-manipulation"
+              >
+                {t("home.bookYourTable")}
+              </Button>
+            </Link>
+            <Link href="/about" className="flex-shrink-0 sm:flex-initial">
+              <Button
+                size="lg"
+                variant="outline"
+                className="min-h-[44px] border-2 border-[oklch(0.62_0.15_85)] text-foreground hover:bg-[oklch(0.62_0.15_85)] hover:text-black font-semibold text-sm sm:text-base px-4 sm:px-6 py-4 sm:py-5 rounded-lg touch-manipulation"
+              >
+                {t("home.meetBrothers")}
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

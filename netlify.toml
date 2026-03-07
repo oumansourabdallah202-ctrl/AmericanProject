@@ -1,13 +1,16 @@
-[build]
-  command = "pnpm install && pnpm run build:client"
-  publish = "dist/public"
+# Netlify config for Spinella Geneva (preview / test deploys).
+# Production stays on Vercel (API + serverless). Use Netlify for manual previews before pushing to git.
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[build]
+  command    = "pnpm run build:client"
+  publish    = "dist/public"
+  base       = "."
 
 [build.environment]
-  NODE_VERSION = "22"
-  PNPM_VERSION = "10"
-  NPM_FLAGS = "--legacy-peer-deps"
+  NODE_VERSION = "20"
+
+# SPA: all routes serve index.html (client/public/_redirects is copied into publish dir)
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200
