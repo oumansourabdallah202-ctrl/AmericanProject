@@ -1160,9 +1160,14 @@ export default function Admin() {
 
   useEffect(() => {
     if (!token || !verified) return;
-    const interval = setInterval(() => fetchBookings(token), POLL_INTERVAL_MS);
+    const tick = () => {
+      fetchBookings(token);
+      fetchNewsletterSubscribers(token);
+    };
+    tick(); // run once immediately so newsletter list is fresh
+    const interval = setInterval(tick, POLL_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [token, verified, fetchBookings]);
+  }, [token, verified, fetchBookings, fetchNewsletterSubscribers]);
 
   const runWixSyncInBackground = useCallback(async () => {
     if (!token) return;
