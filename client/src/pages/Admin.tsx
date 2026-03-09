@@ -65,6 +65,13 @@ export type ClientRecord = {
   lastBookingDate?: string | null;
 };
 
+export type NewsletterSubscriberRecord = {
+  email: string;
+  name: string | null;
+  subscribed: boolean;
+  subscribedAt: string | null;
+};
+
 function getAuthHeaders(token: string): HeadersInit {
   return {
     "Content-Type": "application/json",
@@ -132,6 +139,8 @@ export default function Admin() {
   const [addFromListText, setAddFromListText] = useState("");
   const [addFromListSaving, setAddFromListSaving] = useState(false);
   const [syncingReservationsToClients, setSyncingReservationsToClients] = useState(false);
+  const [newsletterSubscribers, setNewsletterSubscribers] = useState<NewsletterSubscriberRecord[]>([]);
+  const [newsletterError, setNewsletterError] = useState("");
   const [syncingFromResend, setSyncingFromResend] = useState(false);
   const [selectedBookingIds, setSelectedBookingIds] = useState<Set<string>>(new Set());
   const [selectedClientIds, setSelectedClientIds] = useState<Set<string>>(new Set());
@@ -277,6 +286,21 @@ export default function Admin() {
       }
     } catch {
       setClientsError(t("admin.clientsFetchError"));
+    }
+  }, [t]);
+
+  const fetchNewsletterSubscribers = useCallback(async (authToken: string) => {
+    setNewsletterError("");
+    try {
+      const res = await fetch("/api/newsletter-subscribers", { headers: getAuthHeaders(authToken) });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && Array.isArray(data.subscribers)) {
+        setNewsletterSubscribers(data.subscribers);
+      } else {
+        setNewsletterError(t("admin.newsletterFetchError"));
+      }
+    } catch {
+      setNewsletterError(t("admin.newsletterFetchError"));
     }
   }, [t]);
 
@@ -561,6 +585,23 @@ export default function Admin() {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `spinella-clients-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  const handleExportNewsletterCsv = () => {
+    const headers = ["Name", "Email", "Subscribed", "Subscribed At"];
+    const rows = newsletterSubscribers.map((s) => [
+      `"${(s.name ?? "").replace(/"/g, '""')}"`,
+      `"${(s.email ?? "").replace(/"/g, '""')}"`,
+      s.subscribed ? "Yes" : "No",
+      s.subscribedAt ?? "",
+    ]);
+    const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `spinella-newsletter-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -1111,8 +1152,11 @@ export default function Admin() {
   }, [token, verified, fetchBookings, t]);
 
   useEffect(() => {
-    if (token && verified) fetchClients(token);
-  }, [token, verified, fetchClients]);
+    if (token && verified) {
+      fetchClients(token);
+      fetchNewsletterSubscribers(token);
+    }
+  }, [token, verified, fetchClients, fetchNewsletterSubscribers]);
 
   useEffect(() => {
     if (!token || !verified) return;
@@ -1381,7 +1425,7 @@ export default function Admin() {
         </p>
 
         <Tabs defaultValue="all">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1 h-auto">
             <TabsTrigger value="all" className="text-xs sm:text-sm">
               <List className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
               <span className="hidden sm:inline">Toutes les réservations</span>
@@ -1401,6 +1445,11 @@ export default function Admin() {
               <Users className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
               <span className="hidden sm:inline">{t("admin.clients")}</span>
               <span className="sm:hidden">Clients</span>
+            </TabsTrigger>
+            <TabsTrigger value="newsletter" className="text-xs sm:text-sm">
+              <Mail className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+              <span className="hidden sm:inline">{t("admin.newsletter")}</span>
+              <span className="sm:hidden">Newsletter</span>
             </TabsTrigger>
           </TabsList>
           <TabsContent value="all" className="mt-4 sm:mt-6">
@@ -2532,6 +2581,56 @@ export default function Admin() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+          </TabsContent>
+          <TabsContent value="newsletter" className="mt-6">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                  <p className="text-sm text-muted-foreground">
+                    {newsletterSubscribers.length === 0 && !newsletterError
+                      ? t("admin.newsletterEmpty")
+                      : newsletterError
+                        ? newsletterError
+                        : `${newsletterSubscribers.length} ${t("admin.newsletterSubscribers")}`}
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleExportNewsletterCsv}
+                    disabled={newsletterSubscribers.length === 0}
+                    className="h-8"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    {t("admin.newsletterExportCsv")}
+                  </Button>
+                </div>
+                {newsletterSubscribers.length > 0 && (
+                  <div className="overflow-x-auto rounded-md border border-border">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border bg-muted/50">
+                          <th className="text-left p-3 font-medium">{t("admin.name")}</th>
+                          <th className="text-left p-3 font-medium">{t("admin.email")}</th>
+                          <th className="text-left p-3 font-medium">{t("admin.newsletterStatus")}</th>
+                          <th className="text-left p-3 font-medium">{t("admin.newsletterSubscribedAt")}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {newsletterSubscribers.map((s) => (
+                          <tr key={s.email} className="border-b border-border last:border-0">
+                            <td className="p-3">{s.name ?? "—"}</td>
+                            <td className="p-3">{s.email}</td>
+                            <td className="p-3">{s.subscribed ? t("admin.newsletterSubscribed") : t("admin.newsletterUnsubscribed")}</td>
+                            <td className="p-3 text-muted-foreground">{s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString(undefined, { dateStyle: "medium" }) : "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 
