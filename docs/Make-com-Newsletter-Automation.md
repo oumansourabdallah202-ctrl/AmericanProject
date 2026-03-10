@@ -76,6 +76,8 @@ In Make.com, when you build the HTML for each recipient, set:
 
 So each email gets a unique, secure unsubscribe link.
 
+**Important:** If you send the campaign without replacing the placeholder (e.g. you use the same HTML for everyone without mapping `unsubscribe_token` from Supabase per recipient), the link will be broken and recipients will see an error. Always use a scenario that **iterates per row** and injects that row’s `unsubscribe_token` into the URL.
+
 ---
 
 ## 5. Summary

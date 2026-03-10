@@ -1,6 +1,6 @@
 /**
  * Admin-only API: list newsletter subscribers (for admin tab + CSV export).
- * GET /api/newsletter-subscribers — returns { subscribers: [{ email, name?, subscribed, subscribedAt }] }.
+ * GET /api/newsletter-subscribers — returns { subscribers: [{ email, name?, subscribed, subscribedAt, unsubscribeToken }] }.
  * Enriches with name from clients table when the same email exists there.
  */
 
@@ -33,6 +33,7 @@ export type NewsletterSubscriberDoc = {
   name: string | null;
   subscribed: boolean;
   subscribedAt: string | null;
+  unsubscribeToken: string | null;
 };
 
 export default async function handler(
@@ -51,16 +52,16 @@ export default async function handler(
   try {
     const supabase = getSupabase();
     const PAGE = 1000;
-    let rows: Array<{ email: string; subscribed?: boolean; subscribed_at?: string | null }> = [];
+    let rows: Array<{ email: string; subscribed?: boolean; subscribed_at?: string | null; unsubscribe_token?: string | null }> = [];
     let from = 0;
     while (true) {
       const { data: page, error } = await supabase
         .from(NEWSLETTER_TABLE)
-        .select("email, subscribed, subscribed_at")
+        .select("email, subscribed, subscribed_at, unsubscribe_token")
         .order("subscribed_at", { ascending: false })
         .range(from, from + PAGE - 1);
       if (error) throw error;
-      const list = (page ?? []) as Array<{ email: string; subscribed?: boolean; subscribed_at?: string | null }>;
+      const list = (page ?? []) as Array<{ email: string; subscribed?: boolean; subscribed_at?: string | null; unsubscribe_token?: string | null }>;
       rows = rows.concat(list);
       if (list.length < PAGE) break;
       from += PAGE;
@@ -92,6 +93,7 @@ export default async function handler(
       name: (r.email && nameByEmail.get(r.email.toLowerCase())) ?? null,
       subscribed: r.subscribed ?? true,
       subscribedAt: r.subscribed_at ?? null,
+      unsubscribeToken: r.unsubscribe_token ?? null,
     }));
 
     res.status(200).json({ subscribers });

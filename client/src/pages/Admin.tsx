@@ -70,6 +70,7 @@ export type NewsletterSubscriberRecord = {
   name: string | null;
   subscribed: boolean;
   subscribedAt: string | null;
+  unsubscribeToken: string | null;
 };
 
 function getAuthHeaders(token: string): HeadersInit {
@@ -590,12 +591,14 @@ export default function Admin() {
   };
 
   const handleExportNewsletterCsv = () => {
-    const headers = ["Name", "Email", "Subscribed", "Subscribed At"];
-    const rows = newsletterSubscribers.map((s) => [
+    const headers = ["No.", "Name", "Email", "Subscribed", "Subscribed At", "Unsubscribe Token"];
+    const rows = newsletterSubscribers.map((s, i) => [
+      String(i + 1),
       `"${(s.name ?? "").replace(/"/g, '""')}"`,
       `"${(s.email ?? "").replace(/"/g, '""')}"`,
       s.subscribed ? "Yes" : "No",
       s.subscribedAt ?? "",
+      s.unsubscribeToken ?? "",
     ]);
     const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
@@ -2615,19 +2618,23 @@ export default function Admin() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-border bg-muted/50">
+                          <th className="text-left p-3 font-medium w-12">{t("admin.newsletterNo")}</th>
                           <th className="text-left p-3 font-medium">{t("admin.name")}</th>
                           <th className="text-left p-3 font-medium">{t("admin.email")}</th>
                           <th className="text-left p-3 font-medium">{t("admin.newsletterStatus")}</th>
                           <th className="text-left p-3 font-medium">{t("admin.newsletterSubscribedAt")}</th>
+                          <th className="text-left p-3 font-medium">{t("admin.newsletterToken")}</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {newsletterSubscribers.map((s) => (
+                        {newsletterSubscribers.map((s, i) => (
                           <tr key={s.email} className="border-b border-border last:border-0">
+                            <td className="p-3 text-muted-foreground">{i + 1}</td>
                             <td className="p-3">{s.name ?? "—"}</td>
                             <td className="p-3">{s.email}</td>
                             <td className="p-3">{s.subscribed ? t("admin.newsletterSubscribed") : t("admin.newsletterUnsubscribed")}</td>
                             <td className="p-3 text-muted-foreground">{s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString(undefined, { dateStyle: "medium" }) : "—"}</td>
+                            <td className="p-3 font-mono text-xs text-muted-foreground" title={s.unsubscribeToken ?? undefined}>{s.unsubscribeToken ? `${s.unsubscribeToken.slice(0, 8)}…` : "—"}</td>
                           </tr>
                         ))}
                       </tbody>

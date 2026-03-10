@@ -67,11 +67,23 @@ export default async function handler(
     email = params.get("email")?.trim() || null;
   }
 
+  // Reject empty token or literal placeholder (campaign sent without personalizing the link)
+  const isPlaceholder = !token || token === "{{unsubscribe_token}}" || /^\{\{.*\}\}$/.test(token);
   if (!token && !email) {
     res.status(400).send(
       htmlPage(
         "Lien invalide",
         "Lien de désabonnement invalide. Utilisez le lien reçu par e-mail ou contactez-nous à info@spinella.ch.",
+        false
+      )
+    );
+    return;
+  }
+  if (token && isPlaceholder) {
+    res.status(400).send(
+      htmlPage(
+        "Lien non personnalisé",
+        "Ce lien de désabonnement n'a pas été personnalisé pour votre adresse (l'e-mail a été envoyé sans remplacer le lien par votre identifiant). Pour vous désabonner : écrivez-nous à <a href=\"mailto:info@spinella.ch?subject=Désabonnement%20newsletter\" style=\"color:#d4af37;\">info@spinella.ch</a> avec l'objet « Désabonnement newsletter » et votre adresse e-mail.",
         false
       )
     );
