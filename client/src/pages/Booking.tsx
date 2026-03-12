@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar, Clock, Users, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { getTimeSlotsForDate, isSunday, isRequestOnlyPartySize } from "@/lib/blockedSlots";
@@ -50,6 +51,7 @@ function buildBookingSchema(t: (key: string) => string) {
       { message: t("booking.timePast") }
     ),
     partySize: z.string().min(1, t("booking.validation.partySizeRequired")),
+    dietaryRequirements: z.string().optional(),
     specialRequests: z.string().optional(),
   });
 }
@@ -71,6 +73,7 @@ function buildMailtoUrl(data: BookingForm): string {
     `Date: ${data.date}`,
     `Time: ${data.time}`,
     `Number of guests: ${data.partySize}`,
+    ...(data.dietaryRequirements?.trim() ? [`Dietary / allergies: ${data.dietaryRequirements.trim()}`] : []),
     ...(data.specialRequests?.trim() ? [`Special requests: ${data.specialRequests.trim()}`] : []),
   ].join("\n");
   return `mailto:${RESTAURANT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -82,6 +85,7 @@ export default function Booking() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastFailedData, setLastFailedData] = useState<BookingForm | null>(null);
   const [wasAutoConfirmed, setWasAutoConfirmed] = useState(false);
+  const [hasAllergy, setHasAllergy] = useState(false);
 
   const bookingSchema = useMemo(() => buildBookingSchema(t), [t]);
   const {
@@ -115,7 +119,8 @@ export default function Booking() {
           date: data.date,
           time: data.time,
           partySize: data.partySize === "21" ? 21 : parseInt(data.partySize, 10),
-          specialRequests: data.specialRequests || null,
+          dietaryRequirements: hasAllergy ? (data.dietaryRequirements?.trim() || null) : null,
+          specialRequests: data.specialRequests?.trim() || null,
         }),
         signal: controller.signal,
       });
@@ -126,12 +131,12 @@ export default function Booking() {
         setIsSubmitted(true);
         toast.success(t("booking.successToast"));
       } else {
-        setLastFailedData(data);
+        setLastFailedData({ ...data, dietaryRequirements: hasAllergy ? data.dietaryRequirements : null });
         toast.error(t("booking.errorMessage"));
       }
     } catch {
       clearTimeout(timeoutId);
-      setLastFailedData(data);
+      setLastFailedData({ ...data, dietaryRequirements: hasAllergy ? data.dietaryRequirements : null });
       toast.error(t("booking.errorMessage"));
     } finally {
       setIsSubmitting(false);
@@ -377,14 +382,41 @@ export default function Booking() {
                   </div>
                 </div>
 
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">{t("booking.allergiesNote")}</p>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox
+                      checked={hasAllergy}
+                      onCheckedChange={(checked) => {
+                        setHasAllergy(!!checked);
+                        if (!checked) setValue("dietaryRequirements", "");
+                      }}
+                      aria-describedby="allergy-checkbox-desc"
+                    />
+                    <span className="text-sm font-medium">{t("booking.hasAllergyCheckbox")}</span>
+                  </label>
+                  {hasAllergy && (
+                    <>
+                      <Label htmlFor="dietaryRequirements" id="allergy-checkbox-desc">{t("booking.dietaryLabel")}</Label>
+                      <Textarea
+                        id="dietaryRequirements"
+                        {...register("dietaryRequirements")}
+                        placeholder={t("booking.dietaryPlaceholder")}
+                        className="mt-1"
+                        rows={2}
+                      />
+                    </>
+                  )}
+                  <p className="text-xs text-muted-foreground">{t("booking.allergiesNotifyStaff")}</p>
+                </div>
                 <div>
-                  <Label htmlFor="specialRequests">{t("booking.specialRequests")}</Label>
+                  <Label htmlFor="specialRequests">{t("booking.specialRequestsEventOnly")}</Label>
                   <Textarea
                     id="specialRequests"
                     {...register("specialRequests")}
-                    placeholder={t("booking.specialRequestsPlaceholder")}
+                    placeholder={t("booking.specialRequestsPlaceholderEvent")}
                     className="mt-1"
-                    rows={4}
+                    rows={3}
                   />
                 </div>
               </div>

@@ -100,6 +100,21 @@ alter table public.bookings
 
 ---
 
+## Step 2d: Add `dietary_requirements` to `bookings` (optional, for allergies/dietary)
+
+To separate dietary requirements and allergies from special requests (events, birthday, etc.):
+
+1. In Supabase → **SQL Editor**, run:
+
+```sql
+alter table public.bookings
+  add column if not exists dietary_requirements text;
+```
+
+2. Redeploy. The booking form then stores allergies/dietary in this column and uses `special_requests` only for events (birthday, cake, etc.).
+
+---
+
 ## Step 3: Create the admin user (Supabase Authentication)
 
 1. In the Supabase dashboard, go to **Authentication** → **Users** in the left menu.

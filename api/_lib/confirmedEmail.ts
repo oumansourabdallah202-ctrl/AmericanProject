@@ -17,6 +17,7 @@ export function confirmedEmailHtml(data: {
   partySize: number;
   phone: string;
   specialRequests?: string | null;
+  dietaryRequirements?: string | null;
 }): string {
   const displayDate = formatDate(data.date);
   return `
@@ -34,6 +35,7 @@ export function confirmedEmailHtml(data: {
 <tr><td style="font-size:13px;color:#8a7a5c;">Heure</td><td style="text-align:right;font-size:14px;color:#e8e4dc;">${data.time}</td></tr>
 <tr><td style="font-size:13px;color:#8a7a5c;">Nombre de personnes</td><td style="text-align:right;font-size:14px;color:#e8e4dc;">${data.partySize}</td></tr>
 <tr><td style="font-size:13px;color:#8a7a5c;">Téléphone</td><td style="text-align:right;font-size:14px;color:#e8e4dc;">${data.phone}</td></tr>
+${data.dietaryRequirements ? `<tr><td colspan="2" style="padding-top:12px;border-top:1px solid #2a2520;font-size:13px;color:#8a7a5c;">Régime / allergies</td></tr><tr><td colspan="2" style="font-size:14px;color:#e8e4dc;">${data.dietaryRequirements}</td></tr>` : ""}
 ${data.specialRequests ? `<tr><td colspan="2" style="padding-top:12px;border-top:1px solid #2a2520;font-size:13px;color:#8a7a5c;">Demandes spéciales</td></tr><tr><td colspan="2" style="font-size:14px;color:#e8e4dc;">${data.specialRequests}</td></tr>` : ""}
 </table></td></tr>
 <tr><td style="padding:24px;text-align:center;font-size:13px;color:#8a7a5c;">Rue Liotard 4, 1202 Genève · <a href="tel:+41225034186" style="color:#d4af37;">+41 22 503 41 86</a> · <a href="mailto:info@spinella.ch" style="color:#d4af37;">info@spinella.ch</a></td></tr>

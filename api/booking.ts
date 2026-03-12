@@ -31,6 +31,7 @@ function guestEmailHtml(data: {
   partySize: number;
   phone: string;
   specialRequests?: string | null;
+  dietaryRequirements?: string | null;
 }): string {
   const displayDate = formatDate(data.date);
   return `
@@ -46,6 +47,7 @@ function guestEmailHtml(data: {
 <tr><td style="font-size:13px;color:#8a7a5c;">Time</td><td style="text-align:right;font-size:14px;color:#e8e4dc;">${data.time}</td></tr>
 <tr><td style="font-size:13px;color:#8a7a5c;">Guests</td><td style="text-align:right;font-size:14px;color:#e8e4dc;">${data.partySize}</td></tr>
 <tr><td style="font-size:13px;color:#8a7a5c;">Phone</td><td style="text-align:right;font-size:14px;color:#e8e4dc;">${data.phone}</td></tr>
+${data.dietaryRequirements ? `<tr><td colspan="2" style="padding-top:12px;border-top:1px solid #2a2520;font-size:13px;color:#8a7a5c;">Dietary / allergies</td></tr><tr><td colspan="2" style="font-size:14px;color:#e8e4dc;">${data.dietaryRequirements}</td></tr>` : ""}
 ${data.specialRequests ? `<tr><td colspan="2" style="padding-top:12px;border-top:1px solid #2a2520;font-size:13px;color:#8a7a5c;">Special requests</td></tr><tr><td colspan="2" style="font-size:14px;color:#e8e4dc;">${data.specialRequests}</td></tr>` : ""}
 </table></td></tr>
 <tr><td style="padding:24px;text-align:center;font-size:13px;color:#8a7a5c;">Rue Liotard 4, 1202 Geneva · <a href="tel:+41225034186" style="color:#d4af37;">+41 22 503 41 86</a> · <a href="mailto:info@spinella.ch" style="color:#d4af37;">info@spinella.ch</a></td></tr>
@@ -60,6 +62,7 @@ function restaurantEmailHtml(data: {
   time: string;
   partySize: number;
   specialRequests?: string | null;
+  dietaryRequirements?: string | null;
 }): string {
   const displayDate = formatDate(data.date);
   return `<p><strong>New reservation request</strong></p><ul>
@@ -69,6 +72,7 @@ function restaurantEmailHtml(data: {
 <li><strong>Date:</strong> ${displayDate}</li>
 <li><strong>Time:</strong> ${data.time}</li>
 <li><strong>Guests:</strong> ${data.partySize}</li>
+${data.dietaryRequirements ? `<li><strong>Dietary / allergies:</strong> ${data.dietaryRequirements}</li>` : ""}
 ${data.specialRequests ? `<li><strong>Special requests:</strong> ${data.specialRequests}</li>` : ""}
 </ul>`;
 }
@@ -108,6 +112,8 @@ export default async function handler(
   const partySize = typeof o?.partySize === "number" ? o.partySize : Number(o?.partySize);
   const specialRequests =
     o?.specialRequests != null && o.specialRequests !== "" ? String(o.specialRequests) : null;
+  const dietaryRequirements =
+    o?.dietaryRequirements != null && o.dietaryRequirements !== "" ? String(o.dietaryRequirements) : null;
 
   if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.length < 10 || !date || !time || !Number.isInteger(partySize) || partySize < 1 || partySize > 70) {
     res.status(400).json({ error: "Invalid booking data" });
@@ -148,7 +154,7 @@ export default async function handler(
   }
 
   const resend = new Resend(key);
-  const data = { name, email, phone, date, time, partySize, specialRequests };
+  const data = { name, email, phone, date, time, partySize, specialRequests, dietaryRequirements };
 
   const isValentines = date === VALENTINES_DATE;
   const flyerUrl = `${getBaseUrl()}/valentines-menu.jpeg`;
@@ -177,6 +183,7 @@ export default async function handler(
         time,
         party_size: partySize,
         special_requests: specialRequests ?? null,
+        dietary_requirements: dietaryRequirements ?? null,
         status,
       })
       .select("id")

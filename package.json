@@ -13,8 +13,9 @@
     "test": "vitest run",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "generate-images": "node scripts/generate-images.mjs",
-    "deploy:netlify": "pnpm run build:client && netlify deploy",
-    "deploy:netlify:prod": "pnpm run build:client && netlify deploy --prod",
+    "deploy:netlify": "npm run build:client && npx netlify deploy --dir=dist/public",
+    "deploy:netlify:prod": "npm run build:client && npx netlify deploy --prod --dir=dist/public",
+    "deploy:netlify:prod:no-build": "npx netlify deploy --prod --dir=dist/public --no-build",
     "seed:brigitte": "node scripts/seed-brigitte-moser.mjs",
     "seed:sean": "node scripts/seed-sean-fennelly.mjs"
   },

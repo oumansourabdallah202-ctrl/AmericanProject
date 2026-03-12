@@ -40,6 +40,7 @@ export type BookingRow = {
   time: string;
   party_size: number;
   special_requests: string | null;
+  dietary_requirements?: string | null;
   status: string;
   created_at?: string;
   sent_emails?: SentEmailEntry[] | null;

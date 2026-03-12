@@ -50,6 +50,7 @@ export type BookingRecord = {
   time: string;
   partySize: number;
   specialRequests?: string | null;
+  dietaryRequirements?: string | null;
   status: string;
   createdAt?: string;
   sentEmails?: Array<{ id: string; type: string; sentAt: string }>;
@@ -110,6 +111,7 @@ export default function Admin() {
   const [syncFromWixLoading, setSyncFromWixLoading] = useState(false);
   const [deleteGuestPlaceholdersLoading, setDeleteGuestPlaceholdersLoading] = useState(false);
   const [deleteGuestPlaceholdersOpen, setDeleteGuestPlaceholdersOpen] = useState(false);
+  const [depositEmailsLoading, setDepositEmailsLoading] = useState(false);
   const [exportGuestsLoading, setExportGuestsLoading] = useState(false);
   const [archivingId, setArchivingId] = useState<string | null>(null);
   const [markAllArchiving, setMarkAllArchiving] = useState(false);
@@ -444,7 +446,7 @@ export default function Admin() {
       ? bookings.filter(b => selectedBookingIds.has(b.id))
       : bookings;
     
-    const headers = ["Date", "Time", "Name", "Email", "Phone", "Guests", "Status", "Special requests", "Created At"];
+    const headers = ["Date", "Time", "Name", "Email", "Phone", "Guests", "Status", "Dietary / allergies", "Special requests", "Created At"];
     const rows = toExport.map((b) => [
       b.date,
       b.time,
@@ -453,6 +455,7 @@ export default function Admin() {
       `"${(b.phone ?? "").replace(/"/g, '""')}"`,
       b.partySize,
       b.status,
+      `"${(b.dietaryRequirements ?? "").replace(/"/g, '""')}"`,
       `"${(b.specialRequests ?? "").replace(/"/g, '""')}"`,
       b.createdAt || "",
     ]);
@@ -533,17 +536,20 @@ export default function Admin() {
         const values = parseLine(lines[i]);
         if (values.length < 6) continue;
         
-        const [date, time, name, email, phone, guests, status, specialRequests] = values;
-        if (!date || !time || !name || !email) continue;
+        // Export order: Date, Time, Name, Email, Phone, Guests, Status, Dietary / allergies, Special requests, Created At (10 cols). Old CSVs have 9 cols: no dietary.
+        const dietaryRequirements = values.length >= 10 ? values[7] : null;
+        const specialRequests = values.length >= 10 ? values[8] : values.length >= 9 ? values[7] : null;
+        if (!values[0] || !values[1] || !values[2] || !values[3]) continue;
         
         bookingsToImport.push({
-          date: date.trim(),
-          time: time.trim(),
-          name: name.replace(/^"|"$/g, "").trim(),
-          email: email.trim(),
-          phone: phone.replace(/^"|"$/g, "").trim(),
-          partySize: parseInt(guests) || 1,
-          status: status || "request",
+          date: values[0].trim(),
+          time: values[1].trim(),
+          name: values[2].replace(/^"|"$/g, "").trim(),
+          email: values[3].trim(),
+          phone: (values[4] ?? "").replace(/^"|"$/g, "").trim(),
+          partySize: parseInt(values[5]) || 1,
+          status: values[6] || "request",
+          dietaryRequirements: dietaryRequirements?.replace(/^"|"$/g, "").trim() || null,
           specialRequests: specialRequests?.replace(/^"|"$/g, "").trim() || null,
         });
       }
@@ -926,6 +932,40 @@ export default function Admin() {
       toast.error(t("admin.deleteGuestPlaceholdersError"));
     } finally {
       setDeleteGuestPlaceholdersLoading(false);
+    }
+  };
+
+  /** April 14–20: send deposit-request email to all eligible reservations (not yet sent). */
+  const handleSendDepositEmails = async () => {
+    if (!token) return;
+    setDepositEmailsLoading(true);
+    try {
+      const res = await fetch("/api/bookings/send-deposit-emails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        const msg = data.sent === 0
+          ? (data.message || t("admin.sendDepositEmailsNone"))
+          : t("admin.sendDepositEmailsSuccess").replace("{count}", String(data.sent));
+        toast.success(msg);
+        if (data.sent > 0) await fetchBookings(token);
+        if (bookingDetailId) {
+          const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`, { headers: getAuthHeaders(token) });
+          const detailData = await detailRes.json().catch(() => ({}));
+          if (detailData.booking && Array.isArray(detailData.emailStatuses)) {
+            setBookingDetail({ booking: detailData.booking, emailStatuses: detailData.emailStatuses });
+          }
+        }
+      } else {
+        toast.error(data.error ?? t("admin.sendDepositEmailsError"));
+      }
+    } catch {
+      toast.error(t("admin.sendDepositEmailsError"));
+    } finally {
+      setDepositEmailsLoading(false);
     }
   };
 
@@ -1415,6 +1455,10 @@ export default function Admin() {
               {deleteGuestPlaceholdersLoading ? <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" /> : <Trash2 className="w-4 h-4 sm:mr-2" />}
               <span className="hidden sm:inline">{t("admin.deleteGuestPlaceholders")}</span>
             </Button>
+            <Button type="button" variant="outline" size="sm" onClick={handleSendDepositEmails} disabled={depositEmailsLoading} className="flex-1 sm:flex-initial" title={t("admin.sendDepositEmailsTitle")}>
+              {depositEmailsLoading ? <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" /> : <Mail className="w-4 h-4 sm:mr-2" />}
+              <span className="hidden sm:inline">{t("admin.sendDepositEmails")}</span>
+            </Button>
             {userEmail && (
               <span className="text-xs sm:text-sm text-muted-foreground mr-2 hidden lg:inline">
                 {t("admin.loggedInAs").replace("{email}", userEmail)}
@@ -1675,6 +1719,9 @@ export default function Admin() {
                             )}
                             {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
                               <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
+                            )}
+                            {b.date >= "2025-04-14" && b.date <= "2025-04-20" && (b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (
+                              <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300" title={t("admin.depositEmailSent")}>{t("admin.depositEmailSent")}</span>
                             )}
                             <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                           </span>
@@ -2805,6 +2852,12 @@ export default function Admin() {
                                 : <span>{t("admin.statusPending")}</span>}
                     </span>
                   </div>
+                  {bookingDetail.booking.dietaryRequirements && (
+                    <>
+                      <span className="text-sm text-muted-foreground">{t("admin.dietaryRequirements")}</span>
+                      <p className="text-sm">{bookingDetail.booking.dietaryRequirements}</p>
+                    </>
+                  )}
                   {bookingDetail.booking.specialRequests && (
                     <>
                       <span className="text-sm text-muted-foreground">{t("admin.specialRequests")}</span>

@@ -54,6 +54,7 @@ export type BookingDoc = {
   time: string;
   partySize: number;
   specialRequests?: string | null;
+  dietaryRequirements?: string | null;
   status: string;
   createdAt?: string;
   sentEmails?: SentEmailEntry[];
@@ -70,6 +71,7 @@ function rowToBooking(row: BookingRow): BookingDoc {
     time: row.time,
     partySize: row.party_size,
     specialRequests: row.special_requests ?? null,
+    dietaryRequirements: row.dietary_requirements ?? null,
     status: row.status,
     createdAt: row.created_at,
     sentEmails: Array.isArray(sent) ? sent : [],
@@ -198,7 +200,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       const supabase = getSupabase();
       const { data: row, error: fetchErr } = await supabase
         .from(BOOKINGS_TABLE)
-        .select("name, email, phone, date, time, party_size, special_requests, status, sent_emails")
+        .select("name, email, phone, date, time, party_size, special_requests, dietary_requirements, status, sent_emails")
         .eq("id", id)
         .maybeSingle();
       if (fetchErr || !row) {
@@ -247,6 +249,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
                   partySize: rowAfter.party_size ?? 0,
                   phone: rowAfter.phone ?? "",
                   specialRequests: row.special_requests ?? null,
+                  dietaryRequirements: (row as { dietary_requirements?: string | null }).dietary_requirements ?? null,
                 }),
           });
           if (sendErr) console.error("[bookings] Confirmation email failed:", sendErr);
