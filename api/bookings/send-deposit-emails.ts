@@ -54,6 +54,41 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     return;
   }
 
+  let body: unknown;
+  try {
+    body = typeof req.body === "string" ? JSON.parse(req.body) : req.body ?? {};
+  } catch {
+    body = {};
+  }
+  const testEmail = typeof (body as { testEmail?: string }).testEmail === "string"
+    ? (body as { testEmail: string }).testEmail.trim()
+    : "";
+
+  const resend = new Resend(resendKey);
+
+  if (testEmail) {
+    const { error: sendErr } = await resend.emails.send({
+      from: FROM,
+      to: [testEmail],
+      subject: "Spinella – Deposit to confirm your reservation (April 14–20) [TEST]",
+      html: depositRequestEmailHtml({
+        name: "Test Guest",
+        date: "2025-04-15",
+        time: "19:30",
+        partySize: 4,
+        amountChf: DEPOSIT_APRIL_14_20.amountSmall,
+        iban: DEPOSIT_APRIL_14_20.iban,
+      }),
+    });
+    if (sendErr) {
+      console.error("[send-deposit-emails] Test send error:", sendErr);
+      res.status(500).json({ error: "Failed to send test email", details: String(sendErr) });
+      return;
+    }
+    res.status(200).json({ ok: true, sent: 1, test: true, message: `Test deposit email sent to ${testEmail}` });
+    return;
+  }
+
   const supabase = getSupabase();
   const { data: rows, error: fetchErr } = await supabase
     .from(BOOKINGS_TABLE)
@@ -82,7 +117,6 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     return;
   }
 
-  const resend = new Resend(resendKey);
   let sent = 0;
   const errors: string[] = [];
 

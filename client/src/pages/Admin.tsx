@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { sendLocalNotification, subscribeUserToPush } from "@/lib/pushNotifications";
@@ -112,6 +112,8 @@ export default function Admin() {
   const [deleteGuestPlaceholdersLoading, setDeleteGuestPlaceholdersLoading] = useState(false);
   const [deleteGuestPlaceholdersOpen, setDeleteGuestPlaceholdersOpen] = useState(false);
   const [depositEmailsLoading, setDepositEmailsLoading] = useState(false);
+  const [depositTestEmail, setDepositTestEmail] = useState("Spinella.mark.93@gmail.com");
+  const [depositTestSending, setDepositTestSending] = useState(false);
   const [exportGuestsLoading, setExportGuestsLoading] = useState(false);
   const [archivingId, setArchivingId] = useState<string | null>(null);
   const [markAllArchiving, setMarkAllArchiving] = useState(false);
@@ -969,6 +971,28 @@ export default function Admin() {
     }
   };
 
+  const handleSendDepositTestEmail = async () => {
+    if (!token || !depositTestEmail.trim()) return;
+    setDepositTestSending(true);
+    try {
+      const res = await fetch("/api/bookings/send-deposit-emails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
+        body: JSON.stringify({ testEmail: depositTestEmail.trim() }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        toast.success(t("admin.sendDepositTestSuccess").replace("{email}", depositTestEmail.trim()));
+      } else {
+        toast.error(data.error ?? t("admin.sendDepositEmailsError"));
+      }
+    } catch {
+      toast.error(t("admin.sendDepositEmailsError"));
+    } finally {
+      setDepositTestSending(false);
+    }
+  };
+
   const handleSendConfirmationEmail = async (id: string) => {
     if (!token) return;
     setSendingConfirmationId(id);
@@ -1459,6 +1483,7 @@ export default function Admin() {
               {depositEmailsLoading ? <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" /> : <Mail className="w-4 h-4 sm:mr-2" />}
               <span className="hidden sm:inline">{t("admin.sendDepositEmails")}</span>
             </Button>
+            <span className="hidden xl:inline text-muted-foreground text-xs">|</span>
             {userEmail && (
               <span className="text-xs sm:text-sm text-muted-foreground mr-2 hidden lg:inline">
                 {t("admin.loggedInAs").replace("{email}", userEmail)}
@@ -1470,6 +1495,37 @@ export default function Admin() {
             </Button>
           </div>
         </div>
+
+        <Card className="mb-6 border-amber-900/40 bg-amber-950/20">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Mail className="w-4 h-4 text-amber-500" />
+              {t("admin.depositEmailsCardTitle")}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">{t("admin.depositEmailsCardDesc")}</p>
+          </CardHeader>
+          <CardContent className="flex flex-col sm:flex-row sm:items-end gap-3">
+            <Button onClick={handleSendDepositEmails} disabled={depositEmailsLoading} variant="default" size="sm" className="gold-bg text-black hover:opacity-90">
+              {depositEmailsLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Mail className="w-4 h-4 mr-2" />}
+              {t("admin.sendDepositEmailsToAll")}
+            </Button>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1 max-w-md">
+              <Label htmlFor="deposit-test-email" className="text-xs text-muted-foreground sm:sr-only">{t("admin.sendDepositTestLabel")}</Label>
+              <Input
+                id="deposit-test-email"
+                type="email"
+                placeholder="email@example.com"
+                value={depositTestEmail}
+                onChange={(e) => setDepositTestEmail(e.target.value)}
+                className="h-9"
+              />
+              <Button onClick={handleSendDepositTestEmail} disabled={depositTestSending || !depositTestEmail.trim()} variant="outline" size="sm">
+                {depositTestSending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                {t("admin.sendDepositTest")}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {fetchError && <p className="text-sm text-destructive mb-4">{fetchError}</p>}
         <p className="text-sm text-muted-foreground mb-6">
