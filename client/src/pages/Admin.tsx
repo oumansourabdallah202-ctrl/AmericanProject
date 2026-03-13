@@ -114,6 +114,7 @@ export default function Admin() {
   const [depositEmailsLoading, setDepositEmailsLoading] = useState(false);
   const [depositTestEmail, setDepositTestEmail] = useState("Spinella.mark.93@gmail.com");
   const [depositTestSending, setDepositTestSending] = useState(false);
+  const [depositRecipientsLoading, setDepositRecipientsLoading] = useState(false);
   const [exportGuestsLoading, setExportGuestsLoading] = useState(false);
   const [archivingId, setArchivingId] = useState<string | null>(null);
   const [markAllArchiving, setMarkAllArchiving] = useState(false);
@@ -993,6 +994,50 @@ export default function Admin() {
     }
   };
 
+  const handleDownloadDepositRecipients = async () => {
+    if (!token) return;
+    setDepositRecipientsLoading(true);
+    try {
+      const res = await fetch("/api/bookings/deposit-emails-recipients", { headers: getAuthHeaders(token) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.error(data.error ?? t("admin.fetchError"));
+        return;
+      }
+      const recipients = Array.isArray(data.recipients) ? data.recipients : [];
+      const headers = ["Name", "Email", "Phone", "Date", "Time", "Guests", "Status", "Dietary / allergies", "Special requests", "Reservation made (created)", "Deposit email sent at"];
+      const fmt = (s: string | null | undefined) => (s ? new Date(s).toLocaleString("en-GB", { dateStyle: "short", timeStyle: "medium" }) : "");
+      const rows = recipients.map((r: {
+        name: string; email: string; phone: string; date: string; time: string; partySize: number;
+        status: string; specialRequests: string; dietaryRequirements: string; createdAt: string | null; depositSentAt: string | null;
+      }) => [
+        `"${(r.name ?? "").replace(/"/g, '""')}"`,
+        r.email ?? "",
+        `"${(r.phone ?? "").replace(/"/g, '""')}"`,
+        r.date ?? "",
+        r.time ?? "",
+        r.partySize ?? "",
+        r.status ?? "",
+        `"${(r.dietaryRequirements ?? "").replace(/"/g, '""')}"`,
+        `"${(r.specialRequests ?? "").replace(/"/g, '""')}"`,
+        fmt(r.createdAt) || "",
+        fmt(r.depositSentAt) || "",
+      ]);
+      const csv = [headers.join(","), ...rows.map((row: string[]) => row.join(","))].join("\n");
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `spinella-deposit-email-recipients-apr14-20-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast.success(t("admin.depositRecipientsDownloadSuccess").replace("{count}", String(recipients.length)));
+    } catch {
+      toast.error(t("admin.fetchError"));
+    } finally {
+      setDepositRecipientsLoading(false);
+    }
+  };
+
   const handleSendConfirmationEmail = async (id: string) => {
     if (!token) return;
     setSendingConfirmationId(id);
@@ -1524,6 +1569,10 @@ export default function Admin() {
                 {t("admin.sendDepositTest")}
               </Button>
             </div>
+            <Button onClick={handleDownloadDepositRecipients} disabled={depositRecipientsLoading} variant="outline" size="sm" className="shrink-0">
+              {depositRecipientsLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {t("admin.depositRecipientsDownload")}
+            </Button>
           </CardContent>
         </Card>
 
