@@ -51,7 +51,7 @@ export function depositRequestEmailHtml(data: {
             <td style="padding: 0 40px 24px;">
               <p style="margin:0; font-size: 18px; line-height: 1.7; color: #e8e4dc;">Dear ${data.name},</p>
               <p style="margin: 20px 0 0 0; font-size: 16px; line-height: 1.7; color: #c4bfb5;">
-                Thank you for your interest in Spinella and for your reservation request for our special period of <strong style="color:#e8e4dc;">14–20 April</strong>.
+                Thank you for your interest in Spinella and for your reservation request for our special period of <strong style="color:#e8e4dc;">14–20 April 2026</strong>.
               </p>
               <p style="margin: 16px 0 0 0; font-size: 16px; line-height: 1.7; color: #c4bfb5;">
                 To confirm and secure your table for these dates, we ask for a deposit of <strong style="color:#d4af37;">CHF ${data.amountChf}</strong> per reservation.
@@ -108,10 +108,10 @@ export function depositRequestEmailHtml(data: {
 </html>`;
 }
 
-/** Deposit rules for April 14–20: 3–7 guests = 100 CHF, 8+ = 200 CHF. */
+/** Deposit rules for April 14–20, 2026 (reservation dates): 3–7 guests = 100 CHF, 8+ = 200 CHF. */
 export const DEPOSIT_APRIL_14_20 = {
-  start: "2025-04-14",
-  end: "2025-04-20",
+  start: "2026-04-14",
+  end: "2026-04-20",
   amountSmall: 100,   // 3–7 guests
   amountLarge: 200,  // 8+
   iban: "CH08 0078 8000 0507 3206 8",

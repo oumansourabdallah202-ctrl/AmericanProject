@@ -1028,7 +1028,7 @@ export default function Admin() {
       const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `spinella-deposit-email-recipients-apr14-20-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.download = `spinella-deposit-email-recipients-apr14-20-2026-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(a.href);
       toast.success(t("admin.depositRecipientsDownloadSuccess").replace("{count}", String(recipients.length)));
@@ -1826,7 +1826,7 @@ export default function Admin() {
                             {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
                               <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
                             )}
-                            {b.date >= "2025-04-14" && b.date <= "2025-04-20" && (b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (
+                            {b.date >= "2026-04-14" && b.date <= "2026-04-20" && (b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (
                               <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300" title={t("admin.depositEmailSent")}>{t("admin.depositEmailSent")}</span>
                             )}
                             <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>

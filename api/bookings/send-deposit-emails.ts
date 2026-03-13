@@ -70,10 +70,10 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     const { error: sendErr } = await resend.emails.send({
       from: FROM,
       to: [testEmail],
-      subject: "Spinella – Deposit to confirm your reservation (April 14–20) [TEST]",
+      subject: "Spinella – Deposit to confirm your reservation (April 14–20, 2026) [TEST]",
       html: depositRequestEmailHtml({
         name: "Test Guest",
-        date: "2025-04-15",
+        date: "2026-04-15",
         time: "19:30",
         partySize: 4,
         amountChf: DEPOSIT_APRIL_14_20.amountSmall,
@@ -112,7 +112,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     res.status(200).json({
       ok: true,
       sent: 0,
-      message: "No eligible reservations (April 14–20) or all have already received the deposit email.",
+      message: "No eligible reservations (April 14–20, 2026) or all have already received the deposit email.",
     });
     return;
   }
@@ -131,7 +131,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     const { data: sendData, error: sendErr } = await resend.emails.send({
       from: FROM,
       to: [email],
-      subject: "Spinella – Deposit to confirm your reservation (April 14–20)",
+      subject: "Spinella – Deposit to confirm your reservation (April 14–20, 2026)",
       html: depositRequestEmailHtml({
         name,
         date,
