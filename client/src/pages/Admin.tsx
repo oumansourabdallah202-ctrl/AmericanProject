@@ -115,6 +115,7 @@ export default function Admin() {
   const [depositTestEmail, setDepositTestEmail] = useState("Spinella.mark.93@gmail.com");
   const [depositTestSending, setDepositTestSending] = useState(false);
   const [depositRecipientsLoading, setDepositRecipientsLoading] = useState(false);
+  const [deposit2025MistakeLoading, setDeposit2025MistakeLoading] = useState(false);
   const [exportGuestsLoading, setExportGuestsLoading] = useState(false);
   const [archivingId, setArchivingId] = useState<string | null>(null);
   const [markAllArchiving, setMarkAllArchiving] = useState(false);
@@ -1039,6 +1040,52 @@ export default function Admin() {
     }
   };
 
+  /** Download list of guests who mistakenly received the April 14–20 *2025* deposit email (for apology follow-up). */
+  const handleDownload2025MistakeList = async () => {
+    if (!token) return;
+    setDeposit2025MistakeLoading(true);
+    try {
+      const res = await fetch("/api/bookings/deposit-emails-recipients-2025-mistake", { headers: getAuthHeaders(token) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg = [data.error, (data as { details?: string }).details].filter(Boolean).join(" — ");
+        toast.error(msg || t("admin.fetchError"));
+        return;
+      }
+      const recipients = Array.isArray(data.recipients) ? data.recipients : [];
+      const headers = ["Name", "Email", "Phone", "Date", "Time", "Guests", "Status", "Dietary / allergies", "Special requests", "Reservation made (created)", "Deposit email sent at"];
+      const fmt = (s: string | null | undefined) => (s ? new Date(s).toLocaleString("en-GB", { dateStyle: "short", timeStyle: "medium" }) : "");
+      const rows = recipients.map((r: {
+        name: string; email: string; phone: string; date: string; time: string; partySize: number;
+        status: string; specialRequests: string; dietaryRequirements: string; createdAt: string | null; depositSentAt: string | null;
+      }) => [
+        `"${(r.name ?? "").replace(/"/g, '""')}"`,
+        r.email ?? "",
+        `"${(r.phone ?? "").replace(/"/g, '""')}"`,
+        r.date ?? "",
+        r.time ?? "",
+        r.partySize ?? "",
+        r.status ?? "",
+        `"${(r.dietaryRequirements ?? "").replace(/"/g, '""')}"`,
+        `"${(r.specialRequests ?? "").replace(/"/g, '""')}"`,
+        fmt(r.createdAt) || "",
+        fmt(r.depositSentAt) || "",
+      ]);
+      const csv = [headers.join(","), ...rows.map((row: string[]) => row.join(","))].join("\n");
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `spinella-deposit-email-MISTAKE-2025-apr14-20-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast.success(t("admin.deposit2025MistakeDownloadSuccess").replace("{count}", String(recipients.length)));
+    } catch {
+      toast.error(t("admin.fetchError"));
+    } finally {
+      setDeposit2025MistakeLoading(false);
+    }
+  };
+
   const handleSendConfirmationEmail = async (id: string) => {
     if (!token) return;
     setSendingConfirmationId(id);
@@ -1573,6 +1620,10 @@ export default function Admin() {
             <Button onClick={handleDownloadDepositRecipients} disabled={depositRecipientsLoading} variant="outline" size="sm" className="shrink-0">
               {depositRecipientsLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
               {t("admin.depositRecipientsDownload")}
+            </Button>
+            <Button onClick={handleDownload2025MistakeList} disabled={deposit2025MistakeLoading} variant="outline" size="sm" className="shrink-0 border-amber-600/50 text-amber-600 hover:bg-amber-950/30" title={t("admin.deposit2025MistakeDownloadTitle")}>
+              {deposit2025MistakeLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+              {t("admin.deposit2025MistakeDownload")}
             </Button>
           </CardContent>
         </Card>
