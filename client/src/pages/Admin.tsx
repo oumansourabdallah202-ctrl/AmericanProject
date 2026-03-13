@@ -115,6 +115,7 @@ export default function Admin() {
   const [depositTestEmail, setDepositTestEmail] = useState("Spinella.mark.93@gmail.com");
   const [depositTestSending, setDepositTestSending] = useState(false);
   const [depositRecipientsLoading, setDepositRecipientsLoading] = useState(false);
+  const [depositSendingId, setDepositSendingId] = useState<string | null>(null);
   const [exportGuestsLoading, setExportGuestsLoading] = useState(false);
   const [archivingId, setArchivingId] = useState<string | null>(null);
   const [markAllArchiving, setMarkAllArchiving] = useState(false);
@@ -938,6 +939,39 @@ export default function Admin() {
     }
   };
 
+  /** April 14–20: send deposit-request email for a single booking. */
+  const handleSendDepositEmailForBooking = async (bookingId: string) => {
+    if (!token) return;
+    setDepositSendingId(bookingId);
+    try {
+      const res = await fetch("/api/bookings/send-deposit-emails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
+        body: JSON.stringify({ bookingId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        toast.success(data.sent > 0 ? t("admin.sendDepositEmailForGuestSuccess") : (data.message || t("admin.sendDepositEmailsNone")));
+        if (data.sent > 0) {
+          await fetchBookings(token);
+          if (bookingDetailId === bookingId) {
+            const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(bookingId)}`, { headers: getAuthHeaders(token) });
+            const detailData = await detailRes.json().catch(() => ({}));
+            if (detailData.booking && Array.isArray(detailData.emailStatuses)) {
+              setBookingDetail({ booking: detailData.booking, emailStatuses: detailData.emailStatuses });
+            }
+          }
+        }
+      } else {
+        toast.error(data.error ?? t("admin.sendDepositEmailsError"));
+      }
+    } catch {
+      toast.error(t("admin.sendDepositEmailsError"));
+    } finally {
+      setDepositSendingId(null);
+    }
+  };
+
   /** April 14–20: send deposit-request email to all eligible reservations (not yet sent). */
   const handleSendDepositEmails = async () => {
     if (!token) return;
@@ -1549,9 +1583,10 @@ export default function Admin() {
               {t("admin.depositEmailsCardTitle")}
             </CardTitle>
             <p className="text-sm text-muted-foreground">{t("admin.depositEmailsCardDesc")}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t("admin.depositEmailsCardHint")}</p>
           </CardHeader>
           <CardContent className="flex flex-col sm:flex-row sm:items-end gap-3">
-            <Button onClick={handleSendDepositEmails} disabled={depositEmailsLoading} variant="default" size="sm" className="gold-bg text-black hover:opacity-90">
+            <Button onClick={handleSendDepositEmails} disabled={depositEmailsLoading} variant="outline" size="sm" className="border-amber-700/50">
               {depositEmailsLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Mail className="w-4 h-4 mr-2" />}
               {t("admin.sendDepositEmailsToAll")}
             </Button>
@@ -1853,10 +1888,23 @@ export default function Admin() {
                         <td className="p-2 sm:p-3 hidden lg:table-cell text-[10px] sm:text-xs">{b.phone}</td>
                         <td className="p-2 sm:p-3 hidden xl:table-cell text-[10px] sm:text-xs">{b.email === "wix-sync@spinella.ch" ? "—" : b.email}</td>
                         <td className="p-2 sm:p-3">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 flex-wrap">
                             <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")} className="p-1 h-auto">
                               <Eye className="w-4 h-4" />
                             </Button>
+                            {b.date >= "2026-04-14" && b.date <= "2026-04-20" && b.status !== "cancelled" && !(b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (b.email ?? "").trim() && (
+                              <Button
+                                size="sm"
+                                variant="default"
+                                disabled={depositSendingId !== null}
+                                onClick={() => handleSendDepositEmailForBooking(b.id)}
+                                className="p-1 sm:px-2 sm:py-2 h-auto gold-bg text-black hover:opacity-90"
+                                title={t("admin.sendDepositEmailForGuestTitle")}
+                              >
+                                {depositSendingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4 sm:mr-1" />}
+                                <span className="hidden sm:inline">{t("admin.sendDepositEmailForGuest")}</span>
+                              </Button>
+                            )}
                             {(b.status === "pending" || b.status === "request") && (
                               <>
                                 <Button
@@ -1960,6 +2008,9 @@ export default function Admin() {
                                   {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
                                     <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
                                   )}
+                                  {b.date >= "2026-04-14" && b.date <= "2026-04-20" && (b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (
+                                    <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300" title={t("admin.depositEmailSent")}>{t("admin.depositEmailSent")}</span>
+                                  )}
                                   <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                                 </span>
                               </td>
@@ -1979,19 +2030,34 @@ export default function Admin() {
                                 })()}
                               </td>
                               <td className="p-2 sm:p-3">
-                                <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")} className="p-1 h-auto">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                                {(b.status === "pending" || b.status === "request") && (
-                                  <>
-                                    <Button size="sm" variant="default" disabled={acceptingId !== null} onClick={() => handleAccept(b.id)} className="p-1 sm:px-2 h-auto ml-1" title={t("admin.accept")}>
-                                      {acceptingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                                <div className="flex items-center gap-1 flex-wrap">
+                                  <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")} className="p-1 h-auto">
+                                    <Eye className="w-4 h-4" />
+                                  </Button>
+                                  {b.date >= "2026-04-14" && b.date <= "2026-04-20" && b.status !== "cancelled" && !(b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (b.email ?? "").trim() && (
+                                    <Button
+                                      size="sm"
+                                      variant="default"
+                                      disabled={depositSendingId !== null}
+                                      onClick={() => handleSendDepositEmailForBooking(b.id)}
+                                      className="p-1 sm:px-2 h-auto gold-bg text-black hover:opacity-90"
+                                      title={t("admin.sendDepositEmailForGuestTitle")}
+                                    >
+                                      {depositSendingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                                      <span className="hidden sm:inline ml-1">{t("admin.sendDepositEmailForGuest")}</span>
                                     </Button>
-                                    <Button size="sm" variant="destructive" disabled={acceptingId !== null} onClick={() => handleDecline(b.id)} className="p-1 h-auto ml-1" title={t("admin.decline")}>
-                                      <X className="w-4 h-4" />
-                                    </Button>
-                                  </>
-                                )}
+                                  )}
+                                  {(b.status === "pending" || b.status === "request") && (
+                                    <>
+                                      <Button size="sm" variant="default" disabled={acceptingId !== null} onClick={() => handleAccept(b.id)} className="p-1 sm:px-2 h-auto ml-1" title={t("admin.accept")}>
+                                        {acceptingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                                      </Button>
+                                      <Button size="sm" variant="destructive" disabled={acceptingId !== null} onClick={() => handleDecline(b.id)} className="p-1 h-auto ml-1" title={t("admin.decline")}>
+                                        <X className="w-4 h-4" />
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
                               </td>
                             </tr>
                           ))}
@@ -2158,6 +2224,19 @@ export default function Admin() {
                                         <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")}>
                                           <Eye className="w-4 h-4" />
                                         </Button>
+                                        {b.date >= "2026-04-14" && b.date <= "2026-04-20" && b.status !== "cancelled" && !(b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (b.email ?? "").trim() && (
+                                          <Button
+                                            size="sm"
+                                            variant="default"
+                                            disabled={depositSendingId !== null}
+                                            onClick={() => handleSendDepositEmailForBooking(b.id)}
+                                            className="gold-bg text-black hover:opacity-90"
+                                            title={t("admin.sendDepositEmailForGuestTitle")}
+                                          >
+                                            {depositSendingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4 mr-1" />}
+                                            {t("admin.sendDepositEmailForGuest")}
+                                          </Button>
+                                        )}
                                         <Button
                                           size="sm"
                                           variant="default"
@@ -2335,6 +2414,9 @@ export default function Admin() {
                                     <Users className="w-3 h-3" />
                                     {b.partySize}
                                   </span>
+                                  {b.date >= "2026-04-14" && b.date <= "2026-04-20" && (b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300" title={t("admin.depositEmailSent")}>{t("admin.depositEmailSent")}</span>
+                                  )}
                                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${
                                     (b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && b.status === "confirmed"
                                       ? "bg-red-600/20 text-red-600"
@@ -2366,6 +2448,19 @@ export default function Admin() {
                                   >
                                     <Eye className="w-4 h-4" />
                                   </Button>
+                                  {b.date >= "2026-04-14" && b.date <= "2026-04-20" && b.status !== "cancelled" && !(b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (b.email ?? "").trim() && (
+                                    <Button
+                                      size="sm"
+                                      variant="default"
+                                      onClick={() => handleSendDepositEmailForBooking(b.id)}
+                                      disabled={depositSendingId !== null}
+                                      className="h-8 px-3 gold-bg text-black hover:opacity-90"
+                                      title={t("admin.sendDepositEmailForGuestTitle")}
+                                    >
+                                      {depositSendingId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4 mr-1" />}
+                                      {t("admin.sendDepositEmailForGuest")}
+                                    </Button>
+                                  )}
                                   {(b.status === "request" || b.status === "pending") && (
                                     <Button
                                       size="sm"

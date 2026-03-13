@@ -63,6 +63,9 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   const testEmail = typeof (body as { testEmail?: string }).testEmail === "string"
     ? (body as { testEmail: string }).testEmail.trim()
     : "";
+  const singleBookingId = typeof (body as { bookingId?: string }).bookingId === "string"
+    ? (body as { bookingId: string }).bookingId.trim()
+    : "";
 
   const resend = new Resend(resendKey);
 
@@ -90,6 +93,81 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   }
 
   const supabase = getSupabase();
+
+  if (singleBookingId) {
+    const { data: row, error: fetchErr } = await supabase
+      .from(BOOKINGS_TABLE)
+      .select("id, name, email, phone, date, time, party_size, sent_emails, status")
+      .eq("id", singleBookingId)
+      .single();
+
+    if (fetchErr || !row) {
+      res.status(404).json({ error: "Booking not found", details: fetchErr ? String(fetchErr) : undefined });
+      return;
+    }
+    const r = row as BookingRow & { sent_emails?: SentEmailEntry[]; status?: string };
+    if (r.status === "cancelled") {
+      res.status(400).json({ error: "Booking is cancelled" });
+      return;
+    }
+    if (r.date < DEPOSIT_APRIL_14_20.start || r.date > DEPOSIT_APRIL_14_20.end) {
+      res.status(400).json({ error: "Booking date is not in April 14–20, 2026" });
+      return;
+    }
+    const email = (r.email ?? "").trim();
+    if (!email) {
+      res.status(400).json({ error: "Booking has no email" });
+      return;
+    }
+    if (hasDepositEmailSent(r.sent_emails)) {
+      res.status(200).json({ ok: true, sent: 0, message: "Deposit email already sent for this reservation." });
+      return;
+    }
+
+    const name = r.name ?? "Guest";
+    const date = r.date ?? "";
+    const time = r.time ?? "";
+    const partySize = r.party_size ?? 0;
+    const amountChf = getDepositAmount(partySize);
+
+    const { data: sendData, error: sendErr } = await resend.emails.send({
+      from: FROM,
+      to: [email],
+      subject: "Spinella – Deposit to confirm your reservation (April 14–20, 2026)",
+      html: depositRequestEmailHtml({
+        name,
+        date,
+        time,
+        partySize,
+        amountChf,
+        iban: DEPOSIT_APRIL_14_20.iban,
+      }),
+    });
+
+    if (sendErr) {
+      console.error("[send-deposit-emails] Resend error for", email, sendErr);
+      res.status(500).json({ error: "Failed to send deposit email", details: String(sendErr) });
+      return;
+    }
+
+    const resendId = (sendData as { id?: string })?.id ?? "";
+    const prevSent = Array.isArray(r.sent_emails) ? r.sent_emails : [];
+    const nextSent = [...prevSent, { id: resendId, type: SENT_TYPE, sentAt: new Date().toISOString() }];
+    const { error: updateErr } = await supabase
+      .from(BOOKINGS_TABLE)
+      .update({ sent_emails: nextSent })
+      .eq("id", r.id);
+
+    if (updateErr) {
+      console.error("[send-deposit-emails] Supabase update error for", r.id, updateErr);
+      res.status(500).json({ error: "Failed to record sent email", details: String(updateErr) });
+      return;
+    }
+
+    res.status(200).json({ ok: true, sent: 1, message: "Deposit email sent." });
+    return;
+  }
+
   const { data: rows, error: fetchErr } = await supabase
     .from(BOOKINGS_TABLE)
     .select("id, name, email, phone, date, time, party_size, sent_emails")
