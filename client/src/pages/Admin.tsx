@@ -1001,7 +1001,8 @@ export default function Admin() {
       const res = await fetch("/api/bookings/deposit-emails-recipients", { headers: getAuthHeaders(token) });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        toast.error(data.error ?? t("admin.fetchError"));
+        const msg = [data.error, (data as { details?: string }).details].filter(Boolean).join(" — ");
+        toast.error(msg || t("admin.fetchError"));
         return;
       }
       const recipients = Array.isArray(data.recipients) ? data.recipients : [];

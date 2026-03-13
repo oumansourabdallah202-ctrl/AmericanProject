@@ -42,37 +42,45 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       return;
     }
 
-    const supabase = getSupabase();
-    // Use select("*") so optional columns (dietary_requirements, sent_emails) don't cause 500 if missing
+    let supabase;
+    try {
+      supabase = getSupabase();
+    } catch (e) {
+      console.error("[deposit-emails-recipients] Supabase init:", e);
+      res.status(500).json({ error: "Server configuration error", details: "Database not configured" });
+      return;
+    }
+
     const { data: rows, error } = await supabase
-    .from(BOOKINGS_TABLE)
-    .select("*")
-    .gte("date", DEPOSIT_APRIL_14_20.start)
-    .lte("date", DEPOSIT_APRIL_14_20.end);
+      .from(BOOKINGS_TABLE)
+      .select("*")
+      .gte("date", DEPOSIT_APRIL_14_20.start)
+      .lte("date", DEPOSIT_APRIL_14_20.end);
 
-  if (error) {
-    console.error("[deposit-emails-recipients] Supabase error:", error);
-    res.status(500).json({ error: "Failed to load bookings", details: String(error) });
-    return;
-  }
+    if (error) {
+      console.error("[deposit-emails-recipients] Supabase error:", error);
+      res.status(500).json({ error: "Failed to load bookings", details: String(error.message ?? error) });
+      return;
+    }
 
-  type Row = Record<string, unknown> & { sent_emails?: SentEmailEntry[] };
-  const recipients = (rows ?? [])
-    .filter((r: Row) => getDepositSentAt(r.sent_emails) !== null)
-    .map((r: Row) => ({
-      id: r.id ?? "",
-      name: (r.name as string) ?? "",
-      email: String(r.email ?? "").trim(),
-      phone: (r.phone as string) ?? "",
-      date: (r.date as string) ?? "",
-      time: (r.time as string) ?? "",
-      partySize: Number(r.party_size) || 0,
-      status: (r.status as string) ?? "",
-      specialRequests: (r.special_requests as string) ?? "",
-      dietaryRequirements: (r.dietary_requirements as string) ?? "",
-      createdAt: (r.created_at as string) ?? "",
-      depositSentAt: getDepositSentAt(r.sent_emails),
-    }));
+    type Row = Record<string, unknown> & { sent_emails?: SentEmailEntry[] };
+    const rawRows = Array.isArray(rows) ? rows : [];
+    const recipients = rawRows
+      .filter((r: Row) => getDepositSentAt(r.sent_emails) !== null)
+      .map((r: Row) => ({
+        id: r.id ?? "",
+        name: (r.name as string) ?? "",
+        email: String(r.email ?? "").trim(),
+        phone: (r.phone as string) ?? "",
+        date: (r.date as string) ?? "",
+        time: (r.time as string) ?? "",
+        partySize: Number(r.party_size) || 0,
+        status: (r.status as string) ?? "",
+        specialRequests: (r.special_requests as string) ?? "",
+        dietaryRequirements: (r.dietary_requirements as string) ?? "",
+        createdAt: (r.created_at as string) ?? "",
+        depositSentAt: getDepositSentAt(r.sent_emails),
+      }));
 
     res.status(200).json({ recipients });
   } catch (err) {
