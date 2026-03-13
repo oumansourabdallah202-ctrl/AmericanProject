@@ -2,7 +2,7 @@
  * GET: list all guests who received the April 14–20 deposit-request email.
  * Admin only. Reads from Supabase (bookings with sent_emails containing deposit_request).
  */
-import { getSupabase, BOOKINGS_TABLE, type BookingRow } from "../_lib/supabase.js";
+import { getSupabase, BOOKINGS_TABLE } from "../_lib/supabase.js";
 import { verifySupabaseToken, isAllowedAdmin } from "../_lib/supabaseAuth.js";
 import { DEPOSIT_APRIL_14_20 } from "../_lib/depositEmail.js";
 
@@ -34,17 +34,19 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     return;
   }
 
-  const token = getAuthToken(req);
-  const user = await verifySupabaseToken(token);
-  if (!user || !isAllowedAdmin(user)) {
-    res.status(401).json({ error: "Unauthorized" });
-    return;
-  }
+  try {
+    const token = getAuthToken(req);
+    const user = await verifySupabaseToken(token);
+    if (!user || !isAllowedAdmin(user)) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
 
-  const supabase = getSupabase();
-  const { data: rows, error } = await supabase
+    const supabase = getSupabase();
+    // Use select("*") so optional columns (dietary_requirements, sent_emails) don't cause 500 if missing
+    const { data: rows, error } = await supabase
     .from(BOOKINGS_TABLE)
-    .select("id, name, email, phone, date, time, party_size, status, special_requests, dietary_requirements, created_at, sent_emails")
+    .select("*")
     .gte("date", DEPOSIT_APRIL_14_20.start)
     .lte("date", DEPOSIT_APRIL_14_20.end);
 
@@ -54,22 +56,30 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     return;
   }
 
+  type Row = Record<string, unknown> & { sent_emails?: SentEmailEntry[] };
   const recipients = (rows ?? [])
-    .filter((r: BookingRow & { sent_emails?: SentEmailEntry[] }) => getDepositSentAt(r.sent_emails) !== null)
-    .map((r: BookingRow & { sent_emails?: SentEmailEntry[] }) => ({
-      id: r.id,
-      name: r.name ?? "",
-      email: (r.email ?? "").trim(),
-      phone: r.phone ?? "",
-      date: r.date ?? "",
-      time: r.time ?? "",
-      partySize: r.party_size ?? 0,
-      status: r.status ?? "",
-      specialRequests: r.special_requests ?? "",
-      dietaryRequirements: r.dietary_requirements ?? "",
-      createdAt: r.created_at ?? "",
+    .filter((r: Row) => getDepositSentAt(r.sent_emails) !== null)
+    .map((r: Row) => ({
+      id: r.id ?? "",
+      name: (r.name as string) ?? "",
+      email: String(r.email ?? "").trim(),
+      phone: (r.phone as string) ?? "",
+      date: (r.date as string) ?? "",
+      time: (r.time as string) ?? "",
+      partySize: Number(r.party_size) || 0,
+      status: (r.status as string) ?? "",
+      specialRequests: (r.special_requests as string) ?? "",
+      dietaryRequirements: (r.dietary_requirements as string) ?? "",
+      createdAt: (r.created_at as string) ?? "",
       depositSentAt: getDepositSentAt(r.sent_emails),
     }));
 
-  res.status(200).json({ recipients });
+    res.status(200).json({ recipients });
+  } catch (err) {
+    console.error("[deposit-emails-recipients] Error:", err);
+    res.status(500).json({
+      error: "Failed to load deposit email recipients",
+      details: err instanceof Error ? err.message : String(err),
+    });
+  }
 }
