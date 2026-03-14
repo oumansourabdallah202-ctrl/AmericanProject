@@ -84,6 +84,7 @@ export default function Booking() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastFailedData, setLastFailedData] = useState<BookingForm | null>(null);
+  const [apiErrorMessage, setApiErrorMessage] = useState<string | null>(null);
   const [wasAutoConfirmed, setWasAutoConfirmed] = useState(false);
   const [hasAllergy, setHasAllergy] = useState(false);
 
@@ -105,6 +106,7 @@ export default function Booking() {
 
   const onSubmit = async (data: BookingForm) => {
     setLastFailedData(null);
+    setApiErrorMessage(null);
     setIsSubmitting(true);
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 25000);
@@ -126,18 +128,23 @@ export default function Booking() {
       });
       clearTimeout(timeoutId);
       const json = await res.json().catch(() => ({}));
+      const serverError = typeof (json as { error?: string }).error === "string" ? (json as { error: string }).error : null;
       if (res.ok && json.success) {
         setWasAutoConfirmed(Boolean(json.confirmed));
         setIsSubmitted(true);
         toast.success(t("booking.successToast"));
       } else {
+        setApiErrorMessage(serverError || null);
         setLastFailedData({ ...data, dietaryRequirements: hasAllergy ? data.dietaryRequirements : null });
-        toast.error(t("booking.errorMessage"));
+        toast.error(serverError || t("booking.errorMessage"));
       }
-    } catch {
+    } catch (e) {
       clearTimeout(timeoutId);
+      const isAbort = e instanceof Error && e.name === "AbortError";
+      const message = isAbort ? t("booking.apiUnavailable") : (e instanceof Error ? e.message : null);
+      setApiErrorMessage(message || null);
       setLastFailedData({ ...data, dietaryRequirements: hasAllergy ? data.dietaryRequirements : null });
-      toast.error(t("booking.errorMessage"));
+      toast.error(message || t("booking.errorMessage"));
     } finally {
       setIsSubmitting(false);
     }
@@ -439,7 +446,7 @@ export default function Booking() {
 
               {lastFailedData && (
                 <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
-                  <p className="text-sm font-medium mb-2">{t("booking.errorMessage")}</p>
+                  <p className="text-sm font-medium mb-2">{apiErrorMessage || t("booking.errorMessage")}</p>
                   <a
                     href={buildMailtoUrl(lastFailedData)}
                     className="inline-flex items-center text-sm font-semibold text-[oklch(0.62_0.15_85)] hover:underline"
