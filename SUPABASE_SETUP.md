@@ -248,7 +248,7 @@ Run this whenever you want to refresh the client list from Resend. New bookings 
 If bookings don’t appear:
 
 - Confirm **`SUPABASE_URL`** and **`SUPABASE_SERVICE_ROLE_KEY`** are set in Vercel and that you redeployed after adding them.
-- Check the **Vercel function logs** for errors (e.g. “SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set” or Supabase errors).
+- **Vercel → Logs** (or **Functions** → `api/booking`): look for `[booking] Supabase insert failed:` — the message after it is the real cause (e.g. missing column, connection). Check the **Vercel function logs** for errors (e.g. “SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set” or Supabase errors).
 - In Supabase **Table Editor**, confirm the `bookings` table exists and has the columns above.
 
 ---

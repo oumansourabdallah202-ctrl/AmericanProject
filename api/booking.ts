@@ -196,8 +196,15 @@ export default async function handler(
       .select("id")
       .single();
     if (insertErr || !inserted) {
-      console.error("[booking] Supabase insert failed:", insertErr);
-      res.status(500).json({ error: "Failed to save reservation" });
+      const errMsg = insertErr?.message ?? "";
+      const errCode = (insertErr as { code?: string } | null)?.code ?? "";
+      console.error("[booking] Supabase insert failed:", errCode, errMsg, insertErr);
+      // Prefer generic message; hint for missing column (common schema drift)
+      const isSchemaError = /column .* does not exist|relation .* does not exist/i.test(errMsg);
+      res.status(500).json({
+        error: "Failed to save reservation",
+        ...(isSchemaError && { details: "Database schema may be out of date. Check SUPABASE_SETUP.md and run the bookings table migrations." }),
+      });
       return;
     }
     const bookingId = (inserted as { id: string }).id;

@@ -85,6 +85,7 @@ export default function Booking() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastFailedData, setLastFailedData] = useState<BookingForm | null>(null);
   const [apiErrorMessage, setApiErrorMessage] = useState<string | null>(null);
+  const [apiErrorDetails, setApiErrorDetails] = useState<string | null>(null);
   const [wasAutoConfirmed, setWasAutoConfirmed] = useState(false);
   const [hasAllergy, setHasAllergy] = useState(false);
 
@@ -107,6 +108,7 @@ export default function Booking() {
   const onSubmit = async (data: BookingForm) => {
     setLastFailedData(null);
     setApiErrorMessage(null);
+    setApiErrorDetails(null);
     setIsSubmitting(true);
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 25000);
@@ -129,12 +131,14 @@ export default function Booking() {
       clearTimeout(timeoutId);
       const json = await res.json().catch(() => ({}));
       const serverError = typeof (json as { error?: string }).error === "string" ? (json as { error: string }).error : null;
+      const serverDetails = typeof (json as { details?: string }).details === "string" ? (json as { details: string }).details : null;
       if (res.ok && json.success) {
         setWasAutoConfirmed(Boolean(json.confirmed));
         setIsSubmitted(true);
         toast.success(t("booking.successToast"));
       } else {
         setApiErrorMessage(serverError || null);
+        setApiErrorDetails(serverDetails || null);
         setLastFailedData({ ...data, dietaryRequirements: hasAllergy ? data.dietaryRequirements : null });
         toast.error(serverError || t("booking.errorMessage"));
       }
@@ -143,6 +147,7 @@ export default function Booking() {
       const isAbort = e instanceof Error && e.name === "AbortError";
       const message = isAbort ? t("booking.apiUnavailable") : (e instanceof Error ? e.message : null);
       setApiErrorMessage(message || null);
+      setApiErrorDetails(null);
       setLastFailedData({ ...data, dietaryRequirements: hasAllergy ? data.dietaryRequirements : null });
       toast.error(message || t("booking.errorMessage"));
     } finally {
@@ -333,7 +338,7 @@ export default function Booking() {
                     </Label>
                     <Select
                       key={`time-${selectedDate ?? ""}`}
-                      value={timeSlots.length && safeTimeValue && timeSlots.includes(safeTimeValue) ? safeTimeValue : undefined}
+                      value={timeSlots.length && safeTimeValue && timeSlots.includes(safeTimeValue) ? safeTimeValue : ""}
                       onValueChange={(value) => setValue("time", value, { shouldValidate: true })}
                     >
                       <SelectTrigger className="mt-1">
@@ -358,7 +363,7 @@ export default function Booking() {
                       {t("booking.guests")} *
                     </Label>
                     <Select
-                      value={partySizes.includes(watch("partySize") ?? "") || watch("partySize") === "21" ? (watch("partySize") ?? "") : undefined}
+                      value={partySizes.includes(watch("partySize") ?? "") || watch("partySize") === "21" ? (watch("partySize") ?? "") : ""}
                       onValueChange={(value) => setValue("partySize", value, { shouldValidate: true })}
                     >
                       <SelectTrigger className="mt-1">
@@ -447,6 +452,9 @@ export default function Booking() {
               {lastFailedData && (
                 <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
                   <p className="text-sm font-medium mb-2">{apiErrorMessage || t("booking.errorMessage")}</p>
+                  {apiErrorDetails && (
+                    <p className="text-xs text-muted-foreground mb-2">{apiErrorDetails}</p>
+                  )}
                   <a
                     href={buildMailtoUrl(lastFailedData)}
                     className="inline-flex items-center text-sm font-semibold text-[oklch(0.62_0.15_85)] hover:underline"

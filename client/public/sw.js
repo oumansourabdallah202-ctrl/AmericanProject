@@ -47,11 +47,12 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        if (canCache && response.ok && response.type === 'basic') {
+        // Cache API only supports full responses (200); 206 Partial Content is not allowed
+        if (canCache && response.status === 200 && response.type === 'basic') {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
-          });
+          }).catch((err) => console.warn('[SW] Cache put failed:', err));
         }
         return response;
       })
