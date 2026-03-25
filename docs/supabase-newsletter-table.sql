@@ -36,5 +36,16 @@ BEGIN
   END IF;
 END $$;
 
--- Optional: RLS (API uses service role, so not required for server-side)
--- ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+-- Row Level Security (fixes Supabase Security Advisor: "RLS Disabled in Public")
+-- Subscribe / unsubscribe / admin list all use the service role on the server → they still work.
+-- Direct browser access with the anon key cannot read or write this table.
+ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+
+-- Drop if re-running (idempotent)
+DROP POLICY IF EXISTS "Service role only" ON public.newsletter_subscribers;
+
+CREATE POLICY "Service role only"
+  ON public.newsletter_subscribers
+  FOR ALL
+  USING (false)
+  WITH CHECK (false);

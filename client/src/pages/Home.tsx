@@ -50,7 +50,7 @@ export default function Home() {
         <div className="relative z-10 container text-center text-foreground">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 min-h-[3.5rem] md:min-h-[4.5rem] lg:min-h-[5rem]">
-              {t("home.welcome")} <span className="brand-font gold-text">Spinella</span>
+              Bienvenue chez <span className="brand-font gold-text">Spinella</span> - Restaurant Italien & Cocktail Bar a Geneve
             </h1>
             <p className="text-lg md:text-xl mb-4 font-light max-w-2xl mx-auto">
               {t("home.heroParagraph1")}
@@ -94,8 +94,12 @@ export default function Home() {
       <section className="section-spacing cream-bg">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t("home.experienceTitle")}</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Le meilleur de la cuisine sicilienne a deux pas de Cornavin</h2>
             <div className="gold-divider"></div>
+            <p className="text-base md:text-lg text-muted-foreground mt-6 max-w-3xl mx-auto">
+              Restaurant italien Cornavin, restaurant proche gare Cornavin et restaurant Geneve centre:
+              Spinella propose une cuisine sicilienne authentique, un cocktail bar Geneve et un bar a vin Geneve.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -176,7 +180,7 @@ export default function Home() {
             <div className="relative min-h-[240px] sm:min-h-[280px] lg:min-h-[380px] w-full overflow-hidden rounded-lg aspect-[4/3]">
               <img
                 src="/interior_brothers.jpg"
-                alt="The three Spinella brothers"
+                alt="Trattoria italienne Geneve: les trois freres de Spinella"
                 width={800}
                 height={600}
                 className="w-full h-full object-cover object-center rounded-lg shadow-2xl"
@@ -198,7 +202,7 @@ export default function Home() {
             <div className="order-2 lg:order-1 relative min-h-[240px] sm:min-h-[280px] lg:min-h-[380px] w-full min-w-0 overflow-hidden rounded-lg aspect-[4/3] bg-muted">
               <img
                 src="/spinella_exterior.jpg"
-                alt="Spinella exterior"
+                alt="Restaurant italien proche du lac Geneve et de la gare Cornavin"
                 width={800}
                 height={600}
                 className="absolute inset-0 w-full h-full object-cover object-[50%_25%] rounded-lg shadow-2xl"
@@ -207,13 +211,13 @@ export default function Home() {
               />
             </div>
             <div className="order-1 lg:order-2">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">{t("home.visitTitle")}</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">Menu de Midi et Aperitivo Italien</h2>
               <div className="gold-divider mx-0"></div>
               <p className="text-lg mb-6 leading-relaxed">
-                {t("home.visitDesc1")}
+                Menu de midi Geneve, dejeuner italien Cornavin, plat du jour Geneve centre et aperitivo italien Geneve.
               </p>
               <p className="text-lg mb-8 leading-relaxed">
-                {t("home.visitDesc2")}
+                Ideal pour un afterwork Geneve Cornavin avec planche de charcuterie italienne, pinsa romana Geneve et cocktails signatures.
               </p>
               <Link href="/contact">
                 <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">

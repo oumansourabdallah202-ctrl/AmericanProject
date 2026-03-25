@@ -102,6 +102,8 @@ alter table public.bookings
 
 ## Step 2d: Add `dietary_requirements` to `bookings` (optional, for allergies/dietary)
 
+**If you see `PGRST204 Could not find the 'dietary_requirements' column` in Vercel logs**, run the SQL below to add the column.
+
 To separate dietary requirements and allergies from special requests (events, birthday, etc.):
 
 1. In Supabase → **SQL Editor**, run:
@@ -237,6 +239,14 @@ Run this whenever you want to refresh the client list from Resend. New bookings 
 - New bookings from the site are written by `/api/booking`.
 - The admin page reads and updates them via `/api/bookings` (with admin auth).
 - Newsletter: subscribe via `/api/newsletter-subscribe`; unsubscribe via `/api/newsletter-unsubscribe?token=...` (link in emails).
+
+### Security Advisor: `newsletter_subscribers` — RLS disabled
+
+If Supabase **Security Advisor** reports *“Table public.newsletter_subscribers is public, but RLS has not been enabled”*:
+
+1. Open **SQL Editor** and run the **RLS block** at the end of **`docs/supabase-newsletter-table.sql`** (from `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` through the `CREATE POLICY`).
+
+That enables RLS and adds a policy that **denies all access via the anon / authenticated keys**. Your Vercel routes use **`SUPABASE_SERVICE_ROLE_KEY`**, which **bypasses RLS**, so subscribe, unsubscribe, and admin newsletter list keep working.
 
 ---
 

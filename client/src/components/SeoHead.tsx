@@ -49,6 +49,16 @@ export default function SeoHead() {
     }
     metaDesc.content = description;
 
+    if (meta?.keywords) {
+      let metaKeywords = document.querySelector<HTMLMetaElement>('meta[name="keywords"]');
+      if (!metaKeywords) {
+        metaKeywords = document.createElement("meta");
+        metaKeywords.name = "keywords";
+        document.head.appendChild(metaKeywords);
+      }
+      metaKeywords.content = meta.keywords;
+    }
+
     // Open Graph
     const setOg = (property: string, content: string) => {
       let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);

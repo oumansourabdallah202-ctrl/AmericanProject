@@ -7,18 +7,23 @@ export const SEO_BASE_URL = "https://www.spinella.ch";
 export type RouteMeta = {
   title: string;
   description: string;
+  keywords?: string;
 };
 
 export const routeMeta: Record<string, RouteMeta> = {
   "/": {
-    title: "Spinella Restaurant & Bar | Sicilian Cuisine in Geneva",
+    title: "Spinella Genève | Restaurant Italien & Cocktail Bar",
     description:
-      "Three brothers bringing the soul of Sicily to Geneva. Traditional Sicilian dishes, handcrafted cocktails, warm hospitality. Reserve your table.",
+      "Restaurant italien Genève proche de Cornavin: cuisine sicilienne authentique, cocktail bar, bar a vin, menu de midi, aperitivo et pinsa romana.",
+    keywords:
+      "Restaurant italien Geneve, Cocktail Bar Geneve, Bar a vin Geneve, Cuisine sicilienne authentique, Trattoria italienne Geneve, Restaurant italien Cornavin, Restaurant proche gare Cornavin, Restaurant Geneve centre, Bar a cocktails Cornavin, Restaurant italien proche du lac Geneve, Pinsa romana Geneve, Meilleure pinsa Geneve, Pates fraiches maison, Tagliolini a la truffe, Lasagne italienne, Antipasti italiens, Burrata des Pouilles, Arancini sicilien, Cannolo sicilien, Tiramisu maison, Menu de midi Geneve, Dejeuner italien Cornavin, Plat du jour Geneve centre, Aperitivo italien Geneve, Afterwork Geneve Cornavin, Planche de charcuterie italienne",
   },
   "/menu": {
-    title: "Italian Menu & Sicilian Tapas | Spinella Geneva",
+    title: "Menu Italien | Pinsa, Pates fraiches & Antipasti | Spinella Geneve",
     description:
-      "Explore Spinella's Italian menu in Geneva: Sicilian cuisine, shareable tapas, and authentic dishes. Download the full menu.",
+      "Pinsa romana Geneve, pates fraiches maison, tagliolini a la truffe, antipasti italiens, burrata des Pouilles, cannolo sicilien et tiramisu maison.",
+    keywords:
+      "Pinsa romana Geneve, Meilleure pinsa Geneve, Pates fraiches maison, Tagliolini a la truffe, Lasagne italienne, Antipasti italiens, Burrata des Pouilles, Arancini sicilien, Cannolo sicilien, Tiramisu maison",
   },
   "/gallery": {
     title: "Gallery | Spinella Restaurant & Bar Geneva",
@@ -41,14 +46,14 @@ export const routeMeta: Record<string, RouteMeta> = {
       "Frequently asked questions: reservations, opening hours, dietary options, parking, and more. We're here to help.",
   },
   "/contact": {
-    title: "Contact & Opening Hours | Spinella Geneva",
+    title: "Contact | Restaurant proche gare Cornavin | Spinella Geneve",
     description:
-      "Find us at Rue Liotard 4, Geneva. Opening hours, map, phone, and email. Get in touch or reserve your table.",
+      "Situe a deux pas de la gare Cornavin et du centre de Geneve. Horaires, telephone, email et itineraire pour Spinella.",
   },
   "/reservations": {
-    title: "Reserve Your Table | Spinella Geneva",
+    title: "Reservation | Restaurant Italien Geneve Cornavin | Spinella",
     description:
-      "Book your table at Spinella online. Experience authentic Sicilian cuisine in the heart of Geneva. Easy reservation.",
+      "Reserve votre table chez Spinella: restaurant italien Geneve centre, cuisine sicilienne authentique, cocktails et vins a Cornavin.",
   },
 };
 

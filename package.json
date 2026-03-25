@@ -17,7 +17,8 @@
     "deploy:netlify:prod": "npm run build:client && npx netlify deploy --prod --dir=dist/public",
     "deploy:netlify:prod:no-build": "npx netlify deploy --prod --dir=dist/public --no-build",
     "seed:brigitte": "node scripts/seed-brigitte-moser.mjs",
-    "seed:sean": "node scripts/seed-sean-fennelly.mjs"
+    "seed:sean": "node scripts/seed-sean-fennelly.mjs",
+    "vercel:booking-failures": "node scripts/count-booking-failures.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
