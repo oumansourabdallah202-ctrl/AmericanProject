@@ -32,6 +32,7 @@ function slots15(start: string, end: string): string[] {
 const LUNCH_SLOTS = slots15("12:00", "14:00");
 const EVENING_UNTIL_22 = slots15("17:30", "22:00");
 const EVENING_UNTIL_22_30 = slots15("17:30", "22:30");
+const TODAY_REOPEN_TIME = "21:15";
 
 /** Sunday = closed (no slots). */
 export function isSunday(date: string): boolean {
@@ -130,6 +131,8 @@ export function getTimeSlotsForDate(date: string, options?: { now?: Date }): str
         const [h, m] = time.split(":").map(Number);
         return h * 60 + m > currentMinutes;
       });
+      // Temporary reopening window: today accepts reservations from 21:15 onward.
+      all = all.filter((time) => time >= TODAY_REOPEN_TIME);
     }
   }
   return all;

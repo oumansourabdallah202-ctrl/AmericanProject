@@ -168,6 +168,7 @@ export default function Admin() {
   const [blockReason, setBlockReason] = useState("Sorry, we can't take more reservations for this period.");
   const [creatingBlock, setCreatingBlock] = useState(false);
   const [deletingBlockId, setDeletingBlockId] = useState<string | null>(null);
+  const [unblockingToday, setUnblockingToday] = useState(false);
   const [syncingFromResend, setSyncingFromResend] = useState(false);
   const [selectedBookingIds, setSelectedBookingIds] = useState<Set<string>>(new Set());
   const [selectedClientIds, setSelectedClientIds] = useState<Set<string>>(new Set());
@@ -419,6 +420,36 @@ export default function Admin() {
       toast.error("Failed to delete block");
     } finally {
       setDeletingBlockId(null);
+    }
+  };
+
+  const handleUnblockToday = async () => {
+    if (!token) return;
+    const today = new Date().toISOString().split("T")[0];
+    const ids = reservationBlocks
+      .filter((b) => b.startDate <= today && b.endDate >= today)
+      .map((b) => b.id);
+    if (ids.length === 0) {
+      toast.success("No block found for today.");
+      return;
+    }
+    setUnblockingToday(true);
+    try {
+      await Promise.all(
+        ids.map(async (id) => {
+          await fetch("/api/bookings/blocks", {
+            method: "DELETE",
+            headers: getAuthHeaders(token),
+            body: JSON.stringify({ id }),
+          });
+        })
+      );
+      setReservationBlocks((prev) => prev.filter((b) => !ids.includes(b.id)));
+      toast.success("Today is unblocked.");
+    } catch {
+      toast.error("Failed to unblock today");
+    } finally {
+      setUnblockingToday(false);
     }
   };
 
@@ -1762,6 +1793,10 @@ export default function Admin() {
               >
                 Quick: block today
               </Button>
+              <Button type="button" size="sm" variant="outline" onClick={handleUnblockToday} disabled={unblockingToday}>
+                {unblockingToday ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                Quick: unblock today
+              </Button>
             </div>
             <div className="space-y-2">
               {reservationBlocksLoading && <p className="text-sm text-muted-foreground">Loading blocks...</p>}
@@ -1776,7 +1811,8 @@ export default function Admin() {
                     {b.reason ? <span className="text-muted-foreground"> - {b.reason}</span> : null}
                   </div>
                   <Button size="sm" variant="outline" disabled={deletingBlockId === b.id} onClick={() => handleDeleteReservationBlock(b.id)}>
-                    {deletingBlockId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    {deletingBlockId === b.id ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Trash2 className="w-4 h-4 mr-1" />}
+                    Unblock
                   </Button>
                 </div>
               ))}

@@ -136,9 +136,9 @@ export default async function handler(
 
   // Check if date is blocked (e.g. Easter 5–8 April)
   const today = new Date().toISOString().split("T")[0];
-  if (date === today) {
+  if (date === today && time < "21:15") {
     res.status(400).json({
-      error: "Sorry, we can't take more reservations for today.",
+      error: "Sorry, we can't take more reservations for today before 21:15.",
     });
     return;
   }

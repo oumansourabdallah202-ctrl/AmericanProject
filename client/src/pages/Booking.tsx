@@ -110,6 +110,7 @@ export default function Booking() {
 
   const selectedDate = watch("date");
   const selectedTime = watch("time");
+  const todayIso = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     fetch("/api/reservation-blocks")
@@ -322,6 +323,11 @@ export default function Booking() {
                 {selectedDate && isSunday(selectedDate) && (
                   <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
                     <p className="text-sm font-medium">{t("booking.sundayClosed")}</p>
+                  </div>
+                )}
+                {selectedDate === todayIso && (
+                  <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
+                    <p className="text-sm font-medium">Sorry, we can't take more reservations for today before 21:15.</p>
                   </div>
                 )}
                 {selectedDate && isDateBlocked(selectedDate) && (

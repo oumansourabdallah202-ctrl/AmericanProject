@@ -18,18 +18,13 @@ export const LUNCH_ONLY_DATES = ["2026-04-15"];
  * Check if a date is blocked (no reservations at all).
  */
 export function isDateBlocked(dateStr: string): boolean {
-  const today = new Date().toISOString().split("T")[0];
-  return dateStr === today || BLOCKED_DATES.includes(dateStr);
+  return BLOCKED_DATES.includes(dateStr);
 }
 
 /**
  * Translation key for blocked date message (Easter: "sorry we aren't available, book another time").
  */
 export function getBlockedDateReason(dateStr: string): string | null {
-  const today = new Date().toISOString().split("T")[0];
-  if (dateStr === today) {
-    return "dateUnavailableToday";
-  }
   if (["2026-04-05", "2026-04-06", "2026-04-07", "2026-04-08"].includes(dateStr)) {
     return "dateUnavailableEaster";
   }
