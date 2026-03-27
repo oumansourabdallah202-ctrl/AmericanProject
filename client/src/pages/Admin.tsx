@@ -74,6 +74,17 @@ export type NewsletterSubscriberRecord = {
   unsubscribeToken: string | null;
 };
 
+export type ReservationBlockRecord = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  startTime?: string | null;
+  endTime?: string | null;
+  reason?: string | null;
+  isActive: boolean;
+  createdAt?: string;
+};
+
 function getAuthHeaders(token: string): HeadersInit {
   return {
     "Content-Type": "application/json",
@@ -148,6 +159,15 @@ export default function Admin() {
   const [syncingReservationsToClients, setSyncingReservationsToClients] = useState(false);
   const [newsletterSubscribers, setNewsletterSubscribers] = useState<NewsletterSubscriberRecord[]>([]);
   const [newsletterError, setNewsletterError] = useState("");
+  const [reservationBlocks, setReservationBlocks] = useState<ReservationBlockRecord[]>([]);
+  const [reservationBlocksLoading, setReservationBlocksLoading] = useState(false);
+  const [blockStartDate, setBlockStartDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [blockEndDate, setBlockEndDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [blockStartTime, setBlockStartTime] = useState("");
+  const [blockEndTime, setBlockEndTime] = useState("");
+  const [blockReason, setBlockReason] = useState("Sorry, we can't take more reservations for this period.");
+  const [creatingBlock, setCreatingBlock] = useState(false);
+  const [deletingBlockId, setDeletingBlockId] = useState<string | null>(null);
   const [syncingFromResend, setSyncingFromResend] = useState(false);
   const [selectedBookingIds, setSelectedBookingIds] = useState<Set<string>>(new Set());
   const [selectedClientIds, setSelectedClientIds] = useState<Set<string>>(new Set());
@@ -310,6 +330,97 @@ export default function Admin() {
       setNewsletterError(t("admin.newsletterFetchError"));
     }
   }, [t]);
+
+  const fetchReservationBlocks = useCallback(async (authToken: string) => {
+    setReservationBlocksLoading(true);
+    try {
+      const res = await fetch("/api/bookings/blocks", { headers: getAuthHeaders(authToken) });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && Array.isArray(data.blocks)) {
+        setReservationBlocks(
+          data.blocks.map((b: {
+            id: string;
+            start_date: string;
+            end_date: string;
+            start_time?: string | null;
+            end_time?: string | null;
+            reason?: string | null;
+            is_active?: boolean;
+            created_at?: string;
+          }) => ({
+            id: b.id,
+            startDate: b.start_date,
+            endDate: b.end_date,
+            startTime: b.start_time ?? null,
+            endTime: b.end_time ?? null,
+            reason: b.reason ?? null,
+            isActive: Boolean(b.is_active),
+            createdAt: b.created_at,
+          }))
+        );
+      }
+    } catch {
+      // ignore
+    } finally {
+      setReservationBlocksLoading(false);
+    }
+  }, []);
+
+  const handleCreateReservationBlock = async () => {
+    if (!token || !blockStartDate || !blockEndDate) return;
+    if ((blockStartTime && !blockEndTime) || (!blockStartTime && blockEndTime)) {
+      toast.error("Please set both start and end hour, or leave both empty for full-day block.");
+      return;
+    }
+    setCreatingBlock(true);
+    try {
+      const res = await fetch("/api/bookings/blocks", {
+        method: "POST",
+        headers: getAuthHeaders(token),
+        body: JSON.stringify({
+          startDate: blockStartDate,
+          endDate: blockEndDate,
+          startTime: blockStartTime || null,
+          endTime: blockEndTime || null,
+          reason: blockReason.trim() || null,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        toast.error(data.error || "Failed to create block");
+        return;
+      }
+      toast.success("Reservation block created.");
+      await fetchReservationBlocks(token);
+    } catch {
+      toast.error("Failed to create block");
+    } finally {
+      setCreatingBlock(false);
+    }
+  };
+
+  const handleDeleteReservationBlock = async (id: string) => {
+    if (!token) return;
+    setDeletingBlockId(id);
+    try {
+      const res = await fetch("/api/bookings/blocks", {
+        method: "DELETE",
+        headers: getAuthHeaders(token),
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        toast.error(data.error || "Failed to delete block");
+        return;
+      }
+      setReservationBlocks((prev) => prev.filter((b) => b.id !== id));
+      toast.success("Reservation block removed.");
+    } catch {
+      toast.error("Failed to delete block");
+    } finally {
+      setDeletingBlockId(null);
+    }
+  };
 
   const allReservationsFiltered = useMemo(() => {
     const q = allReservationsSearch.trim().toLowerCase();
@@ -1280,8 +1391,11 @@ export default function Admin() {
   }, [token]);
 
   useEffect(() => {
-    if (token && verified) fetchBookings(token);
-  }, [token, verified, fetchBookings]);
+    if (token && verified) {
+      fetchBookings(token);
+      fetchReservationBlocks(token);
+    }
+  }, [token, verified, fetchBookings, fetchReservationBlocks]);
 
   useEffect(() => {
     if (!token || !verified) return;
@@ -1609,6 +1723,64 @@ export default function Admin() {
               {depositRecipientsLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
               {t("admin.depositRecipientsDownload")}
             </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="mb-6 border-red-900/40 bg-red-950/20">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <CalendarIcon className="w-4 h-4 text-red-400" />
+              Reservation blocks (date/time)
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">Block today, a specific day, hours, or a date range/week.</p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2">
+              <Input type="date" value={blockStartDate} onChange={(e) => setBlockStartDate(e.target.value)} className="h-9" />
+              <Input type="date" value={blockEndDate} onChange={(e) => setBlockEndDate(e.target.value)} className="h-9" />
+              <Input type="time" value={blockStartTime} onChange={(e) => setBlockStartTime(e.target.value)} className="h-9" />
+              <Input type="time" value={blockEndTime} onChange={(e) => setBlockEndTime(e.target.value)} className="h-9" />
+              <Input value={blockReason} onChange={(e) => setBlockReason(e.target.value)} placeholder="Reason shown to guest" className="h-9 lg:col-span-2" />
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              <Button type="button" size="sm" variant="destructive" onClick={handleCreateReservationBlock} disabled={creatingBlock}>
+                {creatingBlock ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                Add block
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  const today = new Date().toISOString().split("T")[0];
+                  setBlockStartDate(today);
+                  setBlockEndDate(today);
+                  setBlockStartTime("");
+                  setBlockEndTime("");
+                  setBlockReason("Sorry, we can't take more reservations for today.");
+                }}
+              >
+                Quick: block today
+              </Button>
+            </div>
+            <div className="space-y-2">
+              {reservationBlocksLoading && <p className="text-sm text-muted-foreground">Loading blocks...</p>}
+              {!reservationBlocksLoading && reservationBlocks.length === 0 && (
+                <p className="text-sm text-muted-foreground">No active blocks.</p>
+              )}
+              {reservationBlocks.map((b) => (
+                <div key={b.id} className="flex items-center justify-between gap-2 text-sm border border-border rounded px-3 py-2">
+                  <div>
+                    <span className="font-medium">{b.startDate} - {b.endDate}</span>
+                    <span className="text-muted-foreground"> {b.startTime && b.endTime ? `(${b.startTime}-${b.endTime})` : "(full day)"}</span>
+                    {b.reason ? <span className="text-muted-foreground"> - {b.reason}</span> : null}
+                  </div>
+                  <Button size="sm" variant="outline" disabled={deletingBlockId === b.id} onClick={() => handleDeleteReservationBlock(b.id)}>
+                    {deletingBlockId === b.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                  </Button>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 

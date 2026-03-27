@@ -9,6 +9,7 @@ import {
   isPastTime,
   isRequestOnlyDate,
 } from "./_lib/blockedDates.js";
+import { isBlockedByAdminRules, type ReservationBlockRow } from "./_lib/reservationBlocks.js";
 import { sendPushToAllSubscriptions } from "./_lib/pushSend.js";
 
 const FROM = "Spinella Geneva <info@spinella.ch>";
@@ -134,6 +135,15 @@ export default async function handler(
   }
 
   // Check if date is blocked (e.g. Easter 5–8 April)
+  const today = new Date().toISOString().split("T")[0];
+  if (date === today) {
+    res.status(400).json({
+      error: "Sorry, we can't take more reservations for today.",
+    });
+    return;
+  }
+
+  // Check if date is blocked (e.g. Easter 5–8 April)
   if (isDateBlocked(date)) {
     const reason = getBlockedDateReason(date);
     res.status(400).json({
@@ -180,6 +190,22 @@ export default async function handler(
   try {
     // Save to Supabase FIRST so the dashboard always has the booking when the guest gets the email.
     const supabase = getSupabase();
+    // Admin-configured dynamic blocks (single day, hours, range/week)
+    const { data: dynamicBlocks } = await supabase
+      .from("reservation_blocks")
+      .select("id, start_date, end_date, start_time, end_time, reason, is_active")
+      .eq("is_active", true);
+    const dynamicResult = isBlockedByAdminRules(
+      date,
+      time,
+      (dynamicBlocks ?? []) as ReservationBlockRow[]
+    );
+    if (dynamicResult.blocked) {
+      res.status(400).json({
+        error: dynamicResult.reason || "Sorry, we can't take reservations for this selected date/time.",
+      });
+      return;
+    }
     const { data: inserted, error: insertErr } = await supabase
       .from(BOOKINGS_TABLE)
       .insert({

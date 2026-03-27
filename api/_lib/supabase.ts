@@ -19,6 +19,8 @@ export const CLIENTS_TABLE = "clients";
 export const PUSH_SUBSCRIPTIONS_TABLE = "push_subscriptions";
 /** Newsletter signups. Create in Supabase: newsletter_subscribers (email text primary key, subscribed_at timestamptz default now()). */
 export const NEWSLETTER_TABLE = "newsletter_subscribers";
+/** Reservation blocking windows configured from admin. */
+export const RESERVATION_BLOCKS_TABLE = "reservation_blocks";
 
 export type ClientRow = {
   id: string;

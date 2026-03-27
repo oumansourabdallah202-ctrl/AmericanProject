@@ -19,6 +19,11 @@ import { Calendar, Clock, Users, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { getTimeSlotsForDate, isSunday, isRequestOnlyPartySize } from "@/lib/blockedSlots";
 import { isDateBlocked, getBlockedDateReason, isLunchOnlyDate } from "@/lib/blockedDates";
+import {
+  type ReservationBlock,
+  isDateFullyBlockedByRules,
+  isTimeBlockedByRules,
+} from "@/lib/reservationBlocks";
 
 function buildBookingSchema(t: (key: string) => string) {
   return z.object({
@@ -88,6 +93,7 @@ export default function Booking() {
   const [apiErrorDetails, setApiErrorDetails] = useState<string | null>(null);
   const [wasAutoConfirmed, setWasAutoConfirmed] = useState(false);
   const [hasAllergy, setHasAllergy] = useState(false);
+  const [reservationBlocks, setReservationBlocks] = useState<ReservationBlock[]>([]);
 
   const bookingSchema = useMemo(() => buildBookingSchema(t), [t]);
   const {
@@ -104,6 +110,13 @@ export default function Booking() {
 
   const selectedDate = watch("date");
   const selectedTime = watch("time");
+
+  useEffect(() => {
+    fetch("/api/reservation-blocks")
+      .then((r) => r.json().catch(() => ({ blocks: [] })))
+      .then((d) => setReservationBlocks(Array.isArray(d.blocks) ? d.blocks : []))
+      .catch(() => setReservationBlocks([]));
+  }, []);
 
   const onSubmit = async (data: BookingForm) => {
     setLastFailedData(null);
@@ -155,10 +168,24 @@ export default function Booking() {
     }
   };
 
+  const selectedDateBlockedByAdmin = useMemo(
+    () => (selectedDate ? isDateFullyBlockedByRules(selectedDate, reservationBlocks) : false),
+    [selectedDate, reservationBlocks]
+  );
+
+  const selectedDateBlockedByAdminReason = useMemo(() => {
+    if (!selectedDate) return null;
+    const fullDayBlock = reservationBlocks.find(
+      (b) => selectedDate >= b.start_date && selectedDate <= b.end_date && !b.start_time && !b.end_time
+    );
+    return fullDayBlock?.reason ?? null;
+  }, [selectedDate, reservationBlocks]);
+
   const timeSlots = useMemo(() => {
-    if (!selectedDate || isDateBlocked(selectedDate)) return [];
-    return getTimeSlotsForDate(selectedDate, { now: new Date() });
-  }, [selectedDate]);
+    if (!selectedDate || isDateBlocked(selectedDate) || selectedDateBlockedByAdmin) return [];
+    const base = getTimeSlotsForDate(selectedDate, { now: new Date() });
+    return base.filter((time) => !isTimeBlockedByRules(selectedDate, time, reservationBlocks));
+  }, [selectedDate, selectedDateBlockedByAdmin, reservationBlocks]);
 
   // Clear time whenever date changes so form state never has a time from another day's slots.
   // Prevents Radix Select removeChild (selected value not in list) and wrong submission.
@@ -299,7 +326,19 @@ export default function Booking() {
                 )}
                 {selectedDate && isDateBlocked(selectedDate) && (
                   <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
-                    <p className="text-sm font-medium">{t("booking.dateUnavailableEaster")}</p>
+                    <p className="text-sm font-medium">
+                      {(() => {
+                        const reason = getBlockedDateReason(selectedDate);
+                        return reason ? t(`booking.${reason}`) : t("booking.dateUnavailableGeneric");
+                      })()}
+                    </p>
+                  </div>
+                )}
+                {selectedDate && selectedDateBlockedByAdmin && (
+                  <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
+                    <p className="text-sm font-medium">
+                      {selectedDateBlockedByAdminReason || "Sorry, we can't take more reservations for this date."}
+                    </p>
                   </div>
                 )}
                 {selectedDate && isLunchOnlyDate(selectedDate) && (
@@ -443,7 +482,7 @@ export default function Booking() {
                   type="submit"
                   size="lg"
                   className="w-full gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold text-lg relative z-10 cursor-pointer"
-                  disabled={isSubmitting || (!!selectedDate && (isSunday(selectedDate) || isDateBlocked(selectedDate)))}
+                  disabled={isSubmitting || (!!selectedDate && (isSunday(selectedDate) || isDateBlocked(selectedDate) || selectedDateBlockedByAdmin))}
                 >
                   <span>{isSubmitting ? t("booking.submitting") : t("booking.submit")}</span>
                 </Button>
