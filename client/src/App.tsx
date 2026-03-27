@@ -34,6 +34,14 @@ function RedirectToReservations() {
   return null;
 }
 
+function RedirectToMenu() {
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    setLocation("/menu");
+  }, [setLocation]);
+  return null;
+}
+
 function ScrollToTop() {
   const [pathname] = useLocation();
   useEffect(() => {
@@ -61,6 +69,7 @@ function Router() {
           <Route path="/unsubscribe" component={Unsubscribe} />
           <Route path="/careers" component={Careers} />
           <Route path="/booking" component={RedirectToReservations} />
+          <Route path="/menus-1" component={RedirectToMenu} />
           <Route path="/reservations" component={Booking} />
           <Route path="/takeaway" component={Takeaway} />
           <Route path="/admin" component={Admin} />

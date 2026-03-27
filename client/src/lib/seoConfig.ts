@@ -12,9 +12,9 @@ export type RouteMeta = {
 
 export const routeMeta: Record<string, RouteMeta> = {
   "/": {
-    title: "Spinella Genève | Restaurant Italien & Cocktail Bar",
+    title: "Spinella - Cocktails & Wine Bar - Tapas & Restaurant | Genève",
     description:
-      "Restaurant italien Genève proche de Cornavin: cuisine sicilienne authentique, cocktail bar, bar a vin, menu de midi, aperitivo et pinsa romana.",
+      "Découvrez Spinella à Genève : un mélange unique de cuisine italienne traditionnelle, tapas gourmandes et cocktails artisanaux. Réservez votre table dès maintenant !",
     keywords:
       "Restaurant italien Geneve, Cocktail Bar Geneve, Bar a vin Geneve, Cuisine sicilienne authentique, Trattoria italienne Geneve, Restaurant italien Cornavin, Restaurant proche gare Cornavin, Restaurant Geneve centre, Bar a cocktails Cornavin, Restaurant italien proche du lac Geneve, Pinsa romana Geneve, Meilleure pinsa Geneve, Pates fraiches maison, Tagliolini a la truffe, Lasagne italienne, Antipasti italiens, Burrata des Pouilles, Arancini sicilien, Cannolo sicilien, Tiramisu maison, Menu de midi Geneve, Dejeuner italien Cornavin, Plat du jour Geneve centre, Aperitivo italien Geneve, Afterwork Geneve Cornavin, Planche de charcuterie italienne",
   },

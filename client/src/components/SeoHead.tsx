@@ -13,7 +13,8 @@ export default function SeoHead() {
   const canonicalUrl = `${SEO_BASE_URL}${normalizedPath === "/" ? "" : normalizedPath}`;
 
   useEffect(() => {
-    const is404 = normalizedPath === "/404";
+    const isMissingRoute = !meta;
+    const is404 = normalizedPath === "/404" || isMissingRoute;
     const title = is404 ? "404 – Spinella" : (meta?.title ?? "Spinella Restaurant & Bar Geneva");
     const description =
       meta?.description ??
@@ -57,6 +58,9 @@ export default function SeoHead() {
         document.head.appendChild(metaKeywords);
       }
       metaKeywords.content = meta.keywords;
+    } else {
+      const metaKeywords = document.querySelector<HTMLMetaElement>('meta[name="keywords"]');
+      if (metaKeywords) metaKeywords.remove();
     }
 
     // Open Graph
