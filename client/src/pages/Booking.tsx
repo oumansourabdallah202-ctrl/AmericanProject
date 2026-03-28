@@ -24,6 +24,8 @@ import {
   isDateFullyBlockedByRules,
   isTimeBlockedByRules,
 } from "@/lib/reservationBlocks";
+import { getGenevaDateISO, getGenevaTimeMinutes } from "@/lib/genevaDate";
+import { localizedAdminBlockReason } from "@/lib/adminBlockMessages";
 
 function buildBookingSchema(t: (key: string) => string) {
   return z.object({
@@ -46,11 +48,10 @@ function buildBookingSchema(t: (key: string) => string) {
         const date = typeof parent === "object" && parent !== null && "date" in parent
           ? (parent as { date?: string }).date
           : undefined;
-        if (!date || date !== new Date().toISOString().split("T")[0]) return true;
-        const now = new Date();
+        if (!date || date !== getGenevaDateISO()) return true;
         const [h, m] = time.split(":").map(Number);
         const slotMinutes = h * 60 + m;
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const currentMinutes = getGenevaTimeMinutes();
         return slotMinutes > currentMinutes;
       },
       { message: t("booking.timePast") }
@@ -110,7 +111,6 @@ export default function Booking() {
 
   const selectedDate = watch("date");
   const selectedTime = watch("time");
-  const todayIso = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     fetch("/api/reservation-blocks")
@@ -325,11 +325,6 @@ export default function Booking() {
                     <p className="text-sm font-medium">{t("booking.sundayClosed")}</p>
                   </div>
                 )}
-                {selectedDate === todayIso && (
-                  <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
-                    <p className="text-sm font-medium">Sorry, we can't take more reservations for today before 21:15.</p>
-                  </div>
-                )}
                 {selectedDate && isDateBlocked(selectedDate) && (
                   <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
                     <p className="text-sm font-medium">
@@ -343,7 +338,7 @@ export default function Booking() {
                 {selectedDate && selectedDateBlockedByAdmin && (
                   <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-foreground">
                     <p className="text-sm font-medium">
-                      {selectedDateBlockedByAdminReason || "Sorry, we can't take more reservations for this date."}
+                      {localizedAdminBlockReason(selectedDateBlockedByAdminReason, t)}
                     </p>
                   </div>
                 )}
@@ -368,7 +363,7 @@ export default function Booking() {
                       id="date"
                       type="date"
                       {...register("date")}
-                      min={new Date().toISOString().split('T')[0]}
+                      min={getGenevaDateISO()}
                       className="mt-1"
                     />
                     {errors.date && (

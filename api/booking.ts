@@ -134,16 +134,6 @@ export default async function handler(
     return;
   }
 
-  // Check if date is blocked (e.g. Easter 5–8 April)
-  const today = new Date().toISOString().split("T")[0];
-  if (date === today && time < "21:15") {
-    res.status(400).json({
-      error: "Sorry, we can't take more reservations for today before 21:15.",
-    });
-    return;
-  }
-
-  // Check if date is blocked (e.g. Easter 5–8 April)
   if (isDateBlocked(date)) {
     const reason = getBlockedDateReason(date);
     res.status(400).json({
@@ -202,7 +192,9 @@ export default async function handler(
     );
     if (dynamicResult.blocked) {
       res.status(400).json({
-        error: dynamicResult.reason || "Sorry, we can't take reservations for this selected date/time.",
+        error:
+          dynamicResult.reason ||
+          "Désolés, nous ne pouvons pas prendre de réservation en ligne pour cette date ou ce créneau.",
       });
       return;
     }

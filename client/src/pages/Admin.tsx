@@ -35,6 +35,7 @@ import { AlertCircle, Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight
 import { supabase, isSupabaseAuthConfigured } from "@/lib/supabaseClient";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTimeSlotsForDate } from "@/lib/blockedSlots";
+import { getGenevaDateISO } from "@/lib/genevaDate";
 
 /** Parse YYYY-MM-DD as local date (avoids timezone shifting the day). */
 function parseLocalDate(ymd: string): Date {
@@ -161,8 +162,8 @@ export default function Admin() {
   const [newsletterError, setNewsletterError] = useState("");
   const [reservationBlocks, setReservationBlocks] = useState<ReservationBlockRecord[]>([]);
   const [reservationBlocksLoading, setReservationBlocksLoading] = useState(false);
-  const [blockStartDate, setBlockStartDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
-  const [blockEndDate, setBlockEndDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [blockStartDate, setBlockStartDate] = useState<string>(() => getGenevaDateISO());
+  const [blockEndDate, setBlockEndDate] = useState<string>(() => getGenevaDateISO());
   const [blockStartTime, setBlockStartTime] = useState("");
   const [blockEndTime, setBlockEndTime] = useState("");
   const [blockReason, setBlockReason] = useState("Sorry, we can't take more reservations for this period.");
@@ -172,7 +173,7 @@ export default function Admin() {
   const [syncingFromResend, setSyncingFromResend] = useState(false);
   const [selectedBookingIds, setSelectedBookingIds] = useState<Set<string>>(new Set());
   const [selectedClientIds, setSelectedClientIds] = useState<Set<string>>(new Set());
-  const [dailyListDate, setDailyListDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [dailyListDate, setDailyListDate] = useState<string>(() => getGenevaDateISO());
   const [bookingDetailId, setBookingDetailId] = useState<string | null>(null);
   const [bookingDetail, setBookingDetail] = useState<{
     booking: BookingRecord;
@@ -194,10 +195,7 @@ export default function Admin() {
     return new Date(d.getFullYear(), d.getMonth(), 1);
   });
   const [calendarView, setCalendarView] = useState<"all" | "requests">("all");
-  const [selectedCalendarDate, setSelectedCalendarDate] = useState<string>(() => {
-    const today = new Date();
-    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  });
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<string>(() => getGenevaDateISO());
   const [userEmail, setUserEmail] = useState<string | null>(null);
   /** Resend email id -> delivery status (bounced, delivered, sent, ...) for list-view bounced flags */
   const [emailStatusByResendId, setEmailStatusByResendId] = useState<Record<string, string>>({});
@@ -425,7 +423,7 @@ export default function Admin() {
 
   const handleUnblockToday = async () => {
     if (!token) return;
-    const today = new Date().toISOString().split("T")[0];
+    const today = getGenevaDateISO();
     const ids = reservationBlocks
       .filter((b) => b.startDate <= today && b.endDate >= today)
       .map((b) => b.id);
@@ -1783,7 +1781,7 @@ export default function Admin() {
                 size="sm"
                 variant="outline"
                 onClick={() => {
-                  const today = new Date().toISOString().split("T")[0];
+                  const today = getGenevaDateISO();
                   setBlockStartDate(today);
                   setBlockEndDate(today);
                   setBlockStartTime("");

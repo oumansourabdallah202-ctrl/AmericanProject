@@ -2,6 +2,8 @@
  * Blocked dates for reservations (fully closed).
  * April 5, 6, 7, 8: Easter. April 15: evening booked for event (see LUNCH_ONLY_DATES).
  */
+import { getGenevaDateISO, getGenevaTimeMinutes } from "./genevaDate.js";
+
 export const BLOCKED_DATES = [
   "2026-04-05",
   "2026-04-06",
@@ -50,12 +52,12 @@ export function isRequestOnlyDate(dateStr: string): boolean {
   return REQUEST_ONLY_DATES.includes(dateStr);
 }
 
-/** True if the given date is today and the time has already passed. */
+/** True if the given date is today (Geneva) and the time has already passed (Geneva clock). */
 export function isPastTime(dateStr: string, time: string, now: Date = new Date()): boolean {
-  const today = now.toISOString().split("T")[0];
+  const today = getGenevaDateISO(now);
   if (dateStr !== today) return false;
   const [h, m] = time.split(":").map(Number);
   const slotMinutes = h * 60 + m;
-  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const currentMinutes = getGenevaTimeMinutes(now);
   return slotMinutes <= currentMinutes;
 }

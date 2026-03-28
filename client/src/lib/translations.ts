@@ -260,6 +260,8 @@ export const translations = {
       dateSpecialEventLunchOnly: "Sorry, we are booked for an event in the evening — only lunch is available on this date.",
       dateUnavailableGeneric: "This date is unavailable for reservations.",
       timePast: "This time has already passed. Please choose a later time.",
+      adminFullDayBlocked: "Online reservations are not available for this date.",
+      adminBlockReasonPeriod: "We're not taking online reservations for this period. Please choose another date.",
       validation: {
         nameMin: "Name must be at least 2 characters",
         emailInvalid: "Invalid email address",
@@ -781,6 +783,8 @@ export const translations = {
       dateSpecialEventLunchOnly: "Désolés, nous sommes réservés pour un événement le soir ; seul le déjeuner est disponible ce jour-là.",
       dateUnavailableGeneric: "Cette date est indisponible pour les réservations.",
       timePast: "Cette heure est déjà passée. Veuillez choisir une heure ultérieure.",
+      adminFullDayBlocked: "Les réservations en ligne ne sont pas disponibles pour cette date.",
+      adminBlockReasonPeriod: "Nous ne prenons pas de réservations en ligne pour cette période. Veuillez choisir une autre date.",
       validation: {
         nameMin: "Le nom doit contenir au moins 2 caractères",
         emailInvalid: "Adresse email invalide",
@@ -1302,6 +1306,8 @@ export const translations = {
       dateSpecialEventLunchOnly: "Siamo spiacenti, siamo prenotati per un evento la sera; solo il pranzo è disponibile in questa data.",
       dateUnavailableGeneric: "Questa data non è disponibile per le prenotazioni.",
       timePast: "Questo orario è già passato. Scegli un orario successivo.",
+      adminFullDayBlocked: "Le prenotazioni online non sono disponibili per questa data.",
+      adminBlockReasonPeriod: "Non accettiamo prenotazioni online per questo periodo. Scegli un'altra data.",
       validation: {
         nameMin: "Il nome deve contenere almeno 2 caratteri",
         emailInvalid: "Indirizzo email non valido",
@@ -1801,6 +1807,8 @@ export const translations = {
       dateSpecialEventLunchOnly: "Leider sind wir am Abend für ein Event reserviert; nur Mittagessen ist an diesem Tag möglich.",
       dateUnavailableGeneric: "Dieses Datum ist für Reservierungen nicht verfügbar.",
       timePast: "Diese Uhrzeit liegt bereits in der Vergangenheit. Bitte wählen Sie eine spätere Uhrzeit.",
+      adminFullDayBlocked: "Online-Reservierungen sind an diesem Datum nicht möglich.",
+      adminBlockReasonPeriod: "Für diesen Zeitraum nehmen wir keine Online-Reservierungen an. Bitte wählen Sie ein anderes Datum.",
       validation: { nameMin: "Name mindestens 2 Zeichen", emailInvalid: "Ungültige E-Mail", phoneMin: "Telefon mindestens 10 Zeichen", dateRequired: "Bitte Datum wählen", timeRequired: "Bitte Uhrzeit wählen", partySizeRequired: "Bitte Gästezahl wählen" }
     },
     footer: { stayConnected: "Bleiben Sie im Kontakt", followUs: "Folgen Sie uns für Angebote, Events und besondere Gerichte!", openingHours: "Öffnungszeiten", allRightsReserved: "Alle Rechte vorbehalten", careers: "Karriere" },
@@ -2123,6 +2131,8 @@ export const translations = {
       dateSpecialEventLunchOnly: "Lo sentimos, estamos reservados por un evento por la noche; solo hay servicio de comida ese día.",
       dateUnavailableGeneric: "Esta fecha no está disponible para reservas.",
       timePast: "Esta hora ya ha pasado. Elija una hora posterior.",
+      adminFullDayBlocked: "Las reservas en línea no están disponibles para esta fecha.",
+      adminBlockReasonPeriod: "No aceptamos reservas en línea para este periodo. Elija otra fecha.",
       validation: { nameMin: "Nombre al menos 2 caracteres", emailInvalid: "Correo no válido", phoneMin: "Teléfono al menos 10 caracteres", dateRequired: "Elija una fecha", timeRequired: "Elija una hora", partySizeRequired: "Elija el número de personas" }
     },
     footer: { stayConnected: "Manténgase conectado", followUs: "Síganos para ofertas, eventos y platos especiales.", openingHours: "Horario", allRightsReserved: "Todos los derechos reservados", careers: "Trabajo" },
