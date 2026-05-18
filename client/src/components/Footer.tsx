@@ -33,63 +33,61 @@ export default function Footer() {
   const { t } = useLanguage();
   
   return (
-    <footer className="bg-background text-foreground">
+    <footer className="bg-white-bg text-foreground">
       <div className="container section-spacing">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Contact Info */}
-          <div>
-            <h3 className="brand-font text-2xl font-bold gold-text mb-6">Spinella</h3>
+          <div data-aos="fade-up">
+            <h3 className="brand-font text-2xl font-bold blue-text mb-6">TestRestaurant</h3>
             <div className="space-y-4 text-sm">
               <div className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 gold-text flex-shrink-0 mt-0.5" />
-                <span>Rue Liotard 4<br />1202 Geneva, Switzerland</span>
+                <MapPin className="w-5 h-5 blue-text flex-shrink-0 mt-0.5" />
+                <span>123 Main Street<br />Cityville, Country</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 gold-text flex-shrink-0" />
-                <a href="tel:+41225034186" className="hover:text-[oklch(0.62_0.15_85)] transition-colors">
-                  +41 22 503 41 86
+                <Phone className="w-5 h-5 blue-text flex-shrink-0" />
+                <a href="tel:+1234567890" className="hover:text-blue-600 transition-colors">
+                  +1 234 567 890
                 </a>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 gold-text flex-shrink-0" />
-                <a href="mailto:info@spinella.ch?subject=Contact%20Spinella%20-%20Website" className="hover:text-[oklch(0.62_0.15_85)] transition-colors">
-                  info@spinella.ch
+                <Mail className="w-5 h-5 blue-text flex-shrink-0" />
+                <a href="mailto:info@testrestaurant.com" className="hover:text-blue-600 transition-colors">
+                  info@testrestaurant.com
                 </a>
               </div>
               <div className="pt-2">
-                <Link href="/careers" className="text-sm hover:text-[oklch(0.62_0.15_85)] transition-colors font-medium">
-                  {t("footer.careers")}
+                <Link href="/careers" className="text-sm hover:text-blue-600 transition-colors font-medium">
+                  Careers
                 </Link>
               </div>
             </div>
           </div>
 
           {/* Opening Hours */}
-          <div>
+          <div data-aos="fade-up" data-aos-delay="100">
             <h3 className="text-xl font-bold mb-6 flex items-center">
-              <Clock className="w-5 h-5 gold-text mr-2" />
-              {t("footer.openingHours")}
+              <Clock className="w-5 h-5 blue-text mr-2" />
+              Opening Hours
             </h3>
             <div className="space-y-4 text-sm overflow-x-auto">
               <div>
-                <h4 className="font-semibold mb-2">{t("contact.kitchenHoursTitle")}</h4>
+                <h4 className="font-semibold mb-2">Kitchen</h4>
                 <table className="w-full border border-border rounded-md overflow-hidden">
                   <tbody>
-                    <tr className="border-b border-border"><td className="p-2">{t("contact.monWed")}</td><td className="p-2 gold-text">{t("contact.monWedHours")}</td></tr>
-                    <tr className="border-b border-border"><td className="p-2">{t("contact.thuFri")}</td><td className="p-2 gold-text">{t("contact.thuFriHours")}</td></tr>
-                    <tr className="border-b border-border"><td className="p-2">{t("contact.saturday")}</td><td className="p-2 gold-text">{t("contact.satHours")}</td></tr>
-                    <tr><td className="p-2">{t("contact.sunday")}</td><td className="p-2 gold-text">{t("contact.sundayHours")}</td></tr>
+                    <tr className="border-b border-border"><td className="p-2">Mon-Fri</td><td className="p-2 blue-text">12:00-22:00</td></tr>
+                    <tr className="border-b border-border"><td className="p-2">Saturday</td><td className="p-2 blue-text">14:00-23:00</td></tr>
+                    <tr><td className="p-2">Sunday</td><td className="p-2 blue-text">Closed</td></tr>
                   </tbody>
                 </table>
               </div>
               <div>
-                <h4 className="font-semibold mb-2">{t("contact.barHoursTitle")}</h4>
+                <h4 className="font-semibold mb-2">Bar</h4>
                 <table className="w-full border border-border rounded-md overflow-hidden">
                   <tbody>
-                    <tr className="border-b border-border"><td className="p-2">{t("contact.monWed")}</td><td className="p-2 gold-text">{t("contact.monWedBarHours")}</td></tr>
-                    <tr className="border-b border-border"><td className="p-2">{t("contact.thuFri")}</td><td className="p-2 gold-text">{t("contact.thuFriBarHours")}</td></tr>
-                    <tr className="border-b border-border"><td className="p-2">{t("contact.saturday")}</td><td className="p-2 gold-text">{t("contact.satBarHours")}</td></tr>
-                    <tr><td className="p-2">{t("contact.sunday")}</td><td className="p-2 gold-text">{t("contact.sundayBarHours")}</td></tr>
+                    <tr className="border-b border-border"><td className="p-2">Mon-Fri</td><td className="p-2 blue-text">12:00-23:00</td></tr>
+                    <tr className="border-b border-border"><td className="p-2">Saturday</td><td className="p-2 blue-text">14:00-00:00</td></tr>
+                    <tr><td className="p-2">Sunday</td><td className="p-2 blue-text">Closed</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -97,44 +95,44 @@ export default function Footer() {
           </div>
 
           {/* Social & Newsletter */}
-          <div>
-            <h3 className="text-xl font-bold mb-6">{t("footer.stayConnected")}</h3>
+          <div data-aos="fade-up" data-aos-delay="200">
+            <h3 className="text-xl font-bold mb-6">Stay Connected</h3>
             <p className="text-sm mb-4">
-              {t("footer.followUs")}
+              Follow us for offers, events, and more!
             </p>
             <div className="flex space-x-4 mb-6">
               <a
-                href="https://www.instagram.com/spinellageneve/"
+                href="#"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full gold-bg flex items-center justify-center text-black hover:bg-[oklch(0.52_0.15_85)] transition-colors"
+                className="w-10 h-10 rounded-full blue-bg flex items-center justify-center text-white hover:bg-blue-700 transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram size={20} />
               </a>
               <a
-                href="https://www.facebook.com/spinellageneve"
+                href="#"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full gold-bg flex items-center justify-center text-black hover:bg-[oklch(0.52_0.15_85)] transition-colors"
+                className="w-10 h-10 rounded-full blue-bg flex items-center justify-center text-white hover:bg-blue-700 transition-colors"
                 aria-label="Facebook"
               >
                 <FacebookIcon size={20} />
               </a>
               <a
-                href="https://www.tiktok.com/@spinellageneve"
+                href="#"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full gold-bg flex items-center justify-center text-black hover:bg-[oklch(0.52_0.15_85)] transition-colors"
+                className="w-10 h-10 rounded-full blue-bg flex items-center justify-center text-white hover:bg-blue-700 transition-colors"
                 aria-label="TikTok"
               >
                 <TikTokIcon size={20} />
               </a>
               <a
-                href="https://www.tripadvisor.com/Restaurant_Review-g188057-d18930037-Reviews-Spinella_Restaurant_Bar-Geneva.html"
+                href="#"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full gold-bg flex items-center justify-center text-black hover:bg-[oklch(0.52_0.15_85)] transition-colors"
+                className="w-10 h-10 rounded-full blue-bg flex items-center justify-center text-white hover:bg-blue-700 transition-colors"
                 aria-label="TripAdvisor"
               >
                 <TripAdvisorIcon size={20} />
@@ -144,7 +142,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-border mt-12 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Spinella Restaurant & Bar. {t("footer.allRightsReserved")}.</p>
+          <p>&copy; {new Date().getFullYear()} TestRestaurant. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -53,40 +53,40 @@
 }
 
 :root {
-  --primary: oklch(0.62 0.15 85);
-  --primary-foreground: oklch(0.12 0 0);
-  --sidebar-primary: oklch(0.62 0.15 85);
-  --sidebar-primary-foreground: oklch(0.12 0 0);
-  --chart-1: oklch(0.62 0.15 85);
-  --chart-2: oklch(0.52 0.15 85);
-  --chart-3: oklch(0.42 0.15 85);
-  --chart-4: oklch(0.32 0.15 85);
-  --chart-5: oklch(0.22 0.15 85);
+  --primary: #2563eb; /* blue-600 */
+  --primary-foreground: #ffffff;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --chart-1: #2563eb;
+  --chart-2: #3b82f6;
+  --chart-3: #60a5fa;
+  --chart-4: #93c5fd;
+  --chart-5: #dbeafe;
   --radius: 0.5rem;
-  /* Black & gold theme: black backgrounds, light/gold text */
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.92 0.02 85);
-  --card: oklch(0.16 0.005 85);
-  --card-foreground: oklch(0.92 0.02 85);
-  --popover: oklch(0.16 0.005 85);
-  --popover-foreground: oklch(0.92 0.02 85);
-  --secondary: oklch(0.22 0.008 85);
-  --secondary-foreground: oklch(0.92 0.02 85);
-  --muted: oklch(0.2 0.006 85);
-  --muted-foreground: oklch(0.7 0.03 85);
-  --accent: oklch(0.62 0.15 85);
-  --accent-foreground: oklch(0.12 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.28 0.02 85);
-  --input: oklch(0.28 0.02 85);
-  --ring: oklch(0.62 0.15 85);
-  --sidebar: oklch(0.12 0 0);
-  --sidebar-foreground: oklch(0.92 0.02 85);
-  --sidebar-accent: oklch(0.22 0.008 85);
-  --sidebar-accent-foreground: oklch(0.92 0.02 85);
-  --sidebar-border: oklch(0.28 0.02 85);
-  --sidebar-ring: oklch(0.62 0.15 85);
+  /* Blue & white theme: white backgrounds, blue accents */
+  --background: #ffffff;
+  --foreground: #1e293b;
+  --card: #f1f5f9;
+  --card-foreground: #1e293b;
+  --popover: #f1f5f9;
+  --popover-foreground: #1e293b;
+  --secondary: #e0e7ef;
+  --secondary-foreground: #1e293b;
+  --muted: #e0e7ef;
+  --muted-foreground: #64748b;
+  --accent: #2563eb;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #cbd5e1;
+  --input: #cbd5e1;
+  --ring: #2563eb;
+  --sidebar: #f1f5f9;
+  --sidebar-foreground: #1e293b;
+  --sidebar-accent: #2563eb;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #cbd5e1;
+  --sidebar-ring: #2563eb;
 }
 
 .dark {
@@ -220,25 +220,21 @@
 }
 
 /* Custom utility classes for Spinella */
-.gold-text {
-  color: oklch(0.62 0.15 85);
-}
 
-.gold-border {
-  border-color: oklch(0.62 0.15 85);
+/* Blue theme utility classes */
+.blue-text {
+  color: #2563eb;
 }
-
-/* Golden yellow: hex so icon circles and buttons render consistently on all devices (avoids red tint on some phones) */
-.gold-bg {
-  background-color: #d4af37;
+.blue-border {
+  border-color: #2563eb;
 }
-
-.dark-bg {
-  background-color: oklch(0.12 0 0);
+.blue-bg {
+  background-color: #2563eb;
+  color: #fff;
 }
-
-.cream-bg {
-  background-color: oklch(0.16 0.005 85);
+.white-bg {
+  background-color: #fff;
+  color: #1e293b;
 }
 
 .section-spacing {
