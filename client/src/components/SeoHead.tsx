@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { SEO_BASE_URL, getMetaForPath } from "@/lib/seoConfig";
 
@@ -18,7 +18,7 @@ export default function SeoHead() {
     const title = is404 ? "404 – TestRestaurant" : (meta?.title ?? "TestRestaurant Restaurant & Bar Geneva");
     const description =
       meta?.description ??
-      "TestRestaurant – Restaurant & Bar sicilien à Genève. Cuisine authentique, cocktails et accueil familial. Réservez votre table.";
+      "TestRestaurant – A modern restaurant & bar. Creative cuisine, handcrafted cocktails and warm hospitality. Book your table.";
 
     document.title = title;
 

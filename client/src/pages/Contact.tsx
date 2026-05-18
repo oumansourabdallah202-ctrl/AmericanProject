@@ -13,7 +13,7 @@ export default function Contact() {
       <section className="relative min-h-[280px] sm:min-h-[320px] md:h-80 lg:h-96 flex items-center justify-center">
         <div
           className="hero-bg absolute inset-0"
-          style={{ backgroundImage: "url(/TestRestaurant_exterior.jpg)" }}
+          style={{ backgroundImage: "url(https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1400&q=80)" }}
         >
           <div className="hero-overlay absolute inset-0" />
         </div>
@@ -45,8 +45,8 @@ export default function Contact() {
                       <div>
                         <h3 className="text-xl font-bold mb-2">{t("contact.address")}</h3>
                         <p className="text-muted-foreground">
-                          Rue Liotard 4<br />
-                          1202 Geneva<br />
+                          123 Main Street<br />
+                          Cityville<br />
                           Switzerland
                         </p>
                       </div>
