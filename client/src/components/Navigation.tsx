@@ -55,7 +55,7 @@ export default function Navigation() {
                 height={48}
                 className="h-10 w-auto md:h-12"
               />
-              <span className="brand-font text-xl font-bold gold-text hidden sm:inline">SPINELLA</span>
+              <span className="brand-font text-xl font-bold gold-text hidden sm:inline">TestRestaurant</span>
             </div>
           </Link>
 
