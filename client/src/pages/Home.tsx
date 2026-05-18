@@ -30,21 +30,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen pt-20 md:pt-20">
-      {/* Hero: video only (mobile + desktop), no static photo */}
+      {/* Hero: YouTube video background */}
       <section
         ref={heroRef}
         className="relative flex items-center justify-center overflow-hidden min-h-[100dvh] md:min-h-[min(100dvh,calc(100vh-5rem))] aspect-auto md:aspect-[16/10]"
         style={{ minHeight: "min(100dvh, calc(100vh - 5rem))" }}
       >
-        <video
-          className="absolute inset-0 w-full h-full object-cover z-[1]"
-          src={HERO_VIDEO}
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden
-        />
+        <div className="absolute inset-0 z-[1] overflow-hidden">
+          <iframe
+            src="https://www.youtube.com/embed/hGRMZqMFLkk?autoplay=1&mute=1&loop=1&playlist=hGRMZqMFLkk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+            className="absolute w-[300%] h-[300%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            title="Restaurant background video"
+            aria-hidden="true"
+          />
+        </div>
         <div className="hero-overlay absolute inset-0 z-[2]" />
         
         <div className="relative z-10 container text-center text-foreground">
