@@ -9,21 +9,21 @@ export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const images = [
-    { src: "/gallery_1.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_2.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_3.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_4.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_5.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_6.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_7.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_8.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_9.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_10.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_11.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_12.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_13.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_14.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
-    { src: "/gallery_15.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80", alt: "Gourmet dish", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&q=80", alt: "Fresh salad", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80", alt: "Pizza", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80", alt: "Pancakes", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=600&q=80", alt: "Pasta dish", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80", alt: "Grilled meat", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80", alt: "Fine dining plate", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=80", alt: "Breakfast plate", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&q=80", alt: "Pasta carbonara", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80", alt: "Dessert", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&q=80", alt: "Cocktail", categoryKey: "gallery.bar" },
+    { src: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80", alt: "Healthy bowl", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=600&q=80", alt: "Seafood dish", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&q=80", alt: "Risotto", categoryKey: "gallery.food" },
+    { src: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600&q=80", alt: "Burger", categoryKey: "gallery.food" },
   ];
 
   return (
@@ -32,7 +32,7 @@ export default function Gallery() {
       <section className="relative min-h-[280px] sm:min-h-[320px] md:h-80 lg:h-96 flex items-center justify-center">
         <div
           className="hero-bg absolute inset-0"
-          style={{ backgroundImage: "url(/gallery_1.jpeg)" }}
+          style={{ backgroundImage: "url(https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&q=80)" }}
         >
           <div className="hero-overlay absolute inset-0" />
         </div>
