@@ -1,3 +1,4 @@
+import { getApiUrl } from "@/lib/api";
 /**
  * Push Notifications Utility for testrestaurant PWA
  * Handles permission requests and sending notifications
@@ -119,7 +120,7 @@ export async function subscribeUserToPush(authToken?: string): Promise<PushSubsc
     
     // Get VAPID public key from server
     console.log('[Push] Fetching VAPID public key...');
-    const response = await fetch('/api/push/vapid-public-key');
+    const response = await fetch(getApiUrl('/api/push/vapid-public-key'));
     const { publicKey } = await response.json();
     
     if (!publicKey) {
@@ -138,7 +139,7 @@ export async function subscribeUserToPush(authToken?: string): Promise<PushSubsc
     
     // Send subscription to your server to store it
     console.log('[Push] Sending subscription to server...');
-    const storeResponse = await fetch('/api/push/subscribe', {
+    const storeResponse = await fetch(getApiUrl('/api/push/subscribe'), {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',

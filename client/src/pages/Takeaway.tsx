@@ -1,3 +1,4 @@
+import { getApiUrl } from "@/lib/api";
 ﻿import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -44,7 +45,7 @@ export default function Takeaway() {
     setError(null);
     setCheckingOut(true);
     try {
-      const res = await fetch("/api/stripe-create-checkout", {
+      const res = await fetch(getApiUrl("/api/stripe-create-checkout"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

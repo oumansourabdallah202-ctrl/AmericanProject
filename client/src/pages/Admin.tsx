@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { sendLocalNotification, subscribeUserToPush } from "@/lib/pushNotifications";
+import { getApiUrl } from "@/lib/api";
 import {
   Dialog,
   DialogContent,
@@ -232,7 +233,7 @@ export default function Admin() {
   const verifyToken = async () => {
     if (!token) return false;
     try {
-      const res = await fetch("/api/admin/login", {
+      const res = await fetch(getApiUrl("/api/admin/login"), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) return true;
@@ -250,7 +251,7 @@ export default function Admin() {
   const fetchBookings = useCallback(async (authToken: string) => {
     setFetchError("");
     try {
-      const res = await fetch("/api/bookings", { headers: getAuthHeaders(authToken) });
+      const res = await fetch(getApiUrl("/api/bookings"), { headers: getAuthHeaders(authToken) });
       const data = await res.json().catch(() => ({}));
       if (res.ok && Array.isArray(data.bookings)) {
         const newBookings = data.bookings as BookingRecord[];
@@ -281,7 +282,7 @@ export default function Admin() {
         // Fetch Resend delivery statuses for list-view bounced flags
         const emailIds = [...new Set(newBookings.flatMap((b) => (b.sentEmails ?? []).map((e) => e.id)).filter(Boolean))];
         if (emailIds.length > 0) {
-          fetch("/api/bookings/email-statuses", {
+          fetch(getApiUrl("/api/bookings/email-statuses"), {
             method: "POST",
             headers: { ...getAuthHeaders(authToken), "Content-Type": "application/json" },
             body: JSON.stringify({ ids: emailIds }),
@@ -303,7 +304,7 @@ export default function Admin() {
   const fetchClients = useCallback(async (authToken: string) => {
     setClientsError("");
     try {
-      const res = await fetch("/api/clients", { headers: getAuthHeaders(authToken) });
+      const res = await fetch(getApiUrl("/api/clients"), { headers: getAuthHeaders(authToken) });
       const data = await res.json().catch(() => ({}));
       if (res.ok && Array.isArray(data.clients)) {
         setClients(data.clients);
@@ -318,7 +319,7 @@ export default function Admin() {
   const fetchNewsletterSubscribers = useCallback(async (authToken: string) => {
     setNewsletterError("");
     try {
-      const res = await fetch("/api/newsletter-subscribers", { headers: getAuthHeaders(authToken) });
+      const res = await fetch(getApiUrl("/api/newsletter-subscribers"), { headers: getAuthHeaders(authToken) });
       const data = await res.json().catch(() => ({}));
       if (res.ok && Array.isArray(data.subscribers)) {
         setNewsletterSubscribers(data.subscribers);
@@ -333,7 +334,7 @@ export default function Admin() {
   const fetchReservationBlocks = useCallback(async (authToken: string) => {
     setReservationBlocksLoading(true);
     try {
-      const res = await fetch("/api/bookings/blocks", { headers: getAuthHeaders(authToken) });
+      const res = await fetch(getApiUrl("/api/bookings/blocks"), { headers: getAuthHeaders(authToken) });
       const data = await res.json().catch(() => ({}));
       if (res.ok && Array.isArray(data.blocks)) {
         setReservationBlocks(
@@ -373,7 +374,7 @@ export default function Admin() {
     }
     setCreatingBlock(true);
     try {
-      const res = await fetch("/api/bookings/blocks", {
+      const res = await fetch(getApiUrl("/api/bookings/blocks"), {
         method: "POST",
         headers: getAuthHeaders(token),
         body: JSON.stringify({
@@ -402,7 +403,7 @@ export default function Admin() {
     if (!token) return;
     setDeletingBlockId(id);
     try {
-      const res = await fetch("/api/bookings/blocks", {
+      const res = await fetch(getApiUrl("/api/bookings/blocks"), {
         method: "DELETE",
         headers: getAuthHeaders(token),
         body: JSON.stringify({ id }),
@@ -435,7 +436,7 @@ export default function Admin() {
     try {
       await Promise.all(
         ids.map(async (id) => {
-          await fetch("/api/bookings/blocks", {
+          await fetch(getApiUrl("/api/bookings/blocks"), {
             method: "DELETE",
             headers: getAuthHeaders(token),
             body: JSON.stringify({ id }),
@@ -519,7 +520,7 @@ export default function Admin() {
     setSavingClient(true);
     setClientsError("");
     try {
-      const res = await fetch("/api/clients", {
+      const res = await fetch(getApiUrl("/api/clients"), {
         method: "POST",
         headers: getAuthHeaders(token),
         body: JSON.stringify({
@@ -547,7 +548,7 @@ export default function Admin() {
     if (!token) return;
     setDeletingClientId(id);
     try {
-      const res = await fetch("/api/clients", {
+      const res = await fetch(getApiUrl("/api/clients"), {
         method: "DELETE",
         headers: getAuthHeaders(token),
         body: JSON.stringify({ id }),
@@ -619,8 +620,7 @@ export default function Admin() {
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
-      const res = await fetch(
-        `/api/bookings/guests-export?year=${year}&month=${month}&format=csv`,
+      const res = await fetch(getApiUrl(`/api/bookings/guests-export?year=${year}&month=${month}&format=csv`),
         { headers: getAuthHeaders(token) }
       );
       const data = await res.json().catch(() => ({}));
@@ -703,7 +703,7 @@ export default function Admin() {
         return;
       }
       
-      const res = await fetch("/api/bookings", {
+      const res = await fetch(getApiUrl("/api/bookings"), {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ action: "import", bookings: bookingsToImport }),
@@ -793,7 +793,7 @@ export default function Admin() {
       let imported = 0;
       for (let i = 0; i < toImport.length; i += BATCH) {
         const batch = toImport.slice(i, i + BATCH);
-        const res = await fetch("/api/clients", {
+        const res = await fetch(getApiUrl("/api/clients"), {
           method: "POST",
           headers: getAuthHeaders(token),
           body: JSON.stringify({ clients: batch }),
@@ -871,7 +871,7 @@ export default function Admin() {
         return;
       }
       // Send full list in one request so the server can detect duplicates (existing clients are skipped; list is prioritized).
-      const res = await fetch("/api/clients", {
+      const res = await fetch(getApiUrl("/api/clients"), {
         method: "POST",
         headers: getAuthHeaders(token),
         body: JSON.stringify({ clients: toImport }),
@@ -907,7 +907,7 @@ export default function Admin() {
     setClientsError("");
     setClientsMessage(null);
     try {
-      const res = await fetch("/api/clients", {
+      const res = await fetch(getApiUrl("/api/clients"), {
         method: "POST",
         headers: getAuthHeaders(token),
         body: JSON.stringify({ syncFromBookings: true }),
@@ -930,7 +930,7 @@ export default function Admin() {
     setClientsError("");
     setClientsMessage(null);
     try {
-      const res = await fetch("/api/clients", {
+      const res = await fetch(getApiUrl("/api/clients"), {
         method: "POST",
         headers: getAuthHeaders(token),
         body: JSON.stringify({ syncFromResend: true }),
@@ -1010,7 +1010,7 @@ export default function Admin() {
           status: b.status != null ? String(b.status) : "confirmed",
         }));
         setImporting(true);
-        const res = await fetch("/api/bookings", {
+        const res = await fetch(getApiUrl("/api/bookings"), {
           method: "POST",
           headers: getAuthHeaders(token),
           body: JSON.stringify({ bookings: normalized }),
@@ -1035,7 +1035,7 @@ export default function Admin() {
     if (!token) return;
     setSyncFromWixLoading(true);
     try {
-      const res = await fetch("/api/bookings/sync-from-wix", {
+      const res = await fetch(getApiUrl("/api/bookings/sync-from-wix"), {
         method: "POST",
         headers: getAuthHeaders(token),
       });
@@ -1060,7 +1060,7 @@ export default function Admin() {
     setDeleteGuestPlaceholdersOpen(false);
     setDeleteGuestPlaceholdersLoading(true);
     try {
-      const res = await fetch("/api/bookings/delete-guest-placeholders", {
+      const res = await fetch(getApiUrl("/api/bookings/delete-guest-placeholders"), {
         method: "POST",
         headers: getAuthHeaders(token),
       });
@@ -1084,7 +1084,7 @@ export default function Admin() {
     if (!token) return;
     setDepositSendingId(bookingId);
     try {
-      const res = await fetch("/api/bookings/send-deposit-emails", {
+      const res = await fetch(getApiUrl("/api/bookings/send-deposit-emails"), {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
         body: JSON.stringify({ bookingId }),
@@ -1095,7 +1095,7 @@ export default function Admin() {
         if (data.sent > 0) {
           await fetchBookings(token);
           if (bookingDetailId === bookingId) {
-            const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(bookingId)}`, { headers: getAuthHeaders(token) });
+            const detailRes = await fetch(getApiUrl(`/api/bookings?id=${encodeURIComponent(bookingId)}`), { headers: getAuthHeaders(token) });
             const detailData = await detailRes.json().catch(() => ({}));
             if (detailData.booking && Array.isArray(detailData.emailStatuses)) {
               setBookingDetail({ booking: detailData.booking, emailStatuses: detailData.emailStatuses });
@@ -1117,7 +1117,7 @@ export default function Admin() {
     if (!token) return;
     setDepositEmailsLoading(true);
     try {
-      const res = await fetch("/api/bookings/send-deposit-emails", {
+      const res = await fetch(getApiUrl("/api/bookings/send-deposit-emails"), {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
         body: JSON.stringify({}),
@@ -1130,7 +1130,7 @@ export default function Admin() {
         toast.success(msg);
         if (data.sent > 0) await fetchBookings(token);
         if (bookingDetailId) {
-          const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`, { headers: getAuthHeaders(token) });
+          const detailRes = await fetch(getApiUrl(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`), { headers: getAuthHeaders(token) });
           const detailData = await detailRes.json().catch(() => ({}));
           if (detailData.booking && Array.isArray(detailData.emailStatuses)) {
             setBookingDetail({ booking: detailData.booking, emailStatuses: detailData.emailStatuses });
@@ -1150,7 +1150,7 @@ export default function Admin() {
     if (!token || !depositTestEmail.trim()) return;
     setDepositTestSending(true);
     try {
-      const res = await fetch("/api/bookings/send-deposit-emails", {
+      const res = await fetch(getApiUrl("/api/bookings/send-deposit-emails"), {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
         body: JSON.stringify({ testEmail: depositTestEmail.trim() }),
@@ -1172,7 +1172,7 @@ export default function Admin() {
     if (!token) return;
     setDepositRecipientsLoading(true);
     try {
-      const res = await fetch("/api/bookings/deposit-emails-recipients", { headers: getAuthHeaders(token) });
+      const res = await fetch(getApiUrl("/api/bookings/deposit-emails-recipients"), { headers: getAuthHeaders(token) });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         const msg = [data.error, (data as { details?: string }).details].filter(Boolean).join(" — ");
@@ -1217,7 +1217,7 @@ export default function Admin() {
     if (!token) return;
     setSendingConfirmationId(id);
     try {
-      const res = await fetch("/api/bookings/send-confirmation", {
+      const res = await fetch(getApiUrl("/api/bookings/send-confirmation"), {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
         body: JSON.stringify({ id }),
@@ -1226,7 +1226,7 @@ export default function Admin() {
       if (res.ok) {
         toast.success(t("admin.sendConfirmationEmailSuccess"));
         if (bookingDetailId === id) {
-          const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(id)}`, { headers: getAuthHeaders(token) });
+          const detailRes = await fetch(getApiUrl(`/api/bookings?id=${encodeURIComponent(id)}`), { headers: getAuthHeaders(token) });
           const detailData = await detailRes.json().catch(() => ({}));
           if (detailData.booking && Array.isArray(detailData.emailStatuses)) {
             setBookingDetail({ booking: detailData.booking, emailStatuses: detailData.emailStatuses });
@@ -1246,7 +1246,7 @@ export default function Admin() {
     if (!token) return;
     setAcceptingId(id);
     try {
-      const res = await fetch("/api/bookings", {
+      const res = await fetch(getApiUrl("/api/bookings"), {
         method: "PATCH",
         headers: getAuthHeaders(token),
         body: JSON.stringify({ id, status: "confirmed" }),
@@ -1254,7 +1254,7 @@ export default function Admin() {
       if (res.ok) {
         await fetchBookings(token);
         if (bookingDetailId === id) {
-          const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(id)}`, { headers: getAuthHeaders(token) });
+          const detailRes = await fetch(getApiUrl(`/api/bookings?id=${encodeURIComponent(id)}`), { headers: getAuthHeaders(token) });
           const data = await detailRes.json().catch(() => ({}));
           if (data.booking && Array.isArray(data.emailStatuses)) {
             setBookingDetail({ booking: data.booking, emailStatuses: data.emailStatuses });
@@ -1273,7 +1273,7 @@ export default function Admin() {
     if (!token) return;
     setAcceptingId(id);
     try {
-      const res = await fetch("/api/bookings", {
+      const res = await fetch(getApiUrl("/api/bookings"), {
         method: "PATCH",
         headers: getAuthHeaders(token),
         body: JSON.stringify({ id, status: "cancelled" }),
@@ -1294,7 +1294,7 @@ export default function Admin() {
     if (!token) return;
     setArchivingId(id);
     try {
-      const res = await fetch("/api/bookings", {
+      const res = await fetch(getApiUrl("/api/bookings"), {
         method: "PATCH",
         headers: getAuthHeaders(token),
         body: JSON.stringify({ id, status: "archived" }),
@@ -1303,7 +1303,7 @@ export default function Admin() {
         await fetchBookings(token);
         if (bookingDetailId === id) setBookingDetailId(null);
         else if (bookingDetailId) {
-          const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`, { headers: getAuthHeaders(token) });
+          const detailRes = await fetch(getApiUrl(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`), { headers: getAuthHeaders(token) });
           const data = await detailRes.json().catch(() => ({}));
           if (data.booking && Array.isArray(data.emailStatuses)) {
             setBookingDetail({ booking: data.booking, emailStatuses: data.emailStatuses });
@@ -1322,7 +1322,7 @@ export default function Admin() {
     if (!token || filteredPendingRequests.length === 0) return;
     setMarkAllArchiving(true);
     try {
-      const res = await fetch("/api/bookings/bulk-archive", {
+      const res = await fetch(getApiUrl("/api/bookings/bulk-archive"), {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeaders(token) },
         body: JSON.stringify({ ids: filteredPendingRequests.map((b) => b.id) }),
@@ -1349,7 +1349,7 @@ export default function Admin() {
     setBookingDetailLoading(true);
     setBookingDetail(null);
     setBookingDetailEditOpen(false);
-    fetch(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`, { headers: getAuthHeaders(token) })
+    fetch(getApiUrl(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`), { headers: getAuthHeaders(token) })
       .then((r) => r.json())
       .then((data) => {
         if (data.booking && Array.isArray(data.emailStatuses)) {
@@ -1378,7 +1378,7 @@ export default function Admin() {
     if (!token || !bookingDetailId) return;
     setSavingBooking(true);
     try {
-      const res = await fetch("/api/bookings", {
+      const res = await fetch(getApiUrl("/api/bookings"), {
         method: "PATCH",
         headers: getAuthHeaders(token),
         body: JSON.stringify({
@@ -1395,7 +1395,7 @@ export default function Admin() {
       if (res.ok) {
         await fetchBookings(token);
         setBookingDetailEditOpen(false);
-        const detailRes = await fetch(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`, { headers: getAuthHeaders(token) });
+        const detailRes = await fetch(getApiUrl(`/api/bookings?id=${encodeURIComponent(bookingDetailId)}`), { headers: getAuthHeaders(token) });
         const data = await detailRes.json().catch(() => ({}));
         if (data.booking && Array.isArray(data.emailStatuses)) {
           setBookingDetail({ booking: data.booking, emailStatuses: data.emailStatuses });
@@ -1430,7 +1430,7 @@ export default function Admin() {
     if (!token || !verified) return;
     if (deleteGuestPlaceholdersRanRef.current) return;
     deleteGuestPlaceholdersRanRef.current = true;
-    fetch("/api/bookings/delete-guest-placeholders", { method: "POST", headers: getAuthHeaders(token) })
+    fetch(getApiUrl("/api/bookings/delete-guest-placeholders"), { method: "POST", headers: getAuthHeaders(token) })
       .then((res) => res.json().catch(() => ({})))
       .then((result) => {
         if (result.ok && result.deleted > 0) {
@@ -1462,7 +1462,7 @@ export default function Admin() {
   const runWixSyncInBackground = useCallback(async () => {
     if (!token) return;
     try {
-      const res = await fetch("/api/bookings/sync-from-wix", { method: "POST", headers: getAuthHeaders(token) });
+      const res = await fetch(getApiUrl("/api/bookings/sync-from-wix"), { method: "POST", headers: getAuthHeaders(token) });
       const result = await res.json().catch(() => ({}));
       if (res.ok) {
         await fetchBookings(token);
