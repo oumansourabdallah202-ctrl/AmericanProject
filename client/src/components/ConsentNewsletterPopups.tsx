@@ -20,8 +20,8 @@ function getNewsletterApiUrl(): string {
   return `${normalized}/api/newsletter-subscribe`;
 }
 
-const STORAGE_CONSENT = "spinella_privacy_consent";
-const STORAGE_NEWSLETTER_SHOWN = "spinella_newsletter_shown";
+const STORAGE_CONSENT = "testrestaurant_privacy_consent";
+const STORAGE_NEWSLETTER_SHOWN = "testrestaurant_newsletter_shown";
 
 export function ConsentNewsletterPopups() {
   const { t } = useLanguage();

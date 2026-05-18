@@ -66,12 +66,12 @@ type BookingForm = z.infer<ReturnType<typeof buildBookingSchema>>;
 
 /** Mon–Wed last slot 22:00; Thu–Sat 22:30. Sunday has no slots (see getTimeSlotsForDate). */
 
-const RESTAURANT_EMAIL = "info@spinella.ch";
+const RESTAURANT_EMAIL = "info@TestRestaurant.ch";
 
 function buildMailtoUrl(data: BookingForm): string {
   const subject = `Reservation request - ${data.name} - ${data.date} at ${data.time}`;
   const body = [
-    `Reservation request for Spinella`,
+    `Reservation request for TestRestaurant`,
     ``,
     `Name: ${data.name}`,
     `Email: ${data.email}`,
@@ -250,7 +250,7 @@ export default function Booking() {
       <section className="relative min-h-[280px] sm:min-h-[320px] md:h-80 lg:h-96 flex items-center justify-center">
         <div
           className="hero-bg absolute inset-0"
-          style={{ backgroundImage: "url(/spinella_exterior.jpg)" }}
+          style={{ backgroundImage: "url(/TestRestaurant_exterior.jpg)" }}
         >
           <div className="hero-overlay absolute inset-0" />
         </div>

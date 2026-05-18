@@ -1,5 +1,5 @@
 /**
- * Push Notifications Utility for Spinella PWA
+ * Push Notifications Utility for testrestaurant PWA
  * Handles permission requests and sending notifications
  */
 
@@ -64,7 +64,7 @@ export async function sendLocalNotification(options: NotificationOptions): Promi
         body: options.body,
         icon: options.icon || '/icon-192.png',
         badge: options.badge || '/icon-192.png',
-        tag: options.tag || 'spinella-notification',
+        tag: options.tag || 'testrestaurant-notification',
         requireInteraction: options.requireInteraction || false,
         data: options.data,
         vibrate: options.vibrate || [200, 100, 200],
@@ -81,7 +81,7 @@ export async function sendLocalNotification(options: NotificationOptions): Promi
     new Notification(options.title, {
       body: options.body,
       icon: options.icon || '/icon-192.png',
-      tag: options.tag || 'spinella-notification',
+      tag: options.tag || 'testrestaurant-notification',
       data: options.data,
     });
     console.log('[Notifications] ✅ Notification sent (fallback)');

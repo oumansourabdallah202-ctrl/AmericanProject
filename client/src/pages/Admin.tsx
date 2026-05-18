@@ -124,7 +124,7 @@ export default function Admin() {
   const [deleteGuestPlaceholdersLoading, setDeleteGuestPlaceholdersLoading] = useState(false);
   const [deleteGuestPlaceholdersOpen, setDeleteGuestPlaceholdersOpen] = useState(false);
   const [depositEmailsLoading, setDepositEmailsLoading] = useState(false);
-  const [depositTestEmail, setDepositTestEmail] = useState("Spinella.mark.93@gmail.com");
+  const [depositTestEmail, setDepositTestEmail] = useState("TestRestaurant.mark.93@gmail.com");
   const [depositTestSending, setDepositTestSending] = useState(false);
   const [depositRecipientsLoading, setDepositRecipientsLoading] = useState(false);
   const [depositSendingId, setDepositSendingId] = useState<string | null>(null);
@@ -264,7 +264,7 @@ export default function Admin() {
           
           // Send push notification
           sendLocalNotification({
-            title: 'Spinella - Nouvelle réservation',
+            title: 'TestRestaurant - Nouvelle réservation',
             body: added.length === 1 
               ? `${added[0].name} - ${added[0].date} à ${added[0].time}`
               : `${added.length} nouvelles réservations reçues`,
@@ -580,7 +580,7 @@ export default function Admin() {
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `spinella-clients-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `TestRestaurant-clients-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -607,7 +607,7 @@ export default function Admin() {
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `spinella-bookings-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `TestRestaurant-bookings-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -635,7 +635,7 @@ export default function Admin() {
       const blob = new Blob(["\uFEFF" + data.csv], { type: "text/csv;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = data.filename ?? `spinella-guests-${year}-${String(month).padStart(2, "0")}.csv`;
+      a.download = data.filename ?? `TestRestaurant-guests-${year}-${String(month).padStart(2, "0")}.csv`;
       a.click();
       URL.revokeObjectURL(a.href);
       toast.success(`${data.count ?? 0} emails exportés`);
@@ -735,7 +735,7 @@ export default function Admin() {
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `spinella-clients-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `TestRestaurant-clients-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -754,7 +754,7 @@ export default function Admin() {
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `spinella-newsletter-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `TestRestaurant-newsletter-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -1202,7 +1202,7 @@ export default function Admin() {
       const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `spinella-deposit-email-recipients-apr14-20-2026-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.download = `TestRestaurant-deposit-email-recipients-apr14-20-2026-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(a.href);
       toast.success(t("admin.depositRecipientsDownloadSuccess").replace("{count}", String(recipients.length)));
@@ -1643,7 +1643,7 @@ export default function Admin() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="mt-1"
-                  placeholder="admin@spinella.ch"
+                  placeholder="admin@TestRestaurant.ch"
                   autoComplete="email"
                   autoFocus
                 />
@@ -2070,7 +2070,7 @@ export default function Admin() {
                             {b.date >= "2026-04-14" && b.date <= "2026-04-20" && (b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (
                               <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300" title={t("admin.depositEmailSent")}>{t("admin.depositEmailSent")}</span>
                             )}
-                            <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
+                            <span className="truncate">{(b.email === "wix-sync@TestRestaurant.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                           </span>
                         </td>
                         <td className="p-2 sm:p-3">{b.partySize}</td>
@@ -2092,7 +2092,7 @@ export default function Admin() {
                           <span>{b.createdAt ? new Date(b.createdAt).toLocaleDateString() : "—"}</span>
                         </td>
                         <td className="p-2 sm:p-3 hidden lg:table-cell text-[10px] sm:text-xs">{b.phone}</td>
-                        <td className="p-2 sm:p-3 hidden xl:table-cell text-[10px] sm:text-xs">{b.email === "wix-sync@spinella.ch" ? "—" : b.email}</td>
+                        <td className="p-2 sm:p-3 hidden xl:table-cell text-[10px] sm:text-xs">{b.email === "wix-sync@TestRestaurant.ch" ? "—" : b.email}</td>
                         <td className="p-2 sm:p-3">
                           <div className="flex items-center gap-1 flex-wrap">
                             <Button size="sm" variant="ghost" onClick={() => setBookingDetailId(b.id)} title={t("admin.viewDetails")} className="p-1 h-auto">
@@ -2217,7 +2217,7 @@ export default function Admin() {
                                   {b.date >= "2026-04-14" && b.date <= "2026-04-20" && (b.sentEmails ?? []).some((e) => e.type === "deposit_request") && (
                                     <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300" title={t("admin.depositEmailSent")}>{t("admin.depositEmailSent")}</span>
                                   )}
-                                  <span className="truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
+                                  <span className="truncate">{(b.email === "wix-sync@TestRestaurant.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                                 </span>
                               </td>
                               <td className="p-2 sm:p-3">{b.partySize}</td>
@@ -2413,7 +2413,7 @@ export default function Admin() {
                                         {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
                                           <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
                                         )}
-                                        {(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}
+                                        {(b.email === "wix-sync@TestRestaurant.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}
                                       </span>
                                     </td>
                                     <td className="p-3">{b.partySize}</td>
@@ -2615,7 +2615,7 @@ export default function Admin() {
                                   {(b.sentEmails ?? []).some((e) => emailStatusByResendId[e.id] === "bounced") && (
                                     <AlertCircle className="w-4 h-4 shrink-0 text-red-600" title={t("admin.emailStatus_bounced")} aria-label={t("admin.emailStatus_bounced")} />
                                   )}
-                                  <span className="text-sm truncate">{(b.email === "wix-sync@spinella.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
+                                  <span className="text-sm truncate">{(b.email === "wix-sync@TestRestaurant.ch" || (b.name?.trim().toLowerCase() === "guest")) ? "—" : (b.name || "—")}</span>
                                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                                     <Users className="w-3 h-3" />
                                     {b.partySize}

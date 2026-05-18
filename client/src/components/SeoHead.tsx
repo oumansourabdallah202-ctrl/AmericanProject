@@ -15,10 +15,10 @@ export default function SeoHead() {
   useEffect(() => {
     const isMissingRoute = !meta;
     const is404 = normalizedPath === "/404" || isMissingRoute;
-    const title = is404 ? "404 – Spinella" : (meta?.title ?? "Spinella Restaurant & Bar Geneva");
+    const title = is404 ? "404 – TestRestaurant" : (meta?.title ?? "TestRestaurant Restaurant & Bar Geneva");
     const description =
       meta?.description ??
-      "Spinella – Restaurant & Bar sicilien à Genève. Cuisine authentique, cocktails et accueil familial. Réservez votre table.";
+      "TestRestaurant – Restaurant & Bar sicilien à Genève. Cuisine authentique, cocktails et accueil familial. Réservez votre table.";
 
     document.title = title;
 

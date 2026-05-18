@@ -50,7 +50,7 @@ export default function Navigation() {
             <div className="flex items-center gap-2 cursor-pointer">
               <img
                 src="/logo.png"
-                alt="Spinella"
+                alt="TestRestaurant"
                 width={120}
                 height={48}
                 className="h-10 w-auto md:h-12"

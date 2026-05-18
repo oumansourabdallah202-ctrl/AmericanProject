@@ -6,7 +6,7 @@ import { Calendar, Users, Utensils, Wine } from "lucide-react";
 import Reviews from "@/components/Reviews";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const HERO_VIDEO = "/hero.mp4";
+const HERO_VIDEO = "https://www.w3schools.com/html/mov_bbb.mp4";
 
 export default function Home() {
   const { t } = useLanguage();
@@ -50,7 +50,7 @@ export default function Home() {
         <div className="relative z-10 container text-center text-foreground">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 min-h-[3.5rem] md:min-h-[4.5rem] lg:min-h-[5rem]">
-              Bienvenue chez <span className="brand-font gold-text">Spinella</span> - Restaurant Italien & Cocktail Bar a Geneve
+              Bienvenue chez <span className="brand-font gold-text">TestRestaurant</span> - Restaurant Italien & Cocktail Bar a Geneve
             </h1>
             <p className="text-lg md:text-xl mb-4 font-light max-w-2xl mx-auto">
               {t("home.heroParagraph1")}
@@ -98,7 +98,7 @@ export default function Home() {
             <div className="gold-divider"></div>
             <p className="text-base md:text-lg text-muted-foreground mt-6 max-w-3xl mx-auto">
               Restaurant italien Cornavin, restaurant proche gare Cornavin et restaurant Geneve centre:
-              Spinella propose une cuisine sicilienne authentique, un cocktail bar Geneve et un bar a vin Geneve.
+              TestRestaurant propose une cuisine sicilienne authentique, un cocktail bar Geneve et un bar a vin Geneve.
             </p>
           </div>
 
@@ -180,7 +180,7 @@ export default function Home() {
             <div className="relative min-h-[240px] sm:min-h-[280px] lg:min-h-[380px] w-full overflow-hidden rounded-lg aspect-[4/3]">
               <img
                 src="/interior_brothers.jpg"
-                alt="Trattoria italienne Geneve: les trois freres de Spinella"
+                alt="Trattoria italienne Geneve: les trois freres de TestRestaurant"
                 width={800}
                 height={600}
                 className="w-full h-full object-cover object-center rounded-lg shadow-2xl"

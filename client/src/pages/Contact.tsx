@@ -13,7 +13,7 @@ export default function Contact() {
       <section className="relative min-h-[280px] sm:min-h-[320px] md:h-80 lg:h-96 flex items-center justify-center">
         <div
           className="hero-bg absolute inset-0"
-          style={{ backgroundImage: "url(/spinella_exterior.jpg)" }}
+          style={{ backgroundImage: "url(/TestRestaurant_exterior.jpg)" }}
         >
           <div className="hero-overlay absolute inset-0" />
         </div>
@@ -78,8 +78,8 @@ export default function Contact() {
                       </div>
                       <div>
                         <h3 className="text-xl font-bold mb-2">{t("contact.email")}</h3>
-                        <a href="mailto:info@spinella.ch?subject=Contact%20Spinella%20-%20Website" className="text-lg text-muted-foreground hover:text-[oklch(0.62_0.15_85)] transition-colors">
-                          info@spinella.ch
+                        <a href="mailto:info@TestRestaurant.ch?subject=Contact%20TestRestaurant%20-%20Website" className="text-lg text-muted-foreground hover:text-[oklch(0.62_0.15_85)] transition-colors">
+                          info@TestRestaurant.ch
                         </a>
                       </div>
                     </div>
@@ -163,7 +163,7 @@ export default function Contact() {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Spinella location map"
+                  title="TestRestaurant location map"
                 ></iframe>
               </div>
 

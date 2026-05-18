@@ -9,21 +9,21 @@ export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const images = [
-    { src: "/gallery_1.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_2.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_3.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_4.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_5.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_6.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_7.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_8.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_9.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_10.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_11.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_12.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_13.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_14.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
-    { src: "/gallery_15.jpeg", alt: "Spinella", categoryKey: "gallery.interior" },
+    { src: "/gallery_1.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_2.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_3.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_4.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_5.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_6.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_7.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_8.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_9.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_10.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_11.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_12.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_13.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_14.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
+    { src: "/gallery_15.jpeg", alt: "TestRestaurant", categoryKey: "gallery.interior" },
   ];
 
   return (

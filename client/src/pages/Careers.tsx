@@ -11,7 +11,7 @@ export default function Careers() {
       <section className="relative min-h-[280px] sm:min-h-[320px] md:h-80 lg:h-96 flex items-center justify-center">
         <div
           className="hero-bg absolute inset-0"
-          style={{ backgroundImage: "url(/spinella_exterior.jpg)" }}
+          style={{ backgroundImage: "url(/TestRestaurant_exterior.jpg)" }}
         >
           <div className="hero-overlay absolute inset-0" />
         </div>
@@ -48,7 +48,7 @@ export default function Careers() {
             </Card>
           </div>
           <div className="text-center">
-            <a href="mailto:info@spinella.ch?subject=Candidature%20Spinella">
+            <a href="mailto:info@TestRestaurant.ch?subject=Candidature%20TestRestaurant">
               <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
                 {t("careers.apply")}
               </Button>
