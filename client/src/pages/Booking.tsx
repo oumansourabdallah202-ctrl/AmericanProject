@@ -26,6 +26,7 @@ import {
 } from "@/lib/reservationBlocks";
 import { getGenevaDateISO, getGenevaTimeMinutes } from "@/lib/genevaDate";
 import { localizedAdminBlockReason } from "@/lib/adminBlockMessages";
+import { getApiUrl } from "@/lib/api";
 
 function buildBookingSchema(t: (key: string) => string) {
   return z.object({
@@ -113,7 +114,7 @@ export default function Booking() {
   const selectedTime = watch("time");
 
   useEffect(() => {
-    fetch("/api/reservation-blocks")
+    fetch(getApiUrl("/api/reservation-blocks"))
       .then((r) => r.json().catch(() => ({ blocks: [] })))
       .then((d) => setReservationBlocks(Array.isArray(d.blocks) ? d.blocks : []))
       .catch(() => setReservationBlocks([]));
@@ -127,7 +128,7 @@ export default function Booking() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 25000);
     try {
-      const res = await fetch("/api/booking", {
+      const res = await fetch(getApiUrl("/api/booking"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
