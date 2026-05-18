@@ -50,7 +50,7 @@ export default function Home() {
         <div className="relative z-10 container text-center text-foreground">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 min-h-[3.5rem] md:min-h-[4.5rem] lg:min-h-[5rem]">
-              Bienvenue chez <span className="brand-font gold-text">TestRestaurant</span> - Restaurant Italien & Cocktail Bar a Geneve
+              Welcome to <span className="brand-font gold-text">TestRestaurant</span>
             </h1>
             <p className="text-lg md:text-xl mb-4 font-light max-w-2xl mx-auto">
               {t("home.heroParagraph1")}
@@ -94,11 +94,10 @@ export default function Home() {
       <section className="section-spacing cream-bg">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Le meilleur de la cuisine sicilienne a deux pas de Cornavin</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">The Best Dining Experience in the City</h2>
             <div className="gold-divider"></div>
             <p className="text-base md:text-lg text-muted-foreground mt-6 max-w-3xl mx-auto">
-              Restaurant italien Cornavin, restaurant proche gare Cornavin et restaurant Geneve centre:
-              TestRestaurant propose une cuisine sicilienne authentique, un cocktail bar Geneve et un bar a vin Geneve.
+              TestRestaurant offers an exceptional dining experience with a carefully crafted menu, signature cocktails, and warm hospitality in a modern, welcoming setting.
             </p>
           </div>
 
@@ -201,8 +200,8 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1 relative min-h-[240px] sm:min-h-[280px] lg:min-h-[380px] w-full min-w-0 overflow-hidden rounded-lg aspect-[4/3] bg-muted">
               <img
-                src="/exterior_night_new.jpg"
-                alt="Restaurant italien proche du lac Geneve et de la gare Cornavin"
+                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
+                alt="TestRestaurant dining room"
                 width={800}
                 height={600}
                 className="absolute inset-0 w-full h-full object-cover object-[50%_25%] rounded-lg shadow-2xl"
@@ -211,13 +210,13 @@ export default function Home() {
               />
             </div>
             <div className="order-1 lg:order-2">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">Menu de Midi et Aperitivo Italien</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">Lunch & Evening Dining</h2>
               <div className="gold-divider mx-0"></div>
               <p className="text-lg mb-6 leading-relaxed">
-                Menu de midi Geneve, dejeuner italien Cornavin, plat du jour Geneve centre et aperitivo italien Geneve.
+                Whether it's a quick lunch, a business dinner, or a relaxed evening out, TestRestaurant offers a warm and welcoming setting for every occasion.
               </p>
               <p className="text-lg mb-8 leading-relaxed">
-                Ideal pour un afterwork Geneve Cornavin avec planche de charcuterie italienne, pinsa romana Geneve et cocktails signatures.
+                Enjoy our carefully crafted menu, signature cocktails, and attentive service — the perfect spot for any time of day.
               </p>
               <Link href="/contact">
                 <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold">
