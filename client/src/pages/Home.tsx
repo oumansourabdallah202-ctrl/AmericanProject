@@ -6,7 +6,7 @@ import { Calendar, Users, Utensils, Wine } from "lucide-react";
 import Reviews from "@/components/Reviews";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const HERO_VIDEO = "https://www.w3schools.com/html/mov_bbb.mp4";
+const HERO_VIDEO = "https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4";
 
 export default function Home() {
   const { t } = useLanguage();
