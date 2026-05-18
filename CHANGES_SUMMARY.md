@@ -28,7 +28,7 @@
   - Dress code
   - Private events
   - Takeaway/delivery
-  - What makes Spinella unique
+  - What makes TestRestaurant unique
 - Responsive accordion design
 - CTA section with Contact and Book Table buttons
 - Fully translated in EN, FR, and IT
@@ -50,7 +50,7 @@ Home → Menu → Gallery → Events → About → **FAQ** → Contact
 - **French**: "FAQ" with 8 Q&A pairs  
 - **Italian**: "FAQ" with 8 Q&A pairs
 
-All translations maintain the Spinella brand voice and family atmosphere.
+All translations maintain the TestRestaurant brand voice and family atmosphere.
 
 ### 5. Configured Resend for Email Confirmations
 
@@ -64,7 +64,7 @@ All translations maintain the Spinella brand voice and family atmosphere.
 - `package.json` - Added `resend` dependency (v4.0.1)
 
 **Email Features:**
-- Beautiful HTML email template with Spinella branding
+- Beautiful HTML email template with TestRestaurant branding
 - Black and gold color scheme matching restaurant theme
 - Includes all booking details (date, time, party size, special requests)
 - Restaurant contact information
@@ -116,7 +116,7 @@ All translations maintain the Spinella brand voice and family atmosphere.
 
 ## 🎨 Design Consistency
 
-All changes maintain Spinella's design system:
+All changes maintain TestRestaurant's design system:
 - **Colors**: Black (#000000), Gold (#D4AF37), Cream (#FFF8E7)
 - **Typography**: Playfair Display (headers), Inter (body)
 - **Theme**: Elegant Sicilian luxury with warm family hospitality

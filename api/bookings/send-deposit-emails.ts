@@ -1,4 +1,4 @@
-/**
+﻿/**
  * POST: send deposit-request emails to all guests with a reservation on April 14–20
  * who have not yet received this email. Admin only. Uses Resend + Supabase.
  * Tracks sent via sent_emails type "deposit_request".
@@ -12,7 +12,7 @@ import {
   getDepositAmount,
 } from "../_lib/depositEmail.js";
 
-const FROM = "Spinella Geneva <info@spinella.ch>";
+const FROM = "TestRestaurant <info@testrestaurant.com>";
 const SENT_TYPE = "deposit_request";
 
 type SentEmailEntry = { id: string; type: string; sentAt: string };
@@ -73,7 +73,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     const { error: sendErr } = await resend.emails.send({
       from: FROM,
       to: [testEmail],
-      subject: "Spinella – Deposit to confirm your reservation (April 14–20, 2026) [TEST]",
+      subject: "TestRestaurant – Deposit to confirm your reservation (April 14–20, 2026) [TEST]",
       html: depositRequestEmailHtml({
         name: "Test Guest",
         date: "2026-04-15",
@@ -133,7 +133,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     const { data: sendData, error: sendErr } = await resend.emails.send({
       from: FROM,
       to: [email],
-      subject: "Spinella – Deposit to confirm your reservation (April 14–20, 2026)",
+      subject: "TestRestaurant – Deposit to confirm your reservation (April 14–20, 2026)",
       html: depositRequestEmailHtml({
         name,
         date,
@@ -209,7 +209,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     const { data: sendData, error: sendErr } = await resend.emails.send({
       from: FROM,
       to: [email],
-      subject: "Spinella – Deposit to confirm your reservation (April 14–20, 2026)",
+      subject: "TestRestaurant – Deposit to confirm your reservation (April 14–20, 2026)",
       html: depositRequestEmailHtml({
         name,
         date,
@@ -252,3 +252,5 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       : `Sent to ${sent} of ${toSend.length}. ${errors.length} failed.`,
   });
 }
+
+

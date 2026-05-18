@@ -24,10 +24,10 @@ Only rows with **`subscribed = true`** should receive newsletter emails.
 Two equivalent URLs (use one in your emails):
 
 - **By token (recommended):**  
-  `https://spinella.ch/api/newsletter-unsubscribe?token=UNSUBSCRIBE_TOKEN`  
+  `https://TestRestaurant.ch/api/newsletter-unsubscribe?token=UNSUBSCRIBE_TOKEN`  
   Replace `UNSUBSCRIBE_TOKEN` with the `unsubscribe_token` of that row (from Supabase).
 - **Friendly redirect:**  
-  `https://spinella.ch/unsubscribe?token=UNSUBSCRIBE_TOKEN`  
+  `https://TestRestaurant.ch/unsubscribe?token=UNSUBSCRIBE_TOKEN`  
   Same token; the page redirects to the API which performs the unsubscribe and shows a confirmation.
 
 When the user clicks the link, the API sets **`subscribed = false`** for that row. Make.com should only send to rows where **`subscribed = true`**, so after unsubscribe they will not receive the next run.
@@ -54,7 +54,7 @@ When the user clicks the link, the API sets **`subscribed = false`** for that ro
    - **Unsubscribe URL in the body:**  
      - In the HTML, use a placeholder like `{{unsubscribe_url}}`.
      - In Make.com, map:  
-       `https://spinella.ch/api/newsletter-unsubscribe?token={{unsubscribe_token}}`  
+       `https://TestRestaurant.ch/api/newsletter-unsubscribe?token={{unsubscribe_token}}`  
      where `unsubscribe_token` is the field from the current Supabase row.
 
 So for each recipient you send one email and put **their** `unsubscribe_token` in the link. When they click, they are unsubscribed and won’t get the next run.
@@ -72,7 +72,7 @@ In your HTML (e.g. Espresso Time or Spritz campaign), put the unsubscribe link w
 In Make.com, when you build the HTML for each recipient, set:
 
 - `{{unsubscribe_url}}` =  
-  `https://spinella.ch/api/newsletter-unsubscribe?token` + **current row’s `unsubscribe_token`**
+  `https://TestRestaurant.ch/api/newsletter-unsubscribe?token` + **current row’s `unsubscribe_token`**
 
 So each email gets a unique, secure unsubscribe link.
 
@@ -86,7 +86,7 @@ So each email gets a unique, secure unsubscribe link.
 |------|--------|
 | Subscribers list | Supabase table `newsletter_subscribers`, filter `subscribed = true` |
 | Who receives the email | Only rows with `subscribed = true` |
-| Unsubscribe link | `https://spinella.ch/api/newsletter-unsubscribe?token=<unsubscribe_token>` (from same row) |
+| Unsubscribe link | `https://TestRestaurant.ch/api/newsletter-unsubscribe?token=<unsubscribe_token>` (from same row) |
 | After they unsubscribe | That row’s `subscribed` is set to `false`; next Make.com run won’t include them |
 
 Existing reservations and the rest of the site are unchanged; only the newsletter list and unsubscribe flow use this.

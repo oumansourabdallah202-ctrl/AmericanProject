@@ -97,7 +97,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       month,
       count: recipients.length,
       csv: header + body,
-      filename: `spinella-guests-${year}-${String(month).padStart(2, "0")}.csv`,
+      filename: `testrestaurant-guests-${year}-${String(month).padStart(2, "0")}.csv`,
     });
     return;
   }

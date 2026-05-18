@@ -1,4 +1,4 @@
-# Netlify config for Spinella Geneva (preview / test deploys).
+# Netlify config for TestRestaurant (preview / test deploys).
 # Production stays on Vercel (API + serverless). Use Netlify for manual previews before pushing to git.
 
 [build]

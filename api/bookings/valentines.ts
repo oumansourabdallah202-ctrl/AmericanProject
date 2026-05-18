@@ -3,7 +3,7 @@ import { getSupabase } from "../_lib/supabase.js";
 import { verifySupabaseToken, isAllowedAdmin } from "../_lib/supabaseAuth.js";
 import { VALENTINES_DATE, getBaseUrl, valentinesGuestEmailHtml } from "../_lib/valentinesEmail.js";
 
-const FROM = "Spinella Geneva <info@spinella.ch>";
+const FROM = "TestRestaurant <info@testrestaurant.com>";
 const BOOKINGS_TABLE = "bookings";
 
 type Req = { method?: string; headers?: { authorization?: string } };
@@ -75,7 +75,7 @@ export default async function handler(req: ReqWithBody, res: Res): Promise<void>
       const { error: sendErr } = await resend.emails.send({
         from: FROM,
         to: [email],
-        subject: "Saint-Valentin à Spinella – Votre table est réservée",
+        subject: "Saint-Valentin à TestRestaurant – Votre table est réservée",
         html: valentinesGuestEmailHtml(name, flyerUrl),
       });
       if (!sendErr) sent++;
@@ -89,3 +89,5 @@ export default async function handler(req: ReqWithBody, res: Res): Promise<void>
     res.status(500).json({ error: "Failed to send Valentine's emails" });
   }
 }
+
+

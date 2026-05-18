@@ -1,7 +1,7 @@
-# SEO Technical Report — Spinella Restaurant & Bar Geneva
+# SEO Technical Report — TestRestaurant Restaurant & Bar Geneva
 
 **Document purpose:** Handover for external SEO analysis.  
-**Site:** Spinella Restaurant & Bar (Geneva)  
+**Site:** TestRestaurant Restaurant & Bar (Geneva)  
 **Stack:** React (Vite), client-side routing (wouter), deployed on Vercel.  
 **Last updated:** February 2025  
 
@@ -21,8 +21,8 @@
 
 | Element | Current value |
 |--------|----------------|
-| **`<title>`** | Spinella Restaurant & Bar Geneva |
-| **Meta description** | Spinella – Restaurant & Bar sicilien à Genève. Cuisine authentique, cocktails et accueil familial. Réservez votre table. |
+| **`<title>`** | TestRestaurant Restaurant & Bar Geneva |
+| **Meta description** | TestRestaurant – Restaurant & Bar sicilien à Genève. Cuisine authentique, cocktails et accueil familial. Réservez votre table. |
 | **`<html lang>`** | `fr` (fixed) |
 | **Viewport** | width=device-width, initial-scale=1.0, maximum-scale=1 |
 
@@ -30,7 +30,7 @@
 
 | Property | Value |
 |----------|--------|
-| **og:title** | Spinella Restaurant & Bar Geneva |
+| **og:title** | TestRestaurant Restaurant & Bar Geneva |
 | **og:description** | Restaurant & Bar sicilien à Genève. Cuisine authentique, cocktails et accueil familial. |
 | **og:image** | `/logo.png` (relative path) |
 

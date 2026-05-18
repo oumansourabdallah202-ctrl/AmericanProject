@@ -12,8 +12,8 @@ interface BookingEmailData {
   specialRequests?: string | null;
 }
 
-const FROM_EMAIL = 'Spinella Geneva <info@spinella.ch>';
-const BCC_EMAIL = 'info@spinella.ch';
+const FROM_EMAIL = 'TESTRESTAURANT Geneva <info@TESTRESTAURANT.ch>';
+const BCC_EMAIL = 'info@TESTRESTAURANT.ch';
 
 export async function sendBookingConfirmationEmail(data: BookingEmailData): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) {
@@ -71,7 +71,7 @@ export async function sendBookingNotificationToRestaurant(data: BookingEmailData
       from: FROM_EMAIL,
       to: [to],
       bcc: [BCC_EMAIL],
-      subject: `[Spinella] New booking: ${data.name} – ${data.date} ${data.time}`,
+      subject: `[TESTRESTAURANT] New booking: ${data.name} – ${data.date} ${data.time}`,
       html,
     });
     if (error) {
@@ -98,7 +98,7 @@ function generateBookingEmailHTML(data: BookingEmailData): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reservation Request — Spinella Geneva</title>
+  <title>Reservation Request — TESTRESTAURANT Geneva</title>
   <!--[if mso]>
   <noscript>
     <xml>
@@ -120,7 +120,7 @@ function generateBookingEmailHTML(data: BookingEmailData): string {
           <tr>
             <td style="padding: 48px 40px 32px; text-align: center;">
               <p style="margin:0 0 8px 0; font-size: 11px; letter-spacing: 4px; color: #8a7a5c; text-transform: uppercase;">Restaurant & Bar</p>
-              <h1 style="margin:0; font-size: 42px; font-weight: 700; letter-spacing: 6px; color: #d4af37;">SPINELLA</h1>
+              <h1 style="margin:0; font-size: 42px; font-weight: 700; letter-spacing: 6px; color: #d4af37;">TESTRESTAURANT</h1>
               <p style="margin: 8px 0 0 0; font-size: 13px; letter-spacing: 3px; color: #b8a574;">GENEVA</p>
               <table role="presentation" width="120" cellspacing="0" cellpadding="0" border="0" align="center" style="margin-top: 24px;">
                 <tr><td style="height: 1px; background: linear-gradient(90deg, transparent, #c9a227, transparent);"></td></tr>
@@ -205,7 +205,7 @@ function generateBookingEmailHTML(data: BookingEmailData): string {
                 <tr><td style="height: 1px; background: linear-gradient(90deg, transparent, #c9a227, transparent);"></td></tr>
               </table>
               <p style="margin: 0; font-size: 20px; font-style: italic; color: #d4af37;">"Partager un repas, c'est créer du lien."</p>
-              <p style="margin: 6px 0 0 0; font-size: 13px; color: #8a7a5c;">Sharing a meal is creating a bond.</p>
+              <p style="margin: 6px 0 0 0; font-size: 13px; color: #8a7a5c;">Every meal is a new memory.</p>
             </td>
           </tr>
           <!-- Contact strip -->
@@ -213,13 +213,13 @@ function generateBookingEmailHTML(data: BookingEmailData): string {
             <td style="padding: 24px 40px; background-color: #0f0e0c; border-top: 1px solid #2a2520;">
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td style="font-size: 13px; color: #8a7a5c;">Rue Liotard 4, 1202 Geneva</td>
+                  <td style="font-size: 13px; color: #8a7a5c;">123 Main Street, Cityville</td>
                 </tr>
                 <tr>
                   <td style="padding-top: 6px;">
-                    <a href="tel:+41225034186" style="font-size: 13px; color: #d4af37; text-decoration: none;">+41 22 503 41 86</a>
+                    <a href="tel:+41225034186" style="font-size: 13px; color: #d4af37; text-decoration: none;">+1 234 567 890</a>
                     <span style="color: #4a4540;"> · </span>
-                    <a href="mailto:info@spinella.ch" style="font-size: 13px; color: #d4af37; text-decoration: none;">info@spinella.ch</a>
+                    <a href="mailto:info@TESTRESTAURANT.ch" style="font-size: 13px; color: #d4af37; text-decoration: none;">info@TESTRESTAURANT.ch</a>
                   </td>
                 </tr>
               </table>
@@ -228,9 +228,9 @@ function generateBookingEmailHTML(data: BookingEmailData): string {
           <!-- Footer -->
           <tr>
             <td style="padding: 24px 40px; text-align: center;">
-              <p style="margin: 0 0 8px 0; font-size: 12px; letter-spacing: 2px; color: #d4af37;">SPINELLA</p>
-              <p style="margin: 0 0 16px 0; font-size: 11px; color: #6a6358;">Authentic Sicilian cuisine in the heart of Geneva</p>
-              <p style="margin: 0; font-size: 11px; color: #4a4540;">© ${new Date().getFullYear()} Spinella Restaurant & Bar. All rights reserved.</p>
+              <p style="margin: 0 0 8px 0; font-size: 12px; letter-spacing: 2px; color: #d4af37;">TESTRESTAURANT</p>
+              <p style="margin: 0 0 16px 0; font-size: 11px; color: #6a6358;">A fresh dining experience in the heart of the city</p>
+              <p style="margin: 0; font-size: 11px; color: #4a4540;">© ${new Date().getFullYear()} TESTRESTAURANT Restaurant & Bar. All rights reserved.</p>
             </td>
           </tr>
           <!-- Bottom gold rule -->

@@ -12,7 +12,7 @@ On ne peut pas les retirer par le code : Google choisit les sitelinks. Vous pouv
 
 1. **Google Search Console**  
    - Aller sur [search.google.com/search-console](https://search.google.com/search-console).  
-   - Sélectionner la propriété **www.spinella.ch**.  
+   - Sélectionner la propriété **www.TestRestaurant.ch**.  
    - Utiliser **Suppression d’URL** (temporaire) pour les URLs concernées si besoin.  
    - Les sitelinks se mettent à jour au fil des prochains crawl/indexations.
 

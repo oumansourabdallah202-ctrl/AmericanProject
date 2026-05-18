@@ -2,7 +2,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
-const MENU_PDF = "/Menu_Spinella.pdf";
+const MENU_PDF = "/menu_en.pdf";
 
 export default function Menu() {
   const { t } = useLanguage();
@@ -13,7 +13,7 @@ export default function Menu() {
       <section className="relative min-h-[280px] sm:min-h-[320px] md:h-80 lg:h-96 flex items-center justify-center">
         <div
           className="hero-bg absolute inset-0"
-          style={{ backgroundImage: "url(/spinella_interior.jpg)" }}
+          style={{ backgroundImage: "url(/interior_1.jpg)" }}
         >
           <div className="hero-overlay absolute inset-0" />
         </div>

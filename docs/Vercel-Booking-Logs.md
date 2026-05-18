@@ -55,7 +55,7 @@ Then count lines or search for `api/booking` / `[booking]` in the output.
 
 ## 4. Via Vercel Dashboard
 
-1. Go to [vercel.com](https://vercel.com) → your team → **spinella-geneva** (or the project name).
+1. Go to [vercel.com](https://vercel.com) → your team → **TestRestaurant-geneva** (or the project name).
 2. Open **Logs**.
 3. Filter by **Status** → `500`, and optionally **Path** or search for `booking`.
 4. Use the time range picker to cover the period (e.g. last 7 or 30 days).

@@ -1,4 +1,4 @@
-# Spinella Geneva - Photo Inventory
+# TestRestaurant Geneva - Photo Inventory
 
 ## Collected Images
 
@@ -17,7 +17,7 @@ All images have been downloaded and organized for use in the website.
 
 ## Total Images: 8
 
-All images are located in: `/home/ubuntu/spinella_project/images/`
+All images are located in: `/home/ubuntu/TestRestaurant_project/images/`
 
 These images showcase:
 - Interior dining spaces with elegant decor
@@ -28,3 +28,4 @@ These images showcase:
 - Evening ambiance
 
 Ready for integration into the new website design.
+

@@ -15,7 +15,7 @@ This project uses **Supabase** (PostgreSQL) to store and manage reservations. Bo
 
 1. Go to [supabase.com](https://supabase.com) and sign in (or create an account).
 2. Click **New project**.
-3. Choose your **organization**, enter a **project name** (e.g. `spinella-geneva`), set a **database password** (save it somewhere safe), and pick a **region** (e.g. Frankfurt or closest to you).
+3. Choose your **organization**, enter a **project name** (e.g. `TestRestaurant-geneva`), set a **database password** (save it somewhere safe), and pick a **region** (e.g. Frankfurt or closest to you).
 4. Click **Create new project** and wait until it’s ready (1–2 minutes).
 
 ---
@@ -121,7 +121,7 @@ alter table public.bookings
 
 1. In the Supabase dashboard, go to **Authentication** → **Users** in the left menu.
 2. Click **Add user** → **Create new user**.
-3. Enter an **email** (e.g. `info@spinella.ch`) and set **Password** to **`spinellaadmin*3`** (or your chosen admin password).
+3. Enter an **email** (e.g. `info@TestRestaurant.ch`) and set **Password** to **`TestRestaurantadmin*3`** (or your chosen admin password).
 4. Click **Create user**.
 
 This user is the only one who can log in to the **Admin** page (`/admin`). Optionally set **ADMIN_EMAIL** in Vercel to this email so the API only accepts that user.
@@ -129,7 +129,7 @@ This user is the only one who can log in to the **Admin** page (`/admin`). Optio
 ### Admin login credentials
 
 - **Credentials** are the Supabase Auth user you created above. There are no separate credentials stored in the code.
-- **Example:** email **`admin@spinella.ch`**, password **`spinellaadmin*1`** (or whatever you set in Step 3).
+- **Example:** email **`admin@TestRestaurant.ch`**, password **`TestRestaurantadmin*1`** (or whatever you set in Step 3).
 - **Why the admin page sometimes opens without asking for credentials:** The app uses Supabase Auth, which keeps the session in the browser (localStorage). If you already logged in before, reopening `/admin` restores that session and shows the dashboard directly. To see the login form again, click **Log out** on the admin page.
 
 ---
@@ -159,7 +159,7 @@ Copy the **Project URL** and the **service_role** key (click “Reveal” if nee
    | `SUPABASE_SERVICE_ROLE_KEY` | Your **service_role** key | Production (and Preview) |
    | `VITE_SUPABASE_URL` | Same as Project URL | Production (and Preview) |
    | `VITE_SUPABASE_ANON_KEY` | Same as **anon public** key | Production (and Preview) |
-   | `ADMIN_EMAIL` | (optional) e.g. `admin@spinella.ch` | Production (and Preview) |
+   | `ADMIN_EMAIL` | (optional) e.g. `admin@TestRestaurant.ch` | Production (and Preview) |
 
 2. Save and **redeploy** the project.
 
@@ -180,7 +180,7 @@ To test booking and admin with Supabase on your machine:
    SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
    VITE_SUPABASE_URL=https://xxxxx.supabase.co
    VITE_SUPABASE_ANON_KEY=your-anon-key
-   ADMIN_EMAIL=admin@spinella.ch
+   ADMIN_EMAIL=admin@TestRestaurant.ch
    ```
 
 3. Run your dev server. Ensure it loads `.env` for the API.
@@ -272,9 +272,10 @@ If bookings don’t appear:
 | 2 | In **SQL Editor**, run the `create table public.bookings` script (and optionally enable RLS). |
 | 2b | Create the `clients` table (SQL in Step 2b). |
 | 2c | (Optional) Add `sent_emails` column to `bookings` for email status in admin (SQL in Step 2c). |
-| 3 | In **Authentication** → **Users**, create an admin user (e.g. `admin@spinella.ch`, password **`spinellaadmin*1`**). |
+| 3 | In **Authentication** → **Users**, create an admin user (e.g. `admin@TestRestaurant.ch`, password **`TestRestaurantadmin*1`**). |
 | 4 | In **Project settings** → **API**, copy **Project URL**, **anon** key, and **service_role** key. |
 | 5 | In Vercel, add **`SUPABASE_URL`**, **`SUPABASE_ANON_KEY`**, **`SUPABASE_SERVICE_ROLE_KEY`**, **`VITE_SUPABASE_URL`**, **`VITE_SUPABASE_ANON_KEY`** (and optionally **`ADMIN_EMAIL`**), then redeploy. |
 | 6 | (Optional) Add the same variables to `.env` for local dev. |
 
 After this, booking continues to work with Resend (emails), and Supabase is used to store and manage reservation data for the admin page.
+

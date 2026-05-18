@@ -8,7 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
-/** Comma-separated list of allowed origins for CORS (e.g. https://spinella-geneva.ch,https://www.spinella-geneva.ch). Empty = same-origin only. */
+/** Comma-separated list of allowed origins for CORS (e.g. https://testrestaurant.com,https://www.testrestaurant.com). Empty = same-origin only. */
 const CORS_ORIGINS = (process.env.CORS_ORIGIN ?? "")
   .split(",")
   .map((o) => o.trim())
@@ -86,3 +86,4 @@ async function startServer() {
 }
 
 startServer().catch(console.error);
+

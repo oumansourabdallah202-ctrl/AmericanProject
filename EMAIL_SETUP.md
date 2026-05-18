@@ -14,7 +14,7 @@ This project uses [Resend](https://resend.com) to send booking confirmation emai
 1. Log in to your Resend dashboard
 2. Navigate to **API Keys** section
 3. Click **Create API Key**
-4. Give it a name (e.g., "Spinella Production")
+4. Give it a name (e.g., "TestRestaurant Production")
 5. Copy the API key (it starts with `re_`)
 
 ### 3. Configure Your Domain (Optional but Recommended)
@@ -23,7 +23,7 @@ For production use, you should verify your domain:
 
 1. In Resend dashboard, go to **Domains**
 2. Click **Add Domain**
-3. Enter your domain (e.g., `spinella-geneva.ch`)
+3. Enter your domain (e.g., `TestRestaurant-geneva.ch`)
 4. Add the DNS records provided by Resend to your domain's DNS settings
 5. Wait for verification (usually takes a few minutes)
 
@@ -40,7 +40,7 @@ RESEND_API_KEY=re_your_actual_api_key_here
 Once your domain is verified, update the sender email in `server/_core/email.ts`:
 
 ```typescript
-from: 'Spinella Geneva <reservations@spinella-geneva.ch>',
+from: 'TestRestaurant Geneva <reservations@TestRestaurant-geneva.ch>',
 ```
 
 Replace with your actual verified domain email.
@@ -49,11 +49,11 @@ Replace with your actual verified domain email.
 
 The booking confirmation email includes:
 
-- **Elegant Design**: Black and gold theme matching Spinella's brand
+- **Elegant Design**: Black and gold theme matching TestRestaurant's brand
 - **Booking Details**: Date, time, party size, phone, and special requests
 - **Restaurant Information**: Address, phone, email
 - **Responsive Layout**: Works on all devices
-- **Professional Branding**: Spinella logo and tagline
+- **Professional Branding**: TestRestaurant logo and tagline
 
 ## Testing
 

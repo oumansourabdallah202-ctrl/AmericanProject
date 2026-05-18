@@ -1,9 +1,9 @@
-# SEO Action Checklist (Priority Order) – Spinella Restaurant & Bar (Geneva)
+# SEO Action Checklist (Priority Order) – TestRestaurant Restaurant & Bar (Geneva)
 
 *Client-facing technical handover. Safe, incremental SEO improvements.*
 
 **Current public URLs:**  
-https://www.spinella.ch/ | /menu | /gallery | /events | /about | /faq | /contact | /reservations
+https://www.TestRestaurant.ch/ | /menu | /gallery | /events | /about | /faq | /contact | /reservations
 
 ---
 
@@ -12,7 +12,7 @@ https://www.spinella.ch/ | /menu | /gallery | /events | /about | /faq | /contact
 | Action | Status | Implementation |
 |--------|--------|----------------|
 | **1.1 Sitemap** | Done | `client/public/sitemap.xml` lists all 8 public URLs. `client/public/robots.txt` references it. |
-| **1.2 Canonical per route** | Done | `SeoHead` component sets `<link rel="canonical" href="https://www.spinella.ch/…">` on route change. Default in `index.html` for `/`. |
+| **1.2 Canonical per route** | Done | `SeoHead` component sets `<link rel="canonical" href="https://www.TestRestaurant.ch/…">` on route change. Default in `index.html` for `/`. |
 
 ---
 
@@ -37,7 +37,7 @@ https://www.spinella.ch/ | /menu | /gallery | /events | /about | /faq | /contact
 
 | Action | Status | Implementation |
 |--------|--------|----------------|
-| **4.1 Complete OG + absolute og:image** | Done | `index.html`: `og:type`, `og:url`, `og:image` (https://www.spinella.ch/logo.png), `og:title`, `og:description`. `SeoHead` updates OG tags per route when the app runs. |
+| **4.1 Complete OG + absolute og:image** | Done | `index.html`: `og:type`, `og:url`, `og:image` (https://www.TestRestaurant.ch/logo.png), `og:title`, `og:description`. `SeoHead` updates OG tags per route when the app runs. |
 
 ---
 

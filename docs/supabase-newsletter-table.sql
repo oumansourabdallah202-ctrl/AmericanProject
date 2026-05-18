@@ -1,4 +1,4 @@
--- Newsletter subscribers for Spinella. Used by the website (subscribe form), unsubscribe link, and Make.com (send only to subscribed).
+-- Newsletter subscribers for TestRestaurant. Used by the website (subscribe form), unsubscribe link, and Make.com (send only to subscribed).
 -- Run in Supabase → SQL Editor.
 
 -- Create table if you don't have it yet (e.g. email + subscribed_at only)
@@ -49,3 +49,4 @@ CREATE POLICY "Service role only"
   FOR ALL
   USING (false)
   WITH CHECK (false);
+

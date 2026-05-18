@@ -30,7 +30,7 @@ export default function FAQ() {
       <section className="relative min-h-[240px] sm:min-h-[280px] md:h-72 lg:h-80 flex items-center justify-center">
         <div
           className="hero-bg absolute inset-0"
-          style={{ backgroundImage: "url(/spinella_interior.jpg)" }}
+          style={{ backgroundImage: "url(/interior_1.jpg)" }}
         >
           <div className="hero-overlay absolute inset-0" />
         </div>

@@ -1,4 +1,4 @@
-# Spinella Restaurant & Bar – Site updates and feature requests
+# TestRestaurant Restaurant & Bar – Site updates and feature requests
 
 *Document generated from client feedback. Use as a checklist and scope for development.*
 
@@ -82,7 +82,7 @@
 - **Time slots:** Use 15-minute intervals instead of 30 minutes.
 - **Notifications:** Receive notifications when someone books (similar to The Fork Manager).
 
-### Work with Spinella
+### Work with TestRestaurant
 
 - Dedicated "Work with us" section with three areas:
   1. Kitchen  

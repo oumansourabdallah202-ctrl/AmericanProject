@@ -1,4 +1,4 @@
-# Deploy to https://spinella-geneva.netlify.app/
+# Deploy to https://TestRestaurant-geneva.netlify.app/
 
 ## Auto-update: Link Git repo to Netlify (recommended)
 
@@ -9,14 +9,14 @@ Once the repo is connected to Netlify, **every push to the main branch** will tr
 1. **Open Netlify**
    - Go to [app.netlify.com](https://app.netlify.com) and sign in.
 
-2. **Open the Spinella site**
-   - Click the site that has URL **spinella-geneva.netlify.app** (or create a new site and name it **spinella-geneva**).
+2. **Open the TestRestaurant site**
+   - Click the site that has URL **TestRestaurant-geneva.netlify.app** (or create a new site and name it **TestRestaurant-geneva**).
 
 3. **Connect the Git repo**
    - Go to **Site configuration** → **Build & deploy** → **Continuous deployment**.
    - Click **Link repository** (or **Set up build**).
    - Choose **GitHub** (or GitLab/Bitbucket) and authorize Netlify if asked.
-   - Select the **spinella-geneva** repository (and the correct org if applicable).
+   - Select the **TestRestaurant-geneva** repository (and the correct org if applicable).
    - Pick the branch to deploy (e.g. **main** or **master**).
 
 4. **Build settings** (usually from `netlify.toml`)
@@ -31,7 +31,7 @@ Once the repo is connected to Netlify, **every push to the main branch** will tr
 
 ### After it’s linked
 
-- Push to **main** (or the branch you chose) → Netlify builds and updates **https://spinella-geneva.netlify.app/**.
+- Push to **main** (or the branch you chose) → Netlify builds and updates **https://TestRestaurant-geneva.netlify.app/**.
 - Deploy history: **Site** → **Deploys**.
 - Build logs: click a deploy to see logs and fix any build errors.
 
@@ -46,7 +46,7 @@ If the site is not yet connected to Git, or you want to deploy from your machine
    npx netlify login
    npx netlify link
    ```
-   Select the site **spinella-geneva** (URL: spinella-geneva.netlify.app).
+   Select the site **TestRestaurant-geneva** (URL: TestRestaurant-geneva.netlify.app).
 
 2. **Build and deploy**
    ```bash
@@ -66,4 +66,4 @@ If the site is not yet connected to Git, or you want to deploy from your machine
 | PNPM version       | `10`                                      |
 | Redirects          | `/*` → `/index.html` (SPA)                |
 
-Your site will be live at **https://spinella-geneva.netlify.app/**.
+Your site will be live at **https://TestRestaurant-geneva.netlify.app/**.

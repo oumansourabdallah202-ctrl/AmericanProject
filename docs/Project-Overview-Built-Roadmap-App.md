@@ -1,4 +1,4 @@
-# Spinella Restaurant & Bar – Project Overview: What We Built, Takeaway, Roadmap & App
+# TestRestaurant Restaurant & Bar – Project Overview: What We Built, Takeaway, Roadmap & App
 
 *Single reference for everything built on the website, the takeaway offering, what’s left to build, the future luxury cooking lessons platform, and turning it all into an app.*
 
@@ -6,7 +6,7 @@
 
 ## 1. What We Built on the Website
 
-### 1.1 Public pages (spinella.ch)
+### 1.1 Public pages (TestRestaurant.ch)
 
 | Page | Route | Purpose |
 |------|--------|--------|
@@ -15,7 +15,7 @@
 | **Gallery** | `/gallery` | Photo grid + lightbox. |
 | **Events** | `/events` | Private events intro, event types, “What we offer” (custom menus, full service, atmosphere), capacity & details, booking info. |
 | **About** | `/about` | Story, three brothers (Salvatore, Marco, Gabriele), philosophy (Passion, Respect, Authenticity, Family, Quality), experience section. |
-| **FAQ** | `/faq` | Accordion FAQ (reservations, hours, dietary, parking, private events, takeaway/drinks, what makes Spinella different). Dress code Q removed. |
+| **FAQ** | `/faq` | Accordion FAQ (reservations, hours, dietary, parking, private events, takeaway/drinks, what makes TestRestaurant different). Dress code Q removed. |
 | **Contact** | `/contact` | Address, phone, email, opening hours (kitchen + bar in tables), map, transport info. |
 | **Reservations** | `/reservations` | Booking form: name, email, phone, date, time, party size, special requests. Time slots by day (lunch/evening, Sunday closed). Submit → API → Supabase + optional emails (request or confirmed). |
 
@@ -56,7 +56,7 @@
 
 ### 1.6 PWA & installability
 
-- **Manifest:** `manifest.json` (Spinella Admin – start_url `/admin`, theme gold, icons 192/512).
+- **Manifest:** `manifest.json` (TestRestaurant Admin – start_url `/admin`, theme gold, icons 192/512).
 - **Service worker:** `sw.js` for caching/offline.
 - **Push:** Push notification helpers registered (for future admin “new booking” alerts).
 - **Install prompt:** Handled in `main.tsx` for “Add to Home Screen”.
@@ -97,7 +97,7 @@
 | **Menu layout** | Dishes and suggestions next to the menu (like old site). |
 | **Takeaway orders** | See §2.2. |
 | **Reservations** | Message field (restaurant → customer); 15‑min time slots; notifications when someone books (e.g. like The Fork Manager). |
-| **Work with Spinella** | “Work with us” section: Kitchen, Service, Bars. |
+| **Work with TestRestaurant** | “Work with us” section: Kitchen, Service, Bars. |
 
 ### 3.3 SEO (optional next)
 
@@ -111,7 +111,7 @@
 
 - **Idea:** A platform to **teach people how to cook** – focused on **special luxury cooking lessons** (e.g. Sicilian fine dining, seasonal menus, wine pairing).
 - **Possible directions (to decide with client):**
-  - **On-site lessons:** Book a lesson at Spinella (date/time, group size, theme).
+  - **On-site lessons:** Book a lesson at TestRestaurant (date/time, group size, theme).
   - **Content hub:** Recipes, tips, short videos (complement to the restaurant).
   - **Hybrid:** Lessons at the restaurant + optional “at home” packs or digital guides.
 - **Integration with current site:** New section “Cooking Lessons” or “École de cuisine” with:
@@ -120,7 +120,7 @@
   - Pricing, duration, what’s included.
 - **Back office:** Admin for lesson slots, participants, payments (or link to external payment/booking if preferred).
 
-*Next step:* Workshop with client to define format (on-site only / digital / both), pricing, and whether it lives inside spinella.ch or a subdomain/mini-site.*
+*Next step:* Workshop with client to define format (on-site only / digital / both), pricing, and whether it lives inside TestRestaurant.ch or a subdomain/mini-site.*
 
 ---
 
@@ -147,7 +147,7 @@
 
 ### 5.3 Suggested order
 
-1. **Short term:** Extend PWA so the **public site** (not only admin) is installable; optional second manifest for “Spinella Geneva” with `start_url: /`. No new stack.
+1. **Short term:** Extend PWA so the **public site** (not only admin) is installable; optional second manifest for “TestRestaurant Geneva” with `start_url: /`. No new stack.
 2. **Then:** Add push for **admin** (notify on new reservation) and, if desired, for **guests** (reminders, offers).
 3. **If store presence is required:** Explore TWA (Android) and/or Capacitor to ship the same website as an app in stores.
 4. **If a dedicated app experience is required later:** Plan a separate project (e.g. React Native) and re-use APIs and content strategy defined here.
@@ -158,7 +158,7 @@
 
 | Area | Status | Next |
 |------|--------|------|
-| **Website (public)** | Built: Home, Menu, Gallery, Events, About, FAQ, Contact, Reservations; SEO; 3 languages. | Content/PDF tweaks; new features (gift cards, group menus, takeaway orders, Work with Spinella, reservations improvements). |
+| **Website (public)** | Built: Home, Menu, Gallery, Events, About, FAQ, Contact, Reservations; SEO; 3 languages. | Content/PDF tweaks; new features (gift cards, group menus, takeaway orders, Work with TestRestaurant, reservations improvements). |
 | **Admin** | Built: dashboard, bookings CRUD, clients, calendar, emails; push notifications for new reservations (PWA + desktop). | Optional message field to customer. |
 | **Takeaway** | FAQ updated (drinks at bar). | Dedicated takeaway orders + handheld + delivery/collection. |
 | **Cooking lessons** | Not started. | Define format (on-site / digital / both), pricing, booking; then add section + back office. |
@@ -174,11 +174,11 @@ To improve PageSpeed (mobile was ~55, desktop ~69–81; FCP/LCP/CLS/TBT in focus
 - **Hero:** On **mobile**, the hero shows a static poster image only (no video download), so LCP is the preloaded image. On **desktop**, so it doesn’t block; the poster shows until the video is ready.
 - **GTM:** Loaded **after `window.load`** (with a short timeout) so it doesn’t block initial parse and first paint.
 - **Fonts:** Google Fonts stylesheet loads with `media="print"` and `onload="this.media='all'"` so it is **non-blocking**.
-- **LCP preload:** `<link rel="preload" href="/spinella_interior.jpg" as="image" fetchpriority="high">` so the hero poster is requested early.
+- **LCP preload:** `<link rel="preload" href="/TestRestaurant_interior.jpg" as="image" fetchpriority="high">` so the hero poster is requested early.
 - **Hero layout:** Section has explicit `min-height` and `aspect-ratio` to reduce layout shift.
-- **CLS:** All `<img>` elements have explicit **width** and **height** (or sit in aspect-ratio containers): Home (interior_brothers, spinella_exterior), About (interior_main), Gallery (grid thumbs), Navigation (logo), ManusDialog (logo). This reserves space and reduces Cumulative Layout Shift.
+- **CLS:** All `<img>` elements have explicit **width** and **height** (or sit in aspect-ratio containers): Home (interior_brothers, TestRestaurant_exterior), About (interior_main), Gallery (grid thumbs), Navigation (logo), ManusDialog (logo). This reserves space and reduces Cumulative Layout Shift.
 - **Mobile – render-blocking:** Main app stylesheet is loaded with `media="print"` and `onload="this.media='all'"` (Vite plugin `defer-stylesheet` runs after build) so it no longer blocks initial render (~330 ms savings).
-- **Mobile – image delivery:** Hero poster, logo, interior_brothers and spinella_exterior use `<picture>` with WebP when available. Run `pnpm run generate-images` (requires `sharp` as devDependency) to generate `/spinella_interior.webp`, `/interior_brothers.webp`, `/spinella_exterior.webp`, `/logo-96.webp`, `/logo.webp` for smaller payloads and faster LCP.
+- **Mobile – image delivery:** Hero poster, logo, interior_brothers and TestRestaurant_exterior use `<picture>` with WebP when available. Run `pnpm run generate-images` (requires `sharp` as devDependency) to generate `/TestRestaurant_interior.webp`, `/interior_brothers.webp`, `/TestRestaurant_exterior.webp`, `/logo-96.webp`, `/logo.webp` for smaller payloads and faster LCP.
 
 - **Code splitting:** Non-home routes (Menu, Gallery, About, Events, FAQ, Contact, Booking, Admin, NotFound) are loaded with `React.lazy` and wrapped in `Suspense`; only the Home page is in the initial bundle to improve FCP/LCP and TBT.
 
@@ -195,14 +195,14 @@ To improve PageSpeed (mobile was ~55, desktop ~69–81; FCP/LCP/CLS/TBT in focus
 | Priorité | Tâche | Détail |
 |----------|--------|--------|
 | **P0** | Corriger tous les bugs liés aux réservations | Auditer le flux complet : formulaire public → API → Supabase → emails ; admin (liste, calendrier, accept/decline, édition) ; cas limites (dates bloquées, créneaux passés, grandes tables). Corriger chaque bug identifié. |
-| **P0** | Garantir qu’aucune résa ne reste uniquement sur Wix | Vérifier que **toutes** les réservations passent par la nouvelle interface (spinella.ch) ou sont importées/synchronisées. Identifier les canaux restants (formulaire Wix encore actif ? résas par téléphone/email ?) et soit les couper, soit les faire remonter dans Supabase (import manuel ou script). **Source de vérité unique** = Supabase `bookings`. |
+| **P0** | Garantir qu’aucune résa ne reste uniquement sur Wix | Vérifier que **toutes** les réservations passent par la nouvelle interface (TestRestaurant.ch) ou sont importées/synchronisées. Identifier les canaux restants (formulaire Wix encore actif ? résas par téléphone/email ?) et soit les couper, soit les faire remonter dans Supabase (import manuel ou script). **Source de vérité unique** = Supabase `bookings`. |
 | **P1** | Aligner l’interface sur Wix (look & comportement) | Comparer l’admin et le parcours client avec Wix (écrans, libellés, étapes, emails). Adapter la nouvelle interface pour qu’elle **ressemble et fonctionne comme Wix** (workflow acceptation, messages, vue liste/calendrier, etc.) tout en gardant la stack actuelle. |
 
 ### 8.2 Page Carrières / Candidatures
 
 | Priorité | Tâche | Détail |
 |----------|--------|--------|
-| **P1** | Page ou lien “Travailler chez Spinella” | **Fait** : page `/careers` (intro, Cuisine/Bar/Service, CTA mailto). Lien footer + Contact « En savoir plus et postuler ». Traductions EN/FR/IT/DE/ES. |
+| **P1** | Page ou lien “Travailler chez TestRestaurant” | **Fait** : page `/careers` (intro, Cuisine/Bar/Service, CTA mailto). Lien footer + Contact « En savoir plus et postuler ». Traductions EN/FR/IT/DE/ES. |
 
 ### 8.3 Système de commande (livraison et/ou à emporter)
 
@@ -231,4 +231,5 @@ To improve PageSpeed (mobile was ~55, desktop ~69–81; FCP/LCP/CLS/TBT in focus
 
 ---
 
-*Document generated for Spinella Restaurant & Bar. Update this file as features are shipped or scope changes.*
+*Document generated for TestRestaurant Restaurant & Bar. Update this file as features are shipped or scope changes.*
+

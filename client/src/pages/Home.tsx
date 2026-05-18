@@ -201,7 +201,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1 relative min-h-[240px] sm:min-h-[280px] lg:min-h-[380px] w-full min-w-0 overflow-hidden rounded-lg aspect-[4/3] bg-muted">
               <img
-                src="/spinella_exterior.jpg"
+                src="/exterior_night_new.jpg"
                 alt="Restaurant italien proche du lac Geneve et de la gare Cornavin"
                 width={800}
                 height={600}

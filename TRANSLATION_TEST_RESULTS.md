@@ -15,11 +15,11 @@ January 23, 2026
 - ✅ Language switcher shows current language (EN/FR)
 
 ### Home Page
-- ✅ Hero section: "Welcome to Spinella" → "Bienvenue chez Spinella"
+- ✅ Hero section: "Welcome to TestRestaurant" → "Bienvenue chez TestRestaurant"
 - ✅ Subtitle: "A Sicilian Story..." → "Une Histoire Sicilienne..."
 - ✅ Description fully translated
 - ✅ CTA buttons: "Book Your Table" → "Réserver une Table", "View Menu" → "Voir le Menu"
-- ✅ Features section: "Experience Spinella" → "Découvrez Spinella"
+- ✅ Features section: "Experience TestRestaurant" → "Découvrez TestRestaurant"
 - ✅ All 4 feature cards translated (Easy Booking → Réservation Facile, etc.)
 - ✅ About preview: "The Three Brothers" → "Les Trois Frères"
 - ✅ Location section: "Visit Us in Geneva" → "Visitez-Nous à Genève"
@@ -60,3 +60,4 @@ The following pages have the translation hook added but content still needs to b
 - Language switcher is intuitive and responsive
 - French translations are accurate and professional
 - Easy to extend to remaining pages using the same pattern: `{t("section.key")}`
+

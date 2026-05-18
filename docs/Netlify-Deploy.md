@@ -17,12 +17,12 @@ Use **Netlify** to deploy a **preview** of the site so you (or the boss) can tes
 2. Log in and link the site (once):
    ```bash
    netlify login
-   cd "c:\Users\attia\OneDrive\Bureau\Paginas web\spinella-geneva"
+   cd "c:\Users\attia\OneDrive\Bureau\Paginas web\TestRestaurant-geneva"
    netlify init
    ```
    - Choose **“Create & configure a new site”** (or link an existing Netlify site).
    - Team: your Netlify team.
-   - Site name: e.g. `spinella-geneva-preview`.
+   - Site name: e.g. `TestRestaurant-geneva-preview`.
    - Build command: leave default (Netlify uses `netlify.toml`: `pnpm run build:client`).
    - Publish directory: leave default (`dist/public`).
 
@@ -30,7 +30,7 @@ After `netlify init`, the project is linked. You can deploy anytime without push
 
 ### Option B: Netlify + Git (branch deploys)
 
-1. In [Netlify](https://app.netlify.com): **Add new site** → **Import an existing project** → choose your Git provider and the **spinella-geneva** repo.
+1. In [Netlify](https://app.netlify.com): **Add new site** → **Import an existing project** → choose your Git provider and the **TestRestaurant-geneva** repo.
 2. Build settings (usually read from `netlify.toml`):
    - **Build command:** `pnpm run build:client`
    - **Publish directory:** `dist/public`
@@ -70,7 +70,7 @@ Production (Vercel or your main host) updates from `main` as usual.
 
 ## 3. Deploy to Netlify production (optional)
 
-If you want the **Netlify** site to be the “live” preview (e.g. `spinella-preview.netlify.app`):
+If you want the **Netlify** site to be the “live” preview (e.g. `TestRestaurant-preview.netlify.app`):
 
 ```bash
 netlify deploy --prod

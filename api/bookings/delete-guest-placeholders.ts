@@ -1,6 +1,6 @@
 /**
  * POST: delete all empty/placeholder bookings:
- * - email = 'wix-sync@spinella.ch', or
+ * - email = 'wix-sync@testrestaurant.com', or
  * - name empty / Guest / dash (no real guest data).
  * Admin only. Returns { ok: true, deleted: number }.
  */
@@ -21,7 +21,7 @@ function getAuthToken(req: Req): string {
   return auth?.startsWith("Bearer ") ? auth.slice(7) : "";
 }
 
-const PLACEHOLDER_EMAIL = "wix-sync@spinella.ch";
+const PLACEHOLDER_EMAIL = "wix-sync@testrestaurant.com";
 
 function isEmptyName(name: string | null | undefined): boolean {
   const s = (name ?? "").trim();

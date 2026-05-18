@@ -17,11 +17,11 @@ function getInitialLanguage(): Language {
     return saved as Language;
   }
   const host = window.location.hostname.toLowerCase();
-  if (host === "fr.spinella.ch") return "fr";
-  if (host === "en.spinella.ch") return "en";
-  if (host === "it.spinella.ch") return "it";
-  if (host === "de.spinella.ch") return "de";
-  if (host === "es.spinella.ch") return "es";
+  if (host === "fr.testrestaurant.com") return "fr";
+  if (host === "en.testrestaurant.com") return "en";
+  if (host === "it.testrestaurant.com") return "it";
+  if (host === "de.testrestaurant.com") return "de";
+  if (host === "es.testrestaurant.com") return "es";
   return "fr";
 }
 

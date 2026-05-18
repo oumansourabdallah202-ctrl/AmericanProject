@@ -1,4 +1,4 @@
-# Spinella Geneva - TripAdvisor Reviews
+# TestRestaurant Geneva - TripAdvisor Reviews
 
 ## Key Information:
 - **Rating**: #1 of 1849 restaurants in Geneva
@@ -18,7 +18,7 @@
 "I wish I could give more than just 5 stars. 10 stars! 100 stars! The staff are absolutely incredible. I was slightly nervous coming to Geneve not knowing..."
 
 ### Review 4:
-"Spinella is a top-notch restaurant located in Geneva, offering an exceptional dining experience. The establishment boasts great food and outstanding..."
+"TestRestaurant is a top-notch restaurant located in Geneva, offering an exceptional dining experience. The establishment boasts great food and outstanding..."
 
 ### Review 5:
 "The highly skilled and friendly staff ensures that every customer is treated to impeccable service and leaves with a memorable experience."
@@ -29,6 +29,7 @@
 - **TheFork**: Verified reviews available
 
 ## Social Media Links:
-- TripAdvisor: https://www.tripadvisor.com/Restaurant_Review-g188057-d18930037-Reviews-Spinella_Restaurant_Bar-Geneva.html
+- TripAdvisor: https://www.tripadvisor.com/Restaurant_Review-g188057-d18930037-Reviews-TestRestaurant_Restaurant_Bar-Geneva.html
 - Instagram: (to be added)
 - Facebook: (to be added)
+

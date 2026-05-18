@@ -59,7 +59,7 @@ export default function Reviews() {
 
         <div className="text-center mt-12">
           <a
-            href="https://www.tripadvisor.com/Restaurant_Review-g188057-d18930037-Reviews-Spinella_Restaurant_Bar-Geneva.html"
+            href="https://www.tripadvisor.com"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold px-6 py-3 rounded-md transition-colors"

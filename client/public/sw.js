@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = 'spinella-v2';
+const CACHE_NAME = 'testrestaurant-v2';
 const urlsToCache = [
   '/',
   '/logo.png',
@@ -67,11 +67,11 @@ self.addEventListener('push', (event) => {
   console.log('[SW] Push notification received', event);
   
   let notificationData = {
-    title: 'Spinella Restaurant',
+    title: 'TestRestaurant',
     body: 'Nouvelle notification',
     icon: '/icon-192.png',
     badge: '/icon-192.png',
-    tag: 'spinella-notification',
+    tag: 'testrestaurant-notification',
     requireInteraction: false,
     data: {
       url: '/'
@@ -160,3 +160,4 @@ self.addEventListener('sync', (event) => {
     );
   }
 });
+

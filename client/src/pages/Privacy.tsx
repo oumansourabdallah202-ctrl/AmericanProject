@@ -20,7 +20,7 @@ export default function Privacy() {
       <section className="relative min-h-[200px] sm:min-h-[240px] flex items-center justify-center">
         <div
           className="hero-bg absolute inset-0"
-          style={{ backgroundImage: "url(/spinella_interior.jpg)" }}
+          style={{ backgroundImage: "url(/interior_1.jpg)" }}
         >
           <div className="hero-overlay absolute inset-0" />
         </div>
@@ -38,7 +38,7 @@ export default function Privacy() {
           <div className="mb-8">
             <h2 className="text-xl font-semibold gold-text mb-2">{t("privacyPage.contactTitle")}</h2>
             <p className="text-foreground mb-1">{t("privacyPage.contactTeam")}</p>
-            <a href="mailto:info@spinella.ch" className="gold-text hover:underline font-medium">
+            <a href="mailto:info@testrestaurant.com" className="gold-text hover:underline font-medium">
               {t("privacyPage.contactEmail")}
             </a>
           </div>

@@ -1,4 +1,4 @@
-# Spinella Website Feedback Analysis
+# TestRestaurant Website Feedback Analysis
 
 ## Voice Message Transcription
 
@@ -9,11 +9,11 @@ The client wants:
 4. **Improve flow and professionalism** - Make it look more modern and up-to-date
 5. **Multi-page structure** - Different pages instead of all on one landing page (which we already have)
 
-## Current Website Analysis (https://www.spinella.ch/)
+## Current Website Analysis (https://www.TestRestaurant.ch/)
 
 ### Current Design Elements:
 - **Color Scheme**: Black background with gold/yellow accents
-- **Logo**: "SPINELLA RESTAURANT & BAR" in gold
+- **Logo**: "TestRestaurant RESTAURANT & BAR" in gold
 - **Navigation**: Home, Concept, Menu, Réserver, Événements, Ambiance, Contact, FAQ
 - **Key Sections**:
   - Hero with social media links (Instagram, Facebook)
@@ -23,7 +23,7 @@ The client wants:
   - Family photos
   - Newsletter signup
   - Phone: 022.503.41.86
-  - Email: info@spinella.ch
+  - Email: info@TestRestaurant.ch
 
 ### What We Need to Fix:
 

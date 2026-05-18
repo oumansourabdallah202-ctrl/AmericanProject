@@ -3,7 +3,7 @@
 When someone submits the form, a **Vercel serverless function** (`/api/booking`) sends two emails via Resend and, if Supabase is configured, saves the booking to **Supabase** (status `pending` or `request` for 8+ guests). The **admin page** (`/admin`) lets you view, accept, and import reservations.
 
 1. **Confirmation to the client** – the guest receives the booking details.
-2. **Copy to you** – the address in `RESTAURANT_EMAIL` (and BCC `info@spinella.ch`) receives the same details.
+2. **Copy to you** – the address in `RESTAURANT_EMAIL` (and BCC `info@TestRestaurant.ch`) receives the same details.
 3. **Supabase** – each booking is stored in the `bookings` table (when `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set). See **SUPABASE_SETUP.md** for setup.
 
 ---
@@ -15,12 +15,12 @@ The booking form POSTs to **`/api/booking`**, which is a **Vercel serverless fun
 1. Deploy the site to **Vercel** (connect the repo; Vercel runs `pnpm run build:client` and serves the static site + the `api/` functions).
 2. In **Vercel** → your project → **Settings** → **Environment Variables**, add:
    - **`RESEND_API_KEY`** – your Resend API key ([resend.com/api-keys](https://resend.com/api-keys)).
-   - **`RESTAURANT_EMAIL`** – e.g. `info@spinella.ch` (where you receive each booking).
+   - **`RESTAURANT_EMAIL`** – e.g. `info@TestRestaurant.ch` (where you receive each booking).
    - **`SUPABASE_URL`**, **`SUPABASE_ANON_KEY`**, **`SUPABASE_SERVICE_ROLE_KEY`**, **`VITE_SUPABASE_URL`**, **`VITE_SUPABASE_ANON_KEY`** – from your Supabase project (bookings + admin login). See **SUPABASE_SETUP.md**. Optionally **`ADMIN_EMAIL`** to restrict admin to one email.
-3. In Resend, add and verify your sending domain (e.g. spinella.ch). Emails are sent from `info@spinella.ch`; the domain must match.
-4. Redeploy. Booking will work on **spinella.ch** (or your Vercel URL).
+3. In Resend, add and verify your sending domain (e.g. TestRestaurant.ch). Emails are sent from `info@TestRestaurant.ch`; the domain must match.
+4. Redeploy. Booking will work on **TestRestaurant.ch** (or your Vercel URL).
 
-**Admin page** (`/admin`): log in with the **Supabase Auth** user you created (e.g. `admin@spinella.ch` / **`spinellaadmin*1`**). You can view all reservations, **Accept** pending/request-only bookings, and **Import JSON** to load old bookings. See **SUPABASE_SETUP.md** for creating the admin user.
+**Admin page** (`/admin`): log in with the **Supabase Auth** user you created (e.g. `admin@TestRestaurant.ch` / **`TestRestaurantadmin*1`**). You can view all reservations, **Accept** pending/request-only bookings, and **Import JSON** to load old bookings. See **SUPABASE_SETUP.md** for creating the admin user.
 
 ---
 

@@ -1,6 +1,6 @@
 # Deposit & Stripe – Spec (shadow site first)
 
-This doc captures the requirements for **deposits**, **Stripe**, and **cancellation policy**. Build and test on a **shadow / test site**, not on live spinella.ch, until everything is validated with test cards (Spinella’s or Ali’s).
+This doc captures the requirements for **deposits**, **Stripe**, and **cancellation policy**. Build and test on a **shadow / test site**, not on live TestRestaurant.ch, until everything is validated with test cards (TestRestaurant’s or Ali’s).
 
 ---
 
@@ -50,9 +50,9 @@ This needs to be **tied to the calendar and to Stripe** (booking id, payment int
 
 ## 5. Stripe integration (summary)
 
-- **Stripe account:** Spinella (or Ali) creates or uses an existing Stripe account.
+- **Stripe account:** TestRestaurant (or Ali) creates or uses an existing Stripe account.
 - **Use Stripe for:** collecting the deposit (10 CHF × number of guests) when a deposit is required.
-- **Where it plugs in:** Admin (spinella.ch/admin) and the booking flow: after Accept for a request-only booking that requires a deposit, send the guest a **payment link** (Stripe Checkout) for the deposit; once paid, confirm the reservation and send the confirmation email.
+- **Where it plugs in:** Admin (TestRestaurant.ch/admin) and the booking flow: after Accept for a request-only booking that requires a deposit, send the guest a **payment link** (Stripe Checkout) for the deposit; once paid, confirm the reservation and send the confirmation email.
 - **Refunds:** Either manually in Stripe Dashboard or automatically via API when the guest cancels with ≥ 48h notice (when the cancel flow is built).
 - **Testing:** All of this must be tested on a **shadow site** with test cards (no live charges) before going live.
 

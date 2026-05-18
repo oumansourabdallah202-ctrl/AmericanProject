@@ -25,7 +25,7 @@
 
 ### 4. ✅ Configured Resend Email Service
 - **Email service**: `server/_core/email.ts` created
-- **Beautiful HTML template**: Black and gold Spinella branding
+- **Beautiful HTML template**: Black and gold TestRestaurant branding
 - **Booking flow**: Integrated into booking mutation
 - **Documentation**: Complete setup guide in EMAIL_SETUP.md
 - **Environment**: .env.example created with all variables
@@ -69,7 +69,7 @@ Then visit:
 
 ## 🎨 Design Consistency
 
-All changes maintain Spinella's elegant Sicilian luxury theme:
+All changes maintain TestRestaurant's elegant Sicilian luxury theme:
 - Black (#000000) and Gold (#D4AF37) color scheme
 - Playfair Display for headers, Inter for body text
 - Responsive mobile-first design
@@ -84,7 +84,7 @@ Complete translations in:
 
 ## 📧 Email Confirmation Features
 
-- Professional HTML template with Spinella branding
+- Professional HTML template with TestRestaurant branding
 - Booking details (date, time, party size, special requests)
 - Restaurant contact information
 - Social media links

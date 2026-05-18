@@ -40,7 +40,7 @@ export async function sendPushToAllSubscriptions(payload: PushPayload): Promise<
     return { sent: 0, failed: 0 };
   }
 
-  webpush.setVapidDetails("mailto:info@spinella.ch", publicKey, privateKey);
+  webpush.setVapidDetails("mailto:info@testrestaurant.com", publicKey, privateKey);
 
   const list = await getSubscriptions();
   if (list.length === 0) {
@@ -49,11 +49,11 @@ export async function sendPushToAllSubscriptions(payload: PushPayload): Promise<
   }
 
   const body = JSON.stringify({
-    title: payload.title ?? "Spinella Restaurant",
+    title: payload.title ?? "TestRestaurant",
     body: payload.body ?? "Nouvelle notification",
     icon: payload.icon ?? "/icon-192.png",
     url: payload.url ?? "/admin",
-    tag: payload.tag ?? "spinella-notification",
+    tag: payload.tag ?? "testrestaurant-notification",
   });
 
   let sent = 0;

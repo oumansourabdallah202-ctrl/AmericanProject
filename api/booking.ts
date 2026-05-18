@@ -12,8 +12,8 @@ import {
 import { isBlockedByAdminRules, type ReservationBlockRow } from "./_lib/reservationBlocks.js";
 import { sendPushToAllSubscriptions } from "./_lib/pushSend.js";
 
-const FROM = "Spinella Geneva <info@spinella.ch>";
-const BCC = "info@spinella.ch";
+const FROM = "TestRestaurant <info@testrestaurant.com>";
+const BCC = "info@testrestaurant.com";
 
 function formatDate(iso: string): string {
   const d = new Date(iso + "T12:00:00");
@@ -40,7 +40,7 @@ function guestEmailHtml(data: {
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#0c0c0c;"><tr><td align="center" style="padding:32px 16px;">
 <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#111;border:1px solid #2a2520;">
 <tr><td style="padding:32px 24px;text-align:center;"><p style="margin:0;font-size:11px;letter-spacing:4px;color:#8a7a5c;">Restaurant &amp; Bar</p>
-<h1 style="margin:8px 0 0;font-size:32px;letter-spacing:4px;color:#d4af37;">SPINELLA</h1><p style="margin:4px 0 0;font-size:12px;color:#b8a574;">GENEVA</p></td></tr>
+<h1 style="margin:8px 0 0;font-size:32px;letter-spacing:4px;color:#d4af37;">TESTRESTAURANT</h1><p style="margin:4px 0 0;font-size:12px;color:#b8a574;">GENEVA</p></td></tr>
 <tr><td style="padding:0 24px 24px;"><p style="margin:0;font-size:16px;color:#e8e4dc;">Dear ${data.name},</p>
 <p style="margin:16px 0 0;font-size:15px;line-height:1.6;color:#c4bfb5;">Thank you for your reservation request. We have received it. Request pending, we will give you an answer as soon as possible. We have sent an email to your address.</p></td></tr>
 <tr><td style="padding:0 24px 24px;"><table width="100%" cellpadding="12" cellspacing="0" style="background:#1a1814;border:1px solid #2a2520;">
@@ -51,7 +51,7 @@ function guestEmailHtml(data: {
 ${data.dietaryRequirements ? `<tr><td colspan="2" style="padding-top:12px;border-top:1px solid #2a2520;font-size:13px;color:#8a7a5c;">Dietary / allergies</td></tr><tr><td colspan="2" style="font-size:14px;color:#e8e4dc;">${data.dietaryRequirements}</td></tr>` : ""}
 ${data.specialRequests ? `<tr><td colspan="2" style="padding-top:12px;border-top:1px solid #2a2520;font-size:13px;color:#8a7a5c;">Special requests</td></tr><tr><td colspan="2" style="font-size:14px;color:#e8e4dc;">${data.specialRequests}</td></tr>` : ""}
 </table></td></tr>
-<tr><td style="padding:24px;text-align:center;font-size:13px;color:#8a7a5c;">Rue Liotard 4, 1202 Geneva · <a href="tel:+41225034186" style="color:#d4af37;">+41 22 503 41 86</a> · <a href="mailto:info@spinella.ch" style="color:#d4af37;">info@spinella.ch</a></td></tr>
+<tr><td style="padding:24px;text-align:center;font-size:13px;color:#8a7a5c;">123 Main Street, Cityville · <a href="tel:+41225034186" style="color:#d4af37;">+1 234 567 890</a> · <a href="mailto:info@testrestaurant.com" style="color:#d4af37;">info@testrestaurant.com</a></td></tr>
 </table></td></tr></table></body></html>`;
 }
 
@@ -245,7 +245,7 @@ export default async function handler(
         from: FROM,
         to: [email],
         bcc: [BCC],
-        subject: isValentines ? `Demande en attente – Spinella Geneva` : `Booking Request - ${name}`,
+        subject: isValentines ? `Demande en attente – TESTRESTAURANT Geneva` : `Booking Request - ${name}`,
         html: isValentines ? valentinesRequestReceivedEmailHtml(name) : guestEmailHtml(data),
       });
       if (err1) {
@@ -259,7 +259,7 @@ export default async function handler(
       const { data: sendData, error: err1 } = await resend.emails.send({
         from: FROM,
         to: [email],
-        subject: `Réservation confirmée – Spinella Genève`,
+        subject: `Réservation confirmée – TESTRESTAURANT Genève`,
         html: confirmedEmailHtml(data),
       });
       if (err1) {
@@ -273,7 +273,7 @@ export default async function handler(
         const { error: err2 } = await resend.emails.send({
           from: FROM,
           to: [restaurantEmail],
-          subject: `[Spinella] Nouvelle réservation (confirmée) : ${name} – ${date} ${time}`,
+          subject: `[TESTRESTAURANT] Nouvelle réservation (confirmée) : ${name} – ${date} ${time}`,
           html: restaurantEmailHtml(data),
         });
         if (err2) console.error("[booking] Restaurant email failed:", err2);
@@ -284,7 +284,7 @@ export default async function handler(
       const { error: err2 } = await resend.emails.send({
         from: FROM,
         to: [restaurantEmail],
-        subject: `[Spinella] Demande de réservation : ${name} – ${date} ${time}`,
+        subject: `[TESTRESTAURANT] Demande de réservation : ${name} – ${date} ${time}`,
         html: restaurantEmailHtml(data),
       });
       if (err2) console.error("[booking] Restaurant email failed:", err2);
@@ -292,10 +292,10 @@ export default async function handler(
 
     // Notify admin PWA/desktop via push (works when admin app is closed)
     sendPushToAllSubscriptions({
-      title: "Spinella",
+      title: "TESTRESTAURANT",
       body: `Nouvelle réservation : ${name} – ${date} ${time}`,
       url: "/admin",
-      tag: "spinella-new-booking",
+      tag: "TESTRESTAURANT-new-booking",
     }).catch((err) => console.error("[booking] Push notification failed:", err));
 
     res.status(200).json({ success: true, confirmed: !requestOnly });

@@ -27,7 +27,7 @@ export function depositRequestEmailHtml(data: {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reservation – Deposit required · Spinella Geneva</title>
+  <title>Reservation – Deposit required · TESTRESTAURANT Geneva</title>
 </head>
 <body style="margin:0; padding:0; background-color:#0c0c0c; font-family: Georgia, 'Times New Roman', serif;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#0c0c0c;">
@@ -40,7 +40,7 @@ export function depositRequestEmailHtml(data: {
           <tr>
             <td style="padding: 48px 40px 32px; text-align: center;">
               <p style="margin:0 0 8px 0; font-size: 11px; letter-spacing: 4px; color: #8a7a5c; text-transform: uppercase;">Restaurant & Bar</p>
-              <h1 style="margin:0; font-size: 42px; font-weight: 700; letter-spacing: 6px; color: #d4af37;">SPINELLA</h1>
+              <h1 style="margin:0; font-size: 42px; font-weight: 700; letter-spacing: 6px; color: #d4af37;">TESTRESTAURANT</h1>
               <p style="margin: 8px 0 0 0; font-size: 13px; letter-spacing: 3px; color: #b8a574;">GENEVA</p>
               <table role="presentation" width="120" cellspacing="0" cellpadding="0" border="0" align="center" style="margin-top: 24px;">
                 <tr><td style="height: 1px; background: linear-gradient(90deg, transparent, #c9a227, transparent);"></td></tr>
@@ -51,7 +51,7 @@ export function depositRequestEmailHtml(data: {
             <td style="padding: 0 40px 24px;">
               <p style="margin:0; font-size: 18px; line-height: 1.7; color: #e8e4dc;">Dear ${data.name},</p>
               <p style="margin: 20px 0 0 0; font-size: 16px; line-height: 1.7; color: #c4bfb5;">
-                Thank you for your interest in Spinella and for your reservation request for our special period of <strong style="color:#e8e4dc;">14–20 April 2026</strong>.
+                Thank you for your interest in TESTRESTAURANT and for your reservation request for our special period of <strong style="color:#e8e4dc;">14–20 April 2026</strong>.
               </p>
               <p style="margin: 16px 0 0 0; font-size: 16px; line-height: 1.7; color: #c4bfb5;">
                 To confirm and secure your table for these dates, we ask for a deposit of <strong style="color:#d4af37;">CHF ${data.amountChf}</strong> per reservation.
@@ -84,7 +84,7 @@ export function depositRequestEmailHtml(data: {
                     </table>
                     <p style="margin: 20px 0 0 0; font-size: 14px; color: #8a7a5c;">Please transfer the amount to:</p>
                     <p style="margin: 8px 0 0 0; font-size: 15px; font-family: monospace; color: #e8e4dc; letter-spacing: 1px;">${data.iban}</p>
-                    <p style="margin: 20px 0 0 0; font-size: 14px; line-height: 1.6; color: #c4bfb5;">Once we have received your payment, we will confirm your reservation by email. If you have any questions, please contact us at <a href="mailto:info@spinella.ch" style="color:#d4af37;">info@spinella.ch</a> or <a href="tel:+41227345898" style="color:#d4af37;">+41 22 734 58 98</a>.</p>
+                    <p style="margin: 20px 0 0 0; font-size: 14px; line-height: 1.6; color: #c4bfb5;">Once we have received your payment, we will confirm your reservation by email. If you have any questions, please contact us at <a href="mailto:info@TESTRESTAURANT.ch" style="color:#d4af37;">info@TESTRESTAURANT.ch</a> or <a href="tel:+41227345898" style="color:#d4af37;">+1 234 567 890</a>.</p>
                   </td>
                 </tr>
               </table>
@@ -97,7 +97,7 @@ export function depositRequestEmailHtml(data: {
           </tr>
           <tr>
             <td style="padding: 24px 40px 32px; text-align: center; font-size: 13px; color: #8a7a5c;">
-              Rue Liotard 4, 1202 Genève · <a href="https://spinella.ch" style="color:#d4af37; text-decoration:none;">spinella.ch</a>
+              Rue Liotard 4, 1202 Genève · <a href="https://TESTRESTAURANT.ch" style="color:#d4af37; text-decoration:none;">TESTRESTAURANT.ch</a>
             </td>
           </tr>
         </table>

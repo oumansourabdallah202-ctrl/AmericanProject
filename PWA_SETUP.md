@@ -1,4 +1,4 @@
-# PWA Setup Guide - Spinella Restaurant
+# PWA Setup Guide - TestRestaurant Restaurant
 
 ## What's a PWA (Progressive Web App)?
 
@@ -14,19 +14,19 @@ Your website is now a **Progressive Web App**, which means users can:
 
 ### iPhone (iOS)
 1. Open **Safari** (must use Safari, not Chrome)
-2. Go to `https://www.spinella.ch`
+2. Go to `https://www.TestRestaurant.ch`
 3. Tap the **Share button** (square with arrow pointing up)
 4. Scroll down and tap **"Add to Home Screen"**
 5. Tap **"Add"** in the top right
-6. The Spinella app icon will appear on your home screen
+6. The TestRestaurant app icon will appear on your home screen
 
 ### Android
 1. Open **Chrome** or **Edge**
-2. Go to `https://www.spinella.ch`
+2. Go to `https://www.TestRestaurant.ch`
 3. Tap the **menu** (three dots)
 4. Tap **"Add to Home screen"** or **"Install app"**
 5. Tap **"Add"** or **"Install"**
-6. The Spinella app will appear on your home screen
+6. The TestRestaurant app will appear on your home screen
 
 ---
 
@@ -43,13 +43,13 @@ Your website is now a **Progressive Web App**, which means users can:
 1. Install the app (see above)
 2. Open the installed app
 3. When prompted, tap **"Allow"** for notifications
-4. If you missed the prompt: Settings → Spinella → Notifications → Allow
+4. If you missed the prompt: Settings → TestRestaurant → Notifications → Allow
 
 #### Android
 1. Install the app (see above)
 2. Open the installed app
 3. When prompted, tap **"Allow"** for notifications
-4. If you missed the prompt: Settings → Apps → Spinella → Notifications → Enable
+4. If you missed the prompt: Settings → Apps → TestRestaurant → Notifications → Enable
 
 ---
 
@@ -81,8 +81,8 @@ Your website is now a **Progressive Web App**, which means users can:
 ### Configuration
 - **Theme color**: Gold (#d4af37) - matches brand
 - **Background**: Dark (#0c0c0c)
-- **Name**: "Spinella Restaurant & Bar"
-- **Short name**: "Spinella"
+- **Name**: "TestRestaurant Restaurant & Bar"
+- **Short name**: "TestRestaurant"
 
 ### Browser Support
 - ✅ iOS Safari (14+)
@@ -153,7 +153,7 @@ The app now has server-side push capabilities using Web Push API:
 You can send push notifications using the API:
 
 ```bash
-curl -X POST https://www.spinella.ch/api/push/send \
+curl -X POST https://www.TestRestaurant.ch/api/push/send \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -d '{
@@ -190,3 +190,4 @@ After deploying, users need to:
 3. **Service worker updates**: Automatic on next visit (cache busting)
 
 The PWA will work immediately after deploy on Vercel/Netlify - no extra configuration needed!
+

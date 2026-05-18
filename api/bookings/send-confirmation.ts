@@ -8,7 +8,7 @@ import { verifySupabaseToken, isAllowedAdmin } from "../_lib/supabaseAuth.js";
 import { confirmedEmailHtml } from "../_lib/confirmedEmail.js";
 import { VALENTINES_DATE, getBaseUrl, valentinesGuestEmailHtml } from "../_lib/valentinesEmail.js";
 
-const FROM = "Spinella Geneva <info@spinella.ch>";
+const FROM = "TestRestaurant <info@testrestaurant.com>";
 export type SentEmailEntry = { id: string; type: string; sentAt: string };
 
 type Req = { method?: string; headers?: { authorization?: string }; body?: string | object };
@@ -83,7 +83,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   const { data: sendData, error: sendErr } = await resend.emails.send({
     from: FROM,
     to: [email],
-    subject: isValentines ? `Saint-Valentin à Spinella – Votre table est réservée` : `Spinella – Votre réservation est confirmée`,
+    subject: isValentines ? `Saint-Valentin à TestRestaurant – Votre table est réservée` : `TestRestaurant – Votre réservation est confirmée`,
     html: isValentines
       ? valentinesGuestEmailHtml(r.name ?? "Client", flyerUrl)
       : confirmedEmailHtml({
@@ -109,3 +109,6 @@ export default async function handler(req: Req, res: Res): Promise<void> {
 
   res.status(200).json({ ok: true, message: "Confirmation email sent" });
 }
+
+
+

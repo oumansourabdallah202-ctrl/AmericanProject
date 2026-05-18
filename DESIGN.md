@@ -1,4 +1,4 @@
-# Spinella Geneva - Design System
+# TestRestaurant Geneva - Design System
 
 ## Visual Direction
 Elegant Sicilian luxury with Sicilian warmth - combining sophistication with authentic family hospitality.

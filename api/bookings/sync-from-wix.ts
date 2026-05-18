@@ -37,7 +37,7 @@ function str(o: unknown): string {
 function getReserveeField(r: WixReservation): { name: string; email: string; phone: string } {
   const e = r.reservee as Record<string, unknown> | undefined;
   if (!e || typeof e !== "object") {
-    return { name: "Guest", email: "wix-sync@spinella.ch", phone: "+41" };
+    return { name: "Guest", email: "wix-sync@testrestaurant.com", phone: "+41" };
   }
   const firstName = str(e.firstName ?? e.first_name);
   const lastName = str(e.lastName ?? e.last_name);
@@ -46,7 +46,7 @@ function getReserveeField(r: WixReservation): { name: string; email: string; pho
     [firstName, lastName].filter(Boolean).join(" ") ||
     fullName ||
     "Guest";
-  const email = str(e.email) || "wix-sync@spinella.ch";
+  const email = str(e.email) || "wix-sync@testrestaurant.com";
   const phone = str(e.phone) || "+41";
   return { name, email, phone };
 }
@@ -261,7 +261,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
       // Skip empty reservations: no real guest data (from Wix or elsewhere)
       const nameTrim = (name ?? "").trim();
       if (!nameTrim || nameTrim === "-" || nameTrim.toLowerCase() === "guest") continue;
-      if ((email ?? "").trim().toLowerCase() === "wix-sync@spinella.ch") continue;
+      if ((email ?? "").trim().toLowerCase() === "wix-sync@testrestaurant.com") continue;
 
       const key = `${date}|${time}|${(email || r.id || "").toLowerCase()}`;
       if (existingKeys.has(key)) continue;
@@ -269,7 +269,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
 
       toAdd.push({
         name,
-        email: email || "wix-sync@spinella.ch",
+        email: email || "wix-sync@testrestaurant.com",
         phone: phone || "+41",
         date,
         time,

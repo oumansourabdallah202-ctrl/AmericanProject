@@ -1,6 +1,6 @@
 # Synchronizing Wix Table Reservations with the Admin Page
 
-You can get Wix reservations into your Spinella admin (Supabase) in two ways: **manual export/import** or **automated API sync**.
+You can get Wix reservations into your TestRestaurant admin (Supabase) in two ways: **manual export/import** or **automated API sync**.
 
 ---
 
@@ -61,7 +61,7 @@ The admin has a **Sync from Wix** button that calls the Wix Table Reservations A
    - Save. **Redeploy** the project (Deployments → ⋮ on latest → Redeploy) so the new variables are applied.
 4. In **Admin** → **Reservations**, click **Synchroniser avec Wix** (Sync from Wix). The app will:
    - Query Wix for **all** reservations (paginated, oldest first),
-   - Map them to the Spinella booking format,
+   - Map them to the TestRestaurant booking format,
    - **Skip** any that already exist in the admin (same date, time, and email),
    - **Insert** only the new ones into Supabase.
 
@@ -69,7 +69,7 @@ The admin has a **Sync from Wix** button that calls the Wix Table Reservations A
 
 - **New reservations** in Wix: run **Sync from Wix** whenever you want; only reservations not already in the admin are added.
 - **Old reservations** in Wix: run **Sync from Wix** once to pull all past Wix reservations into the admin. They are deduplicated by **date + time + email**, so you can run sync multiple times without creating duplicates.
-- Existing admin reservations (e.g. added manually or from spinella.ch) are never overwritten; Wix reservations with the same date, time, and email are skipped.
+- Existing admin reservations (e.g. added manually or from TestRestaurant.ch) are never overwritten; Wix reservations with the same date, time, and email are skipped.
 
 ### If “Sync from Wix” is disabled
 
@@ -81,8 +81,8 @@ The button is only enabled when `WIX_SITE_ID` and `WIX_API_KEY` are set in the e
 
 For a single place to manage all reservations:
 
-1. Prefer **spinella.ch/reservations** for new bookings and keep the admin as the only dashboard.
-2. In Wix, **disable** the table reservation form or replace it with a link to **https://www.spinella.ch/reservations**.
+1. Prefer **TestRestaurant.ch/reservations** for new bookings and keep the admin as the only dashboard.
+2. In Wix, **disable** the table reservation form or replace it with a link to **https://www.TestRestaurant.ch/reservations**.
 3. Use **Sync from Wix** or **CSV import** only to bring over existing or legacy Wix reservations, then manage everything in the admin.
 
 See **Reservations-Wix-Single-Source.md** for the full checklist.

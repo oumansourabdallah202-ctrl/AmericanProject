@@ -74,7 +74,7 @@ export default async function handler(req: Req, res: Res): Promise<void> {
     const stripe = new Stripe(secret);
     const baseUrl = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
-      : process.env.BASE_URL ?? "https://www.spinella.ch";
+      : process.env.BASE_URL ?? "https://www.testrestaurant.com";
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",

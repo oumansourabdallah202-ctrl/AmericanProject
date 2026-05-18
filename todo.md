@@ -1,4 +1,4 @@
-# Spinella Geneva - Project TODO
+# TestRestaurant Geneva - Project TODO
 
 ## Core Features
 - [x] Online table booking system with date, time, party size selection
@@ -71,3 +71,4 @@
 - [x] Update Menu page to switch PDFs based on language
 - [x] Test PDF switching functionality
 - [ ] Save checkpoint with language-specific menus
+

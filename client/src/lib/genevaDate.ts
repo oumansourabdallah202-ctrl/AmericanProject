@@ -1,4 +1,4 @@
-/** Spinella calendar and clock in Europe/Zurich (Geneva). */
+/** TestRestaurant calendar and clock in Europe/Zurich (Geneva). */
 
 const GENEVA_TZ = "Europe/Zurich";
 

@@ -1,7 +1,7 @@
 {
-  "name": "Spinella Admin",
-  "short_name": "Spinella Admin",
-  "description": "Admin dashboard for Spinella Restaurant - Manage reservations and clients",
+  "name": "TestRestaurant Admin",
+  "short_name": "TestRestaurant Admin",
+  "description": "Admin dashboard for TestRestaurant Restaurant - Manage reservations and clients",
   "start_url": "/admin",
   "display": "standalone",
   "background_color": "#0c0c0c",

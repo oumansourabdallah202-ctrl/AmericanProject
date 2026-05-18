@@ -1,13 +1,13 @@
 # Apology — Deposit request email sent by mistake (April 14–20, 2025)
 
 **Date:** [Insert date]  
-**Subject (use for campaign):** Our apologies — deposit request email sent in error (Spinella)
+**Subject (use for campaign):** Our apologies — deposit request email sent in error (TestRestaurant)
 
 ---
 
 ## 1. Get the list of affected recipients
 
-- **From Spinella admin:** Log in at spinella.ch/admin → section “April 14–20, 2026 – Deposit request emails” → click **“List 2025 mistaken send (CSV)”**. The CSV contains all guests who received the deposit email in error (reservation dates April 14–20, **2025**).
+- **From TestRestaurant admin:** Log in at TestRestaurant.ch/admin → section “April 14–20, 2026 – Deposit request emails” → click **“List 2025 mistaken send (CSV)”**. The CSV contains all guests who received the deposit email in error (reservation dates April 14–20, **2025**).
 - **From Resend:** Resend dashboard → Emails / Logs → filter by subject “Deposit to confirm your reservation (April 14-20)” and by send date (March 2026). Export or note the recipient list.
 
 **List of affected recipients (paste or attach after downloading the CSV):**
@@ -20,12 +20,12 @@
 
 ---
 
-## 2. Make.com campaign — apology email (HTML, Spinella theme)
+## 2. Make.com campaign — apology email (HTML, TestRestaurant theme)
 
 **Ready-to-send HTML template:**  
 **`docs/Apology-Deposit-Email-April2025-Campaign.html`**
 
-That file is the apology email in Spinella’s visual style (dark background, gold header, same look as your other emails). It uses **`{{name}}`** in “Dear {{name}},” so Make.com can replace it with each recipient’s name from your Excel/CSV.
+That file is the apology email in TestRestaurant’s visual style (dark background, gold header, same look as your other emails). It uses **`{{name}}`** in “Dear {{name}},” so Make.com can replace it with each recipient’s name from your Excel/CSV.
 
 ### Make.com scenario (steps)
 
@@ -33,11 +33,11 @@ That file is the apology email in Spinella’s visual style (dark background, go
 2. **Iterator:** One iteration per row (per recipient).
 3. **Email module (Gmail / SMTP / Resend / etc.):**
    - **To:** `{{email}}` (from current row).
-   - **Subject:** `Our apologies — deposit request email sent in error (Spinella)`
+   - **Subject:** `Our apologies — deposit request email sent in error (TestRestaurant)`
    - **Body:** Paste the full HTML from **Apology-Deposit-Email-April2025-Campaign.html**. In the body, map **`{{name}}`** to the current row’s **Name** (e.g. in Make.com: replace `{{name}}` with the “Name” field from the sheet/CSV). If a row has no name, use “Valued guest”.
 4. **Run** the scenario once to send the apology to everyone on the list.
 
-**Sender:** Use the same “from” address as Spinella (e.g. **info@spinella.ch**) in your Make.com email connection so replies go to the restaurant.
+**Sender:** Use the same “from” address as TestRestaurant (e.g. **info@TestRestaurant.ch**) in your Make.com email connection so replies go to the restaurant.
 
 ---
 
@@ -45,7 +45,7 @@ That file is the apology email in Spinella’s visual style (dark background, go
 
 **To:** All guests who received the deposit request email in error  
 
-**Subject:** Our apologies — deposit request email sent in error (Spinella)
+**Subject:** Our apologies — deposit request email sent in error (TestRestaurant)
 
 ---
 
@@ -60,16 +60,16 @@ Due to a **technical error** in our reservation system, that deposit request was
 - You are **not** required to take any action or to pay any deposit in relation to that email.  
 - We are sorry for the confusion and any concern it may have caused.  
 - We have corrected the system so that this cannot happen again.  
-- We are very grateful for your past visit and hope we had the pleasure of welcoming you at Spinella. We would be delighted to see you again whenever you wish to reserve.
+- We are very grateful for your past visit and hope we had the pleasure of welcoming you at TestRestaurant. We would be delighted to see you again whenever you wish to reserve.
 
-If you have any questions or would like to speak with us, please do not hesitate to contact us at **info@spinella.ch** or **+41 22 734 58 98**.
+If you have any questions or would like to speak with us, please do not hesitate to contact us at **info@TestRestaurant.ch** or **+41 22 734 58 98**.
 
 Thank you for your understanding.
 
 Sincerely,  
-**The Spinella Team**  
+**The TestRestaurant Team**  
 Restaurant & Bar · Geneva  
-[spinella.ch](https://spinella.ch)
+[TestRestaurant.ch](https://TestRestaurant.ch)
 
 ---
 
@@ -80,7 +80,7 @@ You can use this for a brief reply to someone who has already written to you (e.
 ---
 
 We are very sorry for the confusion. The deposit request email was sent by mistake due to a technical error in our system—it was intended only for guests with reservations in **April 2026**, and was incorrectly sent to some of our 2025 guests. You do not need to do anything, and we apologise for any inconvenience. We are glad you had a good time when you visited and hope to welcome you again. Thank you for your understanding.  
-— The Spinella Team
+— The TestRestaurant Team
 
 ---
 

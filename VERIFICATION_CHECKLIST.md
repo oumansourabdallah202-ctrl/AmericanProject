@@ -28,7 +28,7 @@
 
 **Features:**
 - ✅ Accordion component from Radix UI
-- ✅ Elegant styling matching Spinella theme
+- ✅ Elegant styling matching TestRestaurant theme
 - ✅ Contact and Book Table CTAs
 - ✅ No TypeScript errors
 
@@ -83,7 +83,7 @@
 - ✅ `package.json` - Added resend@^4.0.1 dependency
 
 **Email Template Features:**
-- ✅ HTML email with Spinella branding
+- ✅ HTML email with TestRestaurant branding
 - ✅ Black and gold color scheme
 - ✅ Booking details display
 - ✅ Restaurant contact information
@@ -144,3 +144,4 @@
 6. ✅ Configured Resend for email confirmations with beautiful template
 
 **Next Step:** Install dependencies with `pnpm install` and configure Resend API key.
+
