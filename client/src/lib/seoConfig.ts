@@ -36,9 +36,9 @@ export const routeMeta: Record<string, RouteMeta> = {
       "Host your event at TestRestaurant: birthdays, corporate dinners, cocktail parties. Custom menus for 20–50 guests in Geneva.",
   },
   "/about": {
-    title: "Our Story | The Three Brothers | TestRestaurant Geneva",
+    title: "Our Story | Our Team | TestRestaurant Geneva",
     description:
-      "Salvatore, Marco, and Gabriele: three Sicilian brothers bringing authentic soul to Geneva. Discover the story behind TestRestaurant.",
+      "Meet the passionate team behind TestRestaurant. Discover the story and people who make every dining experience exceptional.",
   },
   "/faq": {
     title: "FAQ | TestRestaurant Restaurant & Bar Geneva",

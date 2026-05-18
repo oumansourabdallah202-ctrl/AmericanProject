@@ -179,8 +179,8 @@ export default function Home() {
             </div>
             <div className="relative min-h-[240px] sm:min-h-[280px] lg:min-h-[380px] w-full overflow-hidden rounded-lg aspect-[4/3]">
               <img
-                src="/interior_brothers.jpg"
-                alt="Trattoria italienne Geneve: les trois freres de TestRestaurant"
+                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
+                alt="TestRestaurant team"
                 width={800}
                 height={600}
                 className="w-full h-full object-cover object-center rounded-lg shadow-2xl"
