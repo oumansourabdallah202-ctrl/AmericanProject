@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail, Clock, Bus, Car, Utensils, Wine, ConciergeBell } from "lucide-react";
+﻿import { MapPin, Phone, Mail, Clock, Bus, Car, Utensils, Wine, ConciergeBell } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "wouter";
@@ -62,7 +62,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h3 className="text-xl font-bold mb-2">{t("contact.phone")}</h3>
-                        <a href="tel:+41225034186" className="text-lg text-muted-foreground hover:text-[oklch(0.62_0.15_85)] transition-colors">
+                        <a href="tel:+41225034186" className="text-lg text-muted-foreground hover:text-[#2563eb] transition-colors">
                           +41 22 503 41 86
                         </a>
                       </div>
@@ -78,7 +78,7 @@ export default function Contact() {
                       </div>
                       <div>
                         <h3 className="text-xl font-bold mb-2">{t("contact.email")}</h3>
-                        <a href="mailto:info@TestRestaurant.ch?subject=Contact%20TestRestaurant%20-%20Website" className="text-lg text-muted-foreground hover:text-[oklch(0.62_0.15_85)] transition-colors">
+                        <a href="mailto:info@TestRestaurant.ch?subject=Contact%20TestRestaurant%20-%20Website" className="text-lg text-muted-foreground hover:text-[#2563eb] transition-colors">
                           info@TestRestaurant.ch
                         </a>
                       </div>
@@ -92,19 +92,19 @@ export default function Contact() {
                     <p className="text-muted-foreground mb-4">{t("contact.workWithUsIntro")}</p>
                     <div className="flex flex-wrap gap-3">
                       <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-sm font-medium">
-                        <ConciergeBell className="w-4 h-4 text-[oklch(0.62_0.15_85)]" />
+                        <ConciergeBell className="w-4 h-4 text-[#2563eb]" />
                         {t("contact.specialtyService")}
                       </span>
                       <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-sm font-medium">
-                        <Utensils className="w-4 h-4 text-[oklch(0.62_0.15_85)]" />
+                        <Utensils className="w-4 h-4 text-[#2563eb]" />
                         {t("contact.specialtyKitchen")}
                       </span>
                       <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-sm font-medium">
-                        <Wine className="w-4 h-4 text-[oklch(0.62_0.15_85)]" />
+                        <Wine className="w-4 h-4 text-[#2563eb]" />
                         {t("contact.specialtyBar")}
                       </span>
                     </div>
-                    <Link href="/careers" className="inline-block mt-3 text-sm font-medium text-[oklch(0.62_0.15_85)] hover:underline">
+                    <Link href="/careers" className="inline-block mt-3 text-sm font-medium text-[#2563eb] hover:underline">
                       {t("contact.workWithUsCta")}
                     </Link>
                   </CardContent>
@@ -217,7 +217,7 @@ export default function Contact() {
             {t("contact.readyToVisitDesc")}
           </p>
           <Link href="/reservations">
-            <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold text-lg px-8">
+            <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold text-lg px-8">
               {t("nav.bookTable")}
             </Button>
           </Link>

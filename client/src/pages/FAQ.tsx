@@ -1,4 +1,4 @@
-import { useLanguage } from "@/contexts/LanguageContext";
+﻿import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Accordion,
   AccordionContent,
@@ -70,12 +70,12 @@ export default function FAQ() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/contact">
-                <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
+                <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold">
                   {t("faq.contactUs")}
                 </Button>
               </Link>
               <Link href="/reservations">
-                <Button size="lg" variant="outline" className="border-2 border-[oklch(0.62_0.15_85)] text-[oklch(0.62_0.15_85)] hover:bg-[oklch(0.62_0.15_85)] hover:text-black font-semibold">
+                <Button size="lg" variant="outline" className="border-2 border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-black font-semibold">
                   {t("faq.bookTable")}
                 </Button>
               </Link>

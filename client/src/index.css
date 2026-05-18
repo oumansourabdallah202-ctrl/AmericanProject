@@ -289,9 +289,21 @@
 
 .gold-divider {
   height: 2px;
-  background: linear-gradient(to right, transparent, oklch(0.62 0.15 85), transparent);
+  background: linear-gradient(to right, transparent, #2563eb, transparent);
   margin: 3rem auto;
   max-width: 200px;
+}
+
+/* Gold classes remapped to blue theme */
+.gold-text {
+  color: #2563eb;
+}
+.gold-bg {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+.gold-bg:hover {
+  background-color: #1d4ed8;
 }
 
 /* Marquee for sticky banner */

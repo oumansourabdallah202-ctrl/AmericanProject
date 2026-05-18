@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+﻿import { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -234,7 +234,7 @@ export default function Booking() {
             </p>
             <Button
               onClick={() => setIsSubmitted(false)}
-              className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold"
+              className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold"
             >
               {t("booking.makeAnotherBooking")}
             </Button>
@@ -343,12 +343,12 @@ export default function Booking() {
                   </div>
                 )}
                 {selectedDate && isLunchOnlyDate(selectedDate) && (
-                  <div className="p-4 rounded-lg gold-bg/20 border border-[oklch(0.62_0.15_85/0.4)] text-foreground">
+                  <div className="p-4 rounded-lg gold-bg/20 border border-[#2563eb/40] text-foreground">
                     <p className="text-sm font-medium">{t("booking.dateSpecialEventLunchOnly")}</p>
                   </div>
                 )}
                 {isLargeTable && (
-                  <div className="p-4 rounded-lg gold-bg/20 border border-[oklch(0.62_0.15_85/0.4)] text-foreground">
+                  <div className="p-4 rounded-lg gold-bg/20 border border-[#2563eb/40] text-foreground">
                     <p className="text-sm font-medium">{t("booking.largeTableNotice")}</p>
                   </div>
                 )}
@@ -482,7 +482,7 @@ export default function Booking() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold text-lg relative z-10 cursor-pointer"
+                  className="w-full gold-bg text-black hover:bg-[#1d4ed8] font-semibold text-lg relative z-10 cursor-pointer"
                   disabled={isSubmitting || (!!selectedDate && (isSunday(selectedDate) || isDateBlocked(selectedDate) || selectedDateBlockedByAdmin))}
                 >
                   <span>{isSubmitting ? t("booking.submitting") : t("booking.submit")}</span>
@@ -497,7 +497,7 @@ export default function Booking() {
                   )}
                   <a
                     href={buildMailtoUrl(lastFailedData)}
-                    className="inline-flex items-center text-sm font-semibold text-[oklch(0.62_0.15_85)] hover:underline"
+                    className="inline-flex items-center text-sm font-semibold text-[#2563eb] hover:underline"
                   >
                     {t("booking.sendByEmail")}
                   </a>

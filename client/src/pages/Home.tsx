@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -64,12 +64,12 @@ export default function Home() {
             <div className="gold-divider"></div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Link href="/reservations">
-                <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold text-lg px-8">
+                <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold text-lg px-8">
                   {t("home.bookYourTable")}
                 </Button>
               </Link>
               <Link href="/about">
-                <Button size="lg" variant="outline" className="border-2 border-[oklch(0.62_0.15_85)] text-foreground hover:bg-[oklch(0.62_0.15_85)] hover:text-black font-semibold text-lg px-8">
+                <Button size="lg" variant="outline" className="border-2 border-[#2563eb] text-foreground hover:bg-[#2563eb] hover:text-black font-semibold text-lg px-8">
                   {t("home.meetBrothers")}
                 </Button>
               </Link>
@@ -104,7 +104,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Link href="/reservations">
-              <Card className="border-none shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full hover:ring-2 hover:ring-[oklch(0.62_0.15_85)] hover:ring-offset-2 hover:ring-offset-background">
+              <Card className="border-none shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full hover:ring-2 hover:ring-[#2563eb] hover:ring-offset-2 hover:ring-offset-background">
                 <CardContent className="pt-8 text-center">
                   <div className="w-16 h-16 gold-bg rounded-full flex items-center justify-center mx-auto mb-4">
                     <Calendar className="w-8 h-8 text-black" />
@@ -118,7 +118,7 @@ export default function Home() {
             </Link>
 
             <Link href="/menu">
-              <Card className="border-none shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full hover:ring-2 hover:ring-[oklch(0.62_0.15_85)] hover:ring-offset-2 hover:ring-offset-background">
+              <Card className="border-none shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full hover:ring-2 hover:ring-[#2563eb] hover:ring-offset-2 hover:ring-offset-background">
                 <CardContent className="pt-8 text-center">
                   <div className="w-16 h-16 gold-bg rounded-full flex items-center justify-center mx-auto mb-4">
                     <Utensils className="w-8 h-8 text-black" />
@@ -172,7 +172,7 @@ export default function Home() {
                 {t("home.threeBrothersDesc2")}
               </p>
               <Link href="/about">
-                <Button size="lg" variant="outline" className="border-2 border-[oklch(0.62_0.15_85)] text-foreground hover:bg-[oklch(0.62_0.15_85)] hover:text-black font-semibold">
+                <Button size="lg" variant="outline" className="border-2 border-[#2563eb] text-foreground hover:bg-[#2563eb] hover:text-black font-semibold">
                   {t("home.ourStory")}
                 </Button>
               </Link>
@@ -220,7 +220,7 @@ export default function Home() {
                 Ideal pour un afterwork Geneve Cornavin avec planche de charcuterie italienne, pinsa romana Geneve et cocktails signatures.
               </p>
               <Link href="/contact">
-                <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
+                <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold">
                   {t("home.getDirections")}
                 </Button>
               </Link>
@@ -240,7 +240,7 @@ export default function Home() {
             <Link href="/reservations" className="flex-1 sm:flex-initial min-w-0">
               <Button
                 size="lg"
-                className="w-full min-h-[44px] gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold text-sm sm:text-base px-4 sm:px-6 py-4 sm:py-5 rounded-lg shadow-md transition-all hover:shadow-lg active:scale-[0.98] touch-manipulation"
+                className="w-full min-h-[44px] gold-bg text-black hover:bg-[#1d4ed8] font-semibold text-sm sm:text-base px-4 sm:px-6 py-4 sm:py-5 rounded-lg shadow-md transition-all hover:shadow-lg active:scale-[0.98] touch-manipulation"
               >
                 {t("home.bookYourTable")}
               </Button>
@@ -249,7 +249,7 @@ export default function Home() {
               <Button
                 size="lg"
                 variant="outline"
-                className="min-h-[44px] border-2 border-[oklch(0.62_0.15_85)] text-foreground hover:bg-[oklch(0.62_0.15_85)] hover:text-black font-semibold text-sm sm:text-base px-4 sm:px-6 py-4 sm:py-5 rounded-lg touch-manipulation"
+                className="min-h-[44px] border-2 border-[#2563eb] text-foreground hover:bg-[#2563eb] hover:text-black font-semibold text-sm sm:text-base px-4 sm:px-6 py-4 sm:py-5 rounded-lg touch-manipulation"
               >
                 {t("home.meetBrothers")}
               </Button>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Dialog,
@@ -101,7 +101,7 @@ export function ConsentNewsletterPopups() {
       <Dialog open={consentOpen} onOpenChange={(open) => !open && setConsentOpen(false)}>
         <DialogContent
           showCloseButton={false}
-          className="max-w-md border-[oklch(0.62_0.15_85/0.4)] bg-[oklch(0.16_0.005_85)] text-[oklch(0.92_0.02_85)]"
+          className="max-w-md border-[#2563eb/40] bg-[#f0f4ff] text-[#1e293b]"
           onPointerDownOutside={(e) => e.preventDefault()}
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
@@ -126,14 +126,14 @@ export function ConsentNewsletterPopups() {
             <Button
               type="button"
               variant="outline"
-              className="border-[oklch(0.62_0.15_85/0.6)] text-foreground hover:bg-[oklch(0.62_0.15_85/0.15)]"
+              className="border-[#2563eb/60] text-foreground hover:bg-[#2563eb/15]"
               onClick={handleDecline}
             >
               {t("consent.decline")}
             </Button>
             <Button
               type="button"
-              className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold"
+              className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold"
               onClick={handleAccept}
             >
               {t("consent.accept")}
@@ -145,7 +145,7 @@ export function ConsentNewsletterPopups() {
       {/* Newsletter – optional, can skip */}
       <Dialog open={newsletterOpen} onOpenChange={setNewsletterOpen}>
         <DialogContent
-          className="max-w-md border-[oklch(0.62_0.15_85/0.4)] bg-[oklch(0.16_0.005_85)] text-[oklch(0.92_0.02_85)]"
+          className="max-w-md border-[#2563eb/40] bg-[#f0f4ff] text-[#1e293b]"
           onCloseAutoFocus={() => setNewsletterStatus("idle")}
         >
           <DialogHeader>
@@ -176,14 +176,14 @@ export function ConsentNewsletterPopups() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="border-[oklch(0.62_0.15_85/0.6)] text-foreground hover:bg-[oklch(0.62_0.15_85/0.15)]"
+                  className="border-[#2563eb/60] text-foreground hover:bg-[#2563eb/15]"
                   onClick={handleNewsletterSkip}
                 >
                   {t("newsletter.skip")}
                 </Button>
                 <Button
                   type="submit"
-                  className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold"
+                  className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold"
                   disabled={subscribePending || !email.trim()}
                 >
                   {subscribePending ? (
@@ -198,7 +198,7 @@ export function ConsentNewsletterPopups() {
           {newsletterStatus === "success" && (
             <Button
               type="button"
-              className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold w-full mt-2"
+              className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold w-full mt-2"
               onClick={() => setNewsletterOpen(false)}
             >
               OK

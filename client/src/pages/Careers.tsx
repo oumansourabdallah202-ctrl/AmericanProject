@@ -1,4 +1,4 @@
-import { Utensils, Wine, ConciergeBell } from "lucide-react";
+﻿import { Utensils, Wine, ConciergeBell } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -30,26 +30,26 @@ export default function Careers() {
           <div className="grid gap-4 sm:grid-cols-3 mb-10">
             <Card className="border-none shadow-md">
               <CardContent className="pt-6 text-center">
-                <Utensils className="w-10 h-10 mx-auto mb-3 text-[oklch(0.62_0.15_85)]" />
+                <Utensils className="w-10 h-10 mx-auto mb-3 text-[#2563eb]" />
                 <h3 className="font-bold text-lg">{t("contact.specialtyKitchen")}</h3>
               </CardContent>
             </Card>
             <Card className="border-none shadow-md">
               <CardContent className="pt-6 text-center">
-                <Wine className="w-10 h-10 mx-auto mb-3 text-[oklch(0.62_0.15_85)]" />
+                <Wine className="w-10 h-10 mx-auto mb-3 text-[#2563eb]" />
                 <h3 className="font-bold text-lg">{t("contact.specialtyBar")}</h3>
               </CardContent>
             </Card>
             <Card className="border-none shadow-md">
               <CardContent className="pt-6 text-center">
-                <ConciergeBell className="w-10 h-10 mx-auto mb-3 text-[oklch(0.62_0.15_85)]" />
+                <ConciergeBell className="w-10 h-10 mx-auto mb-3 text-[#2563eb]" />
                 <h3 className="font-bold text-lg">{t("contact.specialtyService")}</h3>
               </CardContent>
             </Card>
           </div>
           <div className="text-center">
             <a href="mailto:info@TestRestaurant.ch?subject=Candidature%20TestRestaurant">
-              <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
+              <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold">
                 {t("careers.apply")}
               </Button>
             </a>

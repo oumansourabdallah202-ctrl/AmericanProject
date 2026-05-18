@@ -1,4 +1,4 @@
-import { useLanguage } from "@/contexts/LanguageContext";
+﻿import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
@@ -29,7 +29,7 @@ export default function Menu() {
               rel="noopener noreferrer"
               download
             >
-              <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
+              <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold">
                 <Download className="w-5 h-5 mr-2" />
                 {t("menu.downloadMenu")}
               </Button>
@@ -56,7 +56,7 @@ export default function Menu() {
             rel="noopener noreferrer"
             download
           >
-            <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
+            <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold">
               <Download className="w-5 h-5 mr-2" />
               {t("menu.downloadMenu")}
             </Button>

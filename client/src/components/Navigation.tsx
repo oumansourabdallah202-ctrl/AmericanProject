@@ -1,4 +1,4 @@
-import type { Language } from "@/lib/translations";
+﻿import type { Language } from "@/lib/translations";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Menu, X, Languages, Check } from "lucide-react";
@@ -67,7 +67,7 @@ export default function Navigation() {
                   className={`text-sm font-medium transition-colors cursor-pointer ${
                     isActive(item.href)
                       ? "gold-text"
-                      : "text-foreground hover:text-[oklch(0.62_0.15_85)]"
+                      : "text-foreground hover:text-[#2563eb]"
                   }`}
                 >
                   {item.label}
@@ -77,7 +77,7 @@ export default function Navigation() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-1.5 text-sm font-medium hover:text-[oklch(0.62_0.15_85)] transition-colors"
+                  className="flex items-center gap-1.5 text-sm font-medium hover:text-[#2563eb] transition-colors"
                   aria-label={`${t("nav.language")}: ${currentLanguageLabel}`}
                 >
                   <Languages size={18} />
@@ -98,7 +98,7 @@ export default function Navigation() {
               </DropdownMenuContent>
             </DropdownMenu>
             <Link href="/reservations">
-              <Button className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
+              <Button className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold">
                 {t("nav.bookTable")}
               </Button>
             </Link>
@@ -124,7 +124,7 @@ export default function Navigation() {
                     className={`block py-3 text-sm font-medium transition-colors cursor-pointer border-b border-border/50 ${
                       isActive(item.href)
                         ? "gold-text"
-                        : "text-foreground hover:text-[oklch(0.62_0.15_85)]"
+                        : "text-foreground hover:text-[#2563eb]"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
@@ -161,7 +161,7 @@ export default function Navigation() {
               </div>
               <Link href="/reservations" className="mt-4">
                 <Button
-                  className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold w-full min-h-[44px]"
+                  className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold w-full min-h-[44px]"
                   onClick={() => setIsOpen(false)}
                 >
                   {t("nav.bookTable")}

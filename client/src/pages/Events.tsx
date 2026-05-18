@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+﻿import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Briefcase, PartyPopper, Utensils, Music, Wine } from "lucide-react";
@@ -154,12 +154,12 @@ export default function Events() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="tel:+41225034186">
-              <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold">
+              <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold">
                 {t("contact.phone")}: +41 22 503 41 86
               </Button>
             </a>
             <a href="mailto:info@TestRestaurant.ch?subject=Contact%20TestRestaurant%20-%20Website">
-              <Button size="lg" variant="outline" className="border-2 border-[oklch(0.62_0.15_85)] text-foreground hover:bg-[oklch(0.62_0.15_85)] hover:text-black font-semibold">
+              <Button size="lg" variant="outline" className="border-2 border-[#2563eb] text-foreground hover:bg-[#2563eb] hover:text-black font-semibold">
                 {t("contact.email")}: info@TestRestaurant.ch
               </Button>
             </a>

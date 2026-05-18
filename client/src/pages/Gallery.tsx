@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "wouter";
@@ -83,7 +83,7 @@ export default function Gallery() {
           onClick={() => setSelectedImage(null)}
         >
           <button
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 min-w-[44px] min-h-[44px] flex items-center justify-center text-white hover:text-[oklch(0.62_0.15_85)] transition-colors z-10 rounded-full hover:bg-white/10"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 min-w-[44px] min-h-[44px] flex items-center justify-center text-white hover:text-[#2563eb] transition-colors z-10 rounded-full hover:bg-white/10"
             onClick={() => setSelectedImage(null)}
             aria-label="Close"
           >
@@ -112,7 +112,7 @@ export default function Gallery() {
             {t("home.visitDesc1")} {t("home.visitDesc2")}
           </p>
           <Link href="/reservations">
-            <Button size="lg" className="gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold text-lg px-8">
+            <Button size="lg" className="gold-bg text-black hover:bg-[#1d4ed8] font-semibold text-lg px-8">
               {t("nav.bookTable")}
             </Button>
           </Link>

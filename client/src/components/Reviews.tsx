@@ -1,4 +1,4 @@
-import { Star, Quote } from "lucide-react";
+﻿import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -62,7 +62,7 @@ export default function Reviews() {
             href="https://www.tripadvisor.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold px-6 py-3 rounded-md transition-colors"
+            className="inline-flex items-center gap-2 gold-bg text-black hover:bg-[#1d4ed8] font-semibold px-6 py-3 rounded-md transition-colors"
           >
             <Star size={20} fill="currentColor" />
             {t("home.readMoreReviews")}

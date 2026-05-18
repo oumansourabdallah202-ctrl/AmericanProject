@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -116,7 +116,7 @@ export default function Takeaway() {
                 Total: {totalChf} CHF (<span>{totalItems} {totalItems === 1 ? "item" : "items"}</span>)
               </p>
               <Button
-                className="mt-4 w-full gold-bg text-black hover:bg-[oklch(0.52_0.15_85)] font-semibold"
+                className="mt-4 w-full gold-bg text-black hover:bg-[#1d4ed8] font-semibold"
                 size="lg"
                 onClick={handleCheckout}
                 disabled={checkingOut}
